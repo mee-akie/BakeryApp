@@ -14,7 +14,6 @@ KV = '''
 
 #:set text_color get_color_from_hex("#4a4939")
 #:set focus_color get_color_from_hex("#e7e4c0")
-#:set ripple_color get_color_from_hex("#c5bdd2")
 #:set bg_color get_color_from_hex("#f7f4e7")
 #:set selected_color get_color_from_hex("#0c6c4d")
 
@@ -77,6 +76,7 @@ MDScreen:
         elevation: 10
         title: "Bakery ABC"
         left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+        md_bg_color: get_color_from_hex("#854442")
 
 
     MDNavigationLayout:
@@ -115,14 +115,13 @@ MDScreen:
 
 
     MDBottomNavigation:
-        size_hint_y: .1
-        panel_color: get_color_from_hex("#eeeaea")
-        selected_color_background: get_color_from_hex("#97ecf8")
-        text_color_active: 0, 0, 0, 1
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#854442")
+        text_color_active: get_color_from_hex("#fff4e6")
 
         MDBottomNavigationItem:
             name: 'screen 1'
-            text: 'botao 1'
+            text: 'home'
             icon: 'home-circle'
 
         MDBottomNavigationItem:
@@ -142,20 +141,8 @@ class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
     nav_drawer = ObjectProperty()
 
-class DrawerList(ThemableBehavior, MDList):
-    def set_color_item(self, instance_item):
-        '''Called when tap on a menu item.'''
-
-        # Set the color of the icon and text for the menu item.
-        for item in self.children:
-            if item.text_color == self.theme_cls.primary_color:
-                item.text_color = self.theme_cls.text_color
-                break
-        instance_item.text_color = self.theme_cls.primary_color
-
 class TestNavigationDrawer(MDApp):
     def build(self):
-        self.theme_cls.primary_palette = "Teal"
         return Builder.load_string(KV)
 
 
