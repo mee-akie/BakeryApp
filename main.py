@@ -6,7 +6,7 @@ from kivymd.theming import ThemableBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import MDList, OneLineIconListItem
 from kivy.properties import StringProperty
-
+import psycopg2
 
 
 KV = '''
@@ -141,9 +141,69 @@ class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
     nav_drawer = ObjectProperty()
 
-class TestNavigationDrawer(MDApp):
+class Main(MDApp):
     def build(self):
+
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+
+        # Create A Cursor
+        c = conn.cursor()
+
+        # Create A Table
+        c.execute("""CREATE TABLE if not exists customers(
+            name TEXT);
+            """)
+
+        # Commit our changes
+        conn.commit()
+
+        # Close our connection
+        conn.close()
+
         return Builder.load_string(KV)
+    
+
+    def submit(self):
+        # Create Database Or Connect To One
+        #conn = sqlite3.connect('first_db.db')
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+
+        # Create A Cursor
+        c = conn.cursor()
+
+        # Add A Record
+        sql_command = "INSERT INTO customers (name) VALUES (%s)"
+        values = (self.root.ids.word_input.text,)
+        
+        # Execute SQL Command
+        c.execute(sql_command, values)	
+        
+
+        # Add a little message
+        self.root.ids.word_label.text = f'{self.root.ids.word_input.text} Added'
+
+        # Clear the input box
+        
+        self.root.ids.word_input.text = ''
 
 
-TestNavigationDrawer().run()
+        # Commit our changes
+        conn.commit()
+
+        # Close our connection
+        conn.close()
+
+
+Main().run()
