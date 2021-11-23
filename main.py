@@ -114,6 +114,27 @@ MDScreen:
                 nav_drawer: nav_drawer
 
 
+    MDBottomNavigation:
+        size_hint_y: .1
+        panel_color: get_color_from_hex("#eeeaea")
+        selected_color_background: get_color_from_hex("#97ecf8")
+        text_color_active: 0, 0, 0, 1
+
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'botao 1'
+            icon: 'home-circle'
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'botao 2'
+            icon: 'barcode'
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'botao 3'
+            icon: 'account-circle-outline'
+
 '''
 
 
