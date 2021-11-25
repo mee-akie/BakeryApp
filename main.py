@@ -137,33 +137,7 @@ ScreenManager:
             pos_hint: {"top": 1}
             elevation: 10
             title: "Bakery ABC"
-            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
             md_bg_color: get_color_from_hex("#854442")
-
-        MDNavigationLayout:
-            x: toolbar.height
-            ScreenManager:
-                id: screen_manager
-                MDScreen:
-                    name: "item 1"
-                    MDLabel:
-                        md_bg_color : get_color_from_hex("#7E6B73")
-                        
-                MDScreen:
-                    name: "item 2"
-                    MDLabel:
-                        text: "Screen 2"
-                        halign: "center"
-                MDScreen:
-                    name: "item 3"
-                    MDLabel:
-                        text: "Screen 3"
-                        halign: "center"
-            MDNavigationDrawer:
-                id: nav_drawer
-                NavigationDrawer:
-                    screen_manager: screen_manager
-                    nav_drawer: nav_drawer
 
         MDBottomNavigation:
             size_hint_y: .09
