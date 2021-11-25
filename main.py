@@ -6,6 +6,8 @@ from kivymd.theming import ThemableBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import MDList, OneLineIconListItem
 from kivy.properties import StringProperty
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.behaviors import FocusBehavior
 import psycopg2
 from kivy.uix.screenmanager import ScreenManager, Screen
 
@@ -17,6 +19,7 @@ KV = '''
 ScreenManager:
     HomePage:
     FuncionarioPage:
+    CadastrarFuncionario:
 
 
 <NavigationDrawer>
@@ -162,17 +165,18 @@ ScreenManager:
                 on_enter: root.switchFuncionario()
 
         MDFillRoundFlatIconButton :
-            text : 'Cadastrar um empregado'
+            text : 'Cadastrar um novo funcionario'
             icon : "account-plus"
             pos_hint : {"center_x":.5,"center_y":.8}
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
-            on_press : app.callback()
             user_font_size: "64sp"
+            on_press: root.switchCadastro()
+
 
         MDFillRoundFlatIconButton :
-            text : 'Remover um empregado'
+            text : 'Remover um funcionario'
             icon : "account-minus"
             pos_hint : {"center_x":.5,"center_y":.6}
             text_color : get_color_from_hex("#7E6B73")
@@ -181,7 +185,7 @@ ScreenManager:
             on_press : app.callback()
 
         MDFillRoundFlatIconButton :
-            text : 'Alterar dados de um empregado'
+            text : 'Alterar dados de um funcionario'
             icon : "account-edit"
             pos_hint : {"center_x":.5,"center_y":.4}
             text_color : get_color_from_hex("#7E6B73")
@@ -190,6 +194,61 @@ ScreenManager:
             on_press : app.callback()
 
 
+<CadastrarFuncionario>:
+    name: 'cadastrar_funcionario'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "NOVO FUNCIONARIO"
+        md_bg_color: get_color_from_hex("#854442")
+
+
+    MDBoxLayout:
+        BoxLayout:
+            orientation: "vertical"
+            pos_hint: {'center_x': .5, 'center_y': .8}
+
+            MDTextField:
+                id: nome_funcionario
+                multiline: False
+                size_hint_x: .9
+                hint_text: 'Nome:'
+                pos_hint: {'center_x': .5, 'center_y': .7}
+                text_color: get_color_from_hex("#000000")
+
+            MDTextField:
+                size_hint_x: .9
+                hint_text: 'CPF:'
+                pos_hint: {'center_x': .5, 'center_y': .7}
+                text_color: get_color_from_hex("#000000")
+            
+            MDTextField:
+                size_hint_x: .9
+                hint_text: 'Salario:'
+                pos_hint: {'center_x': .5, 'center_y': .8}
+                text_color: get_color_from_hex("#000000")
+
+            MDTextField:
+                size_hint_x: .9
+                hint_text: 'Ferias:'
+                pos_hint: {'center_x': .5, 'center_y': .6}
+                text_color: get_color_from_hex("#000000")
+    
+            MDTextField:
+                size_hint_x: .9
+                hint_text: 'Codigo do estabelecimento:'
+                pos_hint: {'center_x': .5, 'center_y': .4}
+                text_color: get_color_from_hex("#000000")
+                    
+            ButtonFocus:
+                size_hint_x: .9
+                pos_hint: {'center_x': .5, 'center_y': .2}
+                focus_color: get_color_from_hex("#e54c37")
+                unfocus_color: get_color_from_hex("#854442")
+                text: 'CADASTRAR'
+                on_press: root.cadastrar()
 
 '''
 
@@ -197,15 +256,56 @@ ScreenManager:
 class HomePage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
+
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
+
 
 class FuncionarioPage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
+
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def switchCadastro(self):
+        self.parent.current = 'cadastrar_funcionario'
+
+
+class CadastrarFuncionario(Screen):
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+
+        # Create A Cursor
+        c = conn.cursor()
+
+        # Add A Record
+        sql_command = "INSERT INTO FUNCIONARIO (name) VALUES (%s)"
+        values = (self.ids.nome_funcionario.text)
+
+        # Execute SQL Command
+        c.execute(sql_command, (values,))	
+
+        # Add a little message
+        self.ids.nome_funcionario.text = f'{self.ids.nome_funcionario.text} Added'
+
+        # Clear the input box
+        self.ids.nome_funcionario.text = ''
+
+        # Commit our changes in Heroku
+        conn.commit()
+
+        # Close our connection
+        conn.close()
+
+class ButtonFocus(MDRaisedButton, FocusBehavior):
+    ...
 
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
@@ -215,6 +315,7 @@ class NavigationDrawer(MDBoxLayout):
 sm = ScreenManager()
 sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
+sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
 
 
 class Main(MDApp):
@@ -232,7 +333,7 @@ class Main(MDApp):
         c = conn.cursor()
 
         # Create A Table
-        c.execute("""CREATE TABLE if not exists customers(
+        c.execute("""CREATE TABLE if not exists FUNCIONARIO (
             name TEXT);
             """)
 
@@ -243,43 +344,6 @@ class Main(MDApp):
         conn.close()
 
         return Builder.load_string(KV)
-    
-
-    def submit(self):
-        # Create Database Or Connect To One
-        #conn = sqlite3.connect('first_db.db')
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
-
-        # Create A Cursor
-        c = conn.cursor()
-
-        # Add A Record
-        sql_command = "INSERT INTO customers (name) VALUES (%s)"
-        values = (self.root.ids.word_input.text,)
-        
-        # Execute SQL Command
-        c.execute(sql_command, values)	
-        
-
-        # Add a little message
-        self.root.ids.word_label.text = f'{self.root.ids.word_input.text} Added'
-
-        # Clear the input box
-        
-        self.root.ids.word_input.text = ''
-
-
-        # Commit our changes
-        conn.commit()
-
-        # Close our connection
-        conn.close()
 
 
 Main().run()
