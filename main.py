@@ -14,6 +14,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 KV = '''
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:set toolbarColor get_color_from_hex("#854442")
 
 
 ScreenManager:
@@ -81,7 +82,7 @@ ScreenManager:
             elevation: 10
             title: "Bakery ABC"
             left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-            md_bg_color: get_color_from_hex("#854442")
+            md_bg_color: toolbarColor
 
         MDNavigationLayout:
             x: toolbar.height
@@ -140,7 +141,7 @@ ScreenManager:
             pos_hint: {"top": 1}
             elevation: 10
             title: "Bakery ABC"
-            md_bg_color: get_color_from_hex("#854442")
+            md_bg_color: toolbarColor
 
         MDBottomNavigation:
             size_hint_y: .09
@@ -332,12 +333,148 @@ class Main(MDApp):
         # Create A Cursor
         c = conn.cursor()
 
-        # Create A Table
-        c.execute("""CREATE TABLE if not exists FUNCIONARIO (
-            name TEXT);
-            """)
+        # Create the tables
 
-        # Commit our changes
+        c.execute("""CREATE TABLE IF NOT EXISTS ESTABELECIMENTO (
+                        CODIGO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+                        NOME VARCHAR(70) NOT NULL,
+                        BAIRRO VARCHAR(100),
+                        RUA VARCHAR(100),
+                        CEP CHAR(8),
+                        CIDADE VARCHAR(100),
+                        NUMERO VARCHAR(10),
+                        PRIMARY KEY(CODIGO));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS FORNECEDOR (
+                        CNPJ CHAR (14) NOT NULL,
+                        NOME VARCHAR (70) NOT NULL,
+                        RUA VARCHAR(100) NOT NULL,
+                        ESTADO VARCHAR(30) NOT NULL,
+                        CIDADE VARCHAR(100) NOT NULL,
+                        CEP CHAR(8),
+                        NUMERO VARCHAR(10),
+                        BAIRRO VARCHAR(100),
+                        PRIMARY KEY (CNPJ));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS CLIENTE (
+                        NOME VARCHAR(70) NOT NULL,
+                        CPF CHAR(11) NOT NULL,
+                        DATANASC DATE,
+                        PRIMARY KEY(CPF));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO (
+                 	COD_BARRAS CHAR(15) NOT NULL,
+                    NOME VARCHAR(50) NOT NULL,
+                    NOME_FABRICANTE VARCHAR(100) NOT NULL,
+                    PRECO DECIMAL(18,2) NOT NULL,
+                    DATA_FABRICACAO DATE NOT NULL,
+                    CATEGORIA VARCHAR(50) NOT NULL,
+                    QTD_ESTOQUE INT NOT NULL,
+                    DATA_VENCIMENTO DATE NOT NULL,
+                    PRIMARY KEY (COD_BARRAS));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS CONTA (
+                 		COD_BARRAS CHAR(48) NOT NULL,
+                        TIPO CHAR(35) NOT NULL,
+                        VALOR DECIMAL (10,2) NOT NULL,
+                        DATA_VENCIMENTO DATE NOT NULL,
+                        DATA_PAGAMENTO DATE NULL,
+                        PAGO BOOLEAN,
+                        CODIGO_ESTABELECIMENTO INT NOT NULL,
+                        PRIMARY KEY(COD_BARRAS),
+                        FOREIGN KEY(CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
+                """)      
+
+        c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO (
+                        CODIGO_FUNC INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+                        NOME VARCHAR(70) NOT NULL,        	
+                        CPF CHAR(11) NOT NULL,
+                        SALARIO DECIMAL (10,2), 
+                        FERIAS DATE,
+                        CODIGO_ESTABELECIMENTO INT NOT NULL,
+                        PRIMARY KEY(CODIGO_FUNC),
+                        FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS HISTORICO_TRABALHO (
+                        DATA_REGISTRO  DATE NOT NULL,
+                        HORA_ENTRADA_R TIME NOT NULL,
+                        HORA_SAIDA_R TIME NOT NULL,
+                        FCODIGO_FUNCIONARIO INT NOT NULL,
+                        PRIMARY KEY(DATA_REGISTRO, HORA_ENTRADA_R, HORA_SAIDA_R, FCODIGO_FUNCIONARIO),
+                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS ADMINISTRADOR (
+                        FCODIGO_FUNCIONARIO INT NOT NULL,
+                        ESPECIALIDADE VARCHAR(30) NOT NULL,
+                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
+                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS ATENDENTE_CAIXA (
+                        FCODIGO_FUNCIONARIO INT NOT NULL,
+                        NIVEL_ESCOLARIDADE VARCHAR(30) NOT NULL,
+                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
+                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS TELEFONE_CONTATO (
+                        TELEFONE VARCHAR (14) NOT NULL,
+                        TCODIGO CHAR(14) NOT NULL,
+                        PRIMARY KEY (TELEFONE),
+                        FOREIGN KEY(TCODIGO) REFERENCES FORNECEDOR(CNPJ));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS VENDE (
+                    	COD_VENDA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+                        DT_VENDA TIMESTAMP NOT NULL,
+                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
+                        FCODIGO_FUNCIONARIO INT NOT NULL,
+                        CPF CHAR(11) NOT NULL,
+                        PRIMARY KEY (COD_VENDA),
+                        FOREIGN KEY (CPF  ) REFERENCES CLIENTE(CPF),
+                        FOREIGN KEY (FCODIGO_FUNCIONARIO) REFERENCES ATENDENTE_CAIXA(FCODIGO_FUNCIONARIO));
+                """)
+                
+        c.execute("""CREATE TABLE IF NOT EXISTS VENDIDO (
+                        COD_PRODUTO_VENDIDO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+                        QUANTIDADE INT NOT NULL,
+                        COD_VENDA INT NOT NULL,
+                        COD_BARRAS CHAR(15) NOT NULL,
+                        PRIMARY KEY (COD_PRODUTO_VENDIDO),
+                        FOREIGN KEY (COD_VENDA ) REFERENCES VENDE(COD_VENDA),
+                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS COMPRA (
+                        COD_COMPRA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+                        DT_SOLICITACAO TIMESTAMP NOT NULL,
+                        DT_ENTREGA TIMESTAMP NOT NULL,
+                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
+                        FCODIGO_FUNCIONARIO INT NOT NULL,
+                        CNPJ CHAR (14) NOT NULL,
+                        PRIMARY KEY (COD_COMPRA),
+                        FOREIGN KEY (FCODIGO_FUNCIONARIO ) REFERENCES ADMINISTRADOR(FCODIGO_FUNCIONARIO),
+                        FOREIGN KEY (CNPJ) REFERENCES FORNECEDOR(CNPJ));
+                """)
+
+        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO_COMPRADO (
+                        COD_PRODUTO_COMPRADO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+                        QUANTIDADE INT NOT NULL,
+                        COD_COMPRA INT NOT NULL,
+                        COD_BARRAS CHAR(15) NOT NULL,
+                        PRIMARY KEY (COD_PRODUTO_COMPRADO ),
+                        FOREIGN KEY (COD_COMPRA  ) REFERENCES COMPRA(COD_COMPRA ),
+                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
+                """)
+
+
+        # Commit our changes in Heroku
         conn.commit()
 
         # Close our connection
