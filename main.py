@@ -305,14 +305,19 @@ class CadastrarFuncionario(Screen):
         # Close our connection
         conn.close()
 
+
+# botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
 
+
+# auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
     nav_drawer = ObjectProperty()
 
-# Create the screen manager
+
+# Gerenciador de paginas
 sm = ScreenManager()
 sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
