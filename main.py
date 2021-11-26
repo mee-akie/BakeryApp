@@ -192,7 +192,7 @@ ScreenManager:
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
-            on_press : app.callback()
+            on_press : root.s
 
 
 <CadastrarFuncionario>:
@@ -206,50 +206,68 @@ ScreenManager:
         md_bg_color: get_color_from_hex("#854442")
 
 
-    MDBoxLayout:
+    MDFloatLayout:
         BoxLayout:
             orientation: "vertical"
-            pos_hint: {'center_x': .5, 'center_y': .8}
+            size_hint_x: .9
+            size_hint_y: .8
+            pos_hint: {'center_x': .5, 'center_y': .75}
 
             MDTextField:
-                id: nome_funcionario
+                id: nome
                 multiline: False
-                size_hint_x: .9
+                size_hint_x: .8
                 hint_text: 'Nome:'
                 pos_hint: {'center_x': .5, 'center_y': .7}
                 text_color: get_color_from_hex("#000000")
 
             MDTextField:
-                size_hint_x: .9
+                id: cpf
+                multiline: False
+                size_hint_x: .8
                 hint_text: 'CPF:'
                 pos_hint: {'center_x': .5, 'center_y': .7}
                 text_color: get_color_from_hex("#000000")
             
             MDTextField:
-                size_hint_x: .9
+                id: salario
+                multiline: False
+                size_hint_x: .8
                 hint_text: 'Salario:'
                 pos_hint: {'center_x': .5, 'center_y': .8}
                 text_color: get_color_from_hex("#000000")
 
             MDTextField:
-                size_hint_x: .9
+                id: ferias
+                multiline: False
+                size_hint_x: .8
                 hint_text: 'Ferias:'
                 pos_hint: {'center_x': .5, 'center_y': .6}
                 text_color: get_color_from_hex("#000000")
     
             MDTextField:
-                size_hint_x: .9
+                id: codigo_estabelecimento
+                multiline: False
+                size_hint_x: .8
                 hint_text: 'Codigo do estabelecimento:'
                 pos_hint: {'center_x': .5, 'center_y': .4}
                 text_color: get_color_from_hex("#000000")
                     
-            ButtonFocus:
-                size_hint_x: .9
-                pos_hint: {'center_x': .5, 'center_y': .2}
-                focus_color: get_color_from_hex("#e54c37")
-                unfocus_color: get_color_from_hex("#854442")
-                text: 'CADASTRAR'
-                on_press: root.cadastrar()
+        ButtonFocus:
+            size_hint_x: .35
+            pos_hint: {'center_x': .3, 'center_y': .15}
+            focus_color: get_color_from_hex("#e54c37")
+            unfocus_color: get_color_from_hex("#854442")
+            text: 'CADASTRAR'
+            on_press: root.cadastrar()
+
+        ButtonFocus:
+            size_hint_x: .35
+            pos_hint: {'center_x': .7, 'center_y': .15}
+            focus_color: get_color_from_hex("#e54c37")
+            unfocus_color: get_color_from_hex("#854442")
+            text: 'CANCELAR'
+            on_press: root.switchFuncionario()
 
 '''
 
@@ -274,7 +292,11 @@ class FuncionarioPage(Screen):
 
 
 class CadastrarFuncionario(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
     def cadastrar(self):
+
         conn = psycopg2.connect(
             host = "ec2-44-198-211-34.compute-1.amazonaws.com",
             database = "ddj7ffdunshjqf", 
@@ -286,24 +308,25 @@ class CadastrarFuncionario(Screen):
         # Create A Cursor
         c = conn.cursor()
 
-        # Add A Record
-        sql_command = "INSERT INTO FUNCIONARIO (name) VALUES (%s)"
-        values = (self.ids.nome_funcionario.text)
+        # Add dados na tabela de Funcionario
+        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, %s, %s)"
+        values = (self.ids.nome.text,
+                  self.ids.cpf.text,
+                  self.ids.salario.text,
+                  self.ids.ferias.text,
+                  self.ids.codigo_estabelecimento.text)
 
         # Execute SQL Command
-        c.execute(sql_command, (values,))	
-
-        # Add a little message
-        self.ids.nome_funcionario.text = f'{self.ids.nome_funcionario.text} Added'
-
-        # Clear the input box
-        self.ids.nome_funcionario.text = ''
+        c.execute(sql_command, (values))	
 
         # Commit our changes in Heroku
         conn.commit()
 
         # Close our connection
         conn.close()
+
+        self.parent.current = 'funcionario'
+
 
 
 # botao do cadastro do funcionario
@@ -477,6 +500,17 @@ class Main(MDApp):
                         FOREIGN KEY (COD_COMPRA  ) REFERENCES COMPRA(COD_COMPRA ),
                         FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
                 """)
+    
+        sql_command = "INSERT INTO ESTABELECIMENTO(nome, rua, numero, bairro, cep, cidade) VALUES(%s, %s, %s, %s, %s, %s)"
+        values = ('Panificadora Alfa','Rua Projetada', '1', 'Ouro Verde','78135616','Várzea Grande')
+        sql_command2 = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, NULL, %s)"
+        values2 = ('MARIA AAAAAA', '23472712356', "3000", "1")
+
+        # Execute SQL Command
+
+        c.execute(sql_command, (values))
+        c.execute(sql_command2, (values2))	
+	
 
 
         # Commit our changes in Heroku
