@@ -403,7 +403,7 @@ class CadastrarFuncionario(Screen):
             password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
             port = "5432"
         )
-        # Create A Cursor
+        
         c = conn.cursor()
 
         # Add dados na tabela de Funcionario
@@ -414,13 +414,8 @@ class CadastrarFuncionario(Screen):
                   self.ids.ferias.text,
                   self.ids.codigo_estabelecimento.text)
 
-        # Execute SQL Command
         c.execute(sql_command, (values))	
-
-        # Commit our changes in Heroku
         conn.commit()
-
-        # Close our connection
         conn.close()
 
         self.ids.nome.text = ''
@@ -428,7 +423,6 @@ class CadastrarFuncionario(Screen):
         self.ids.salario.text = ''
         self.ids.ferias.text = ''
         self.ids.codigo_estabelecimento.text = ''
-
         self.parent.current = 'funcionario'
 
 
@@ -446,7 +440,6 @@ class BuscarFuncionario(Screen):
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
 
 
-
 class TabelaBusca(Screen):
     def tabela(self):
         conn = psycopg2.connect(
@@ -458,15 +451,12 @@ class TabelaBusca(Screen):
         )
         c = conn.cursor()
 
-        # Add dados na tabela de Funcionario
         sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
 
-        # Execute SQL Command
         c.execute(sql_command)	
-
         output = c.fetchall()
-
         conn.close()
+
         screen = AnchorLayout()
 
         self.table = MDDataTable(
@@ -522,10 +512,8 @@ class Main(MDApp):
             password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
             port = "5432"
         )
-        # Create A Cursor
-        c = conn.cursor()
 
-        # Create the tables
+        c = conn.cursor()
 
         c.execute("""CREATE TABLE IF NOT EXISTS ESTABELECIMENTO (
                         CODIGO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -670,17 +658,9 @@ class Main(MDApp):
         sql_command2 = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, NULL, %s)"
         values2 = ('MARIA AAAAAA', '23472712356', "3000", "1")
 
-        # Execute SQL Command
-
         c.execute(sql_command, (values))
         c.execute(sql_command2, (values2))	
-	
-
-
-        # Commit our changes in Heroku
         conn.commit()
-
-        # Close our connection
         conn.close()
 
         return Builder.load_string(KV)
