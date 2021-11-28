@@ -1,14 +1,20 @@
+from re import A
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDFloatingLabel, MDRaisedButton
 from kivymd.uix.behaviors import FocusBehavior
 import psycopg2
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
+from kivy.core.window import Window
+Window.size = (400, 650)
+
+CPF_FUNCIONARIO = '23456712356'
+COD_ESTABELECIMENTO = '1'
 
 
 KV = '''
@@ -21,6 +27,7 @@ ScreenManager:
     FuncionarioPage:
     CadastrarFuncionario:
     BuscarFuncionario:
+    TabelaBusca:
 
 
 <NavigationDrawer>
@@ -320,6 +327,7 @@ ScreenManager:
             text: 'BUSCAR'
             on_press:
                 root.buscar()
+                root.switchTabela()
 
 
         ButtonFocus:
@@ -329,6 +337,9 @@ ScreenManager:
             unfocus_color: get_color_from_hex("#854442")
             text: 'CANCELAR'
             on_press: root.switchFuncionario()
+
+<TabelaBusca>:
+    name: 'tabela_busca'
 
 
 '''
@@ -401,8 +412,17 @@ class BuscarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
-    def buscar(self):
+    def switchTabela(self):
+        self.parent.current = 'tabela_busca'
 
+    def buscar(self):
+        CPF_FUNCIONARIO = self.ids.cpf.text
+        COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
+
+
+
+class TabelaBusca(Screen):
+    def tabela(self):
         conn = psycopg2.connect(
             host = "ec2-44-198-211-34.compute-1.amazonaws.com",
             database = "ddj7ffdunshjqf", 
@@ -413,36 +433,36 @@ class BuscarFuncionario(Screen):
         c = conn.cursor()
 
         # Add dados na tabela de Funcionario
-        sql_command = f"select * from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+        sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
 
         # Execute SQL Command
         c.execute(sql_command)	
 
         output = c.fetchall()
 
-        self.ids.cpf.text = ''
-        self.ids.codigo_estabelecimento.text = ''
         conn.close()
+        screen = AnchorLayout()
 
-        screen = Screen()
-
-        table = MDDataTable(
-            size_hint=(0.7, 0.6),
+        self.table = MDDataTable(
+            size_hint=(0.9, 0.6),
             use_pagination=True,
             column_data=[
-                ("cod_func", dp(30)),
-                ("Name", dp(30)),
-                ("cpf", dp(30)),
-                ("salario", dp(30)),
-                ("ferias", dp(30)),
-                ("departa", dp(30))
+                ("cod_func", dp(50)),
+                ("Name", dp(50)),
+                ("cpf", dp(50)),
+                ("salario", dp(50)),
+                ("ferias", dp(50)),
+                ("departa", dp(50))
             ],
             row_data=output
         )
 
-        screen.add_widget(table)
-
+        self.add_widget(self.table)
         return screen
+
+    def on_enter(self):
+        self.tabela()
+
 
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
@@ -461,7 +481,7 @@ sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
-
+sm.add_widget(TabelaBusca(name='tabela_busca'))
 
 
 class Main(MDApp):
