@@ -1,16 +1,13 @@
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
-from kivy.uix.boxlayout import BoxLayout
 from kivymd.app import MDApp
-from kivymd.theming import ThemableBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.list import MDList, OneLineIconListItem
-from kivy.properties import StringProperty
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.behaviors import FocusBehavior
 import psycopg2
 from kivy.uix.screenmanager import ScreenManager, Screen
-
+from kivymd.uix.datatables import MDDataTable
+from kivy.uix.anchorlayout import AnchorLayout
 
 KV = '''
 #:import get_color_from_hex kivy.utils.get_color_from_hex
@@ -21,6 +18,7 @@ ScreenManager:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
+    BuscarFuncionario:
 
 
 <NavigationDrawer>
@@ -165,21 +163,30 @@ ScreenManager:
                 icon: 'account-group'
                 on_enter: root.switchFuncionario()
 
+        MDFillRoundFlatIconButton:
+            text : 'Buscar um funcionario'
+            icon : "account-search"
+            pos_hint : {"center_x":.5,"center_y":.65}
+            text_color : get_color_from_hex("#7E6B73")
+            md_bg_color : get_color_from_hex("#FCE18E")
+            font_size : 20
+            user_font_size: "64sp"
+            on_press: root.switchBuscar()
+
         MDFillRoundFlatIconButton :
             text : 'Cadastrar um novo funcionario'
             icon : "account-plus"
-            pos_hint : {"center_x":.5,"center_y":.8}
+            pos_hint : {"center_x":.5,"center_y":.55}
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
             user_font_size: "64sp"
             on_press: root.switchCadastro()
 
-
         MDFillRoundFlatIconButton :
             text : 'Remover um funcionario'
             icon : "account-minus"
-            pos_hint : {"center_x":.5,"center_y":.6}
+            pos_hint : {"center_x":.5,"center_y":.45}
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
@@ -188,7 +195,7 @@ ScreenManager:
         MDFillRoundFlatIconButton :
             text : 'Alterar dados de um funcionario'
             icon : "account-edit"
-            pos_hint : {"center_x":.5,"center_y":.4}
+            pos_hint : {"center_x":.5,"center_y":.35}
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
@@ -269,6 +276,57 @@ ScreenManager:
             text: 'CANCELAR'
             on_press: root.switchFuncionario()
 
+
+<BuscarFuncionario>:
+    name: 'buscar_funcionario'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "DADOS DE FUNCIONARIO"
+        md_bg_color: get_color_from_hex("#854442")
+        
+    MDFloatLayout:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_x: .9
+            size_hint_y: .8
+            pos_hint: {'center_x': .5, 'center_y': .9}
+
+            MDTextField:
+                id: codigo_estabelecimento
+                multiline: False
+                size_hint_x: .8
+                hint_text: 'Número do estabelecimento: '
+                pos_hint: {'center_x': .5, 'center_y': .8}
+                text_color: get_color_from_hex("#000000")
+
+            MDTextField:
+                id: cpf
+                multiline: False
+                size_hint_x: .8
+                hint_text: 'CPF do funcionário: '
+                pos_hint: {'center_x': .5, 'center_y': .7}
+                text_color: get_color_from_hex("#000000")
+
+        ButtonFocus:
+            size_hint_x: .35
+            pos_hint: {'center_x': .3, 'center_y': .45}
+            focus_color: get_color_from_hex("#e54c37")
+            unfocus_color: get_color_from_hex("#854442")
+            text: 'BUSCAR'
+            on_press: root.buscar()
+
+        ButtonFocus:
+            size_hint_x: .35
+            pos_hint: {'center_x': .7, 'center_y': .45}
+            focus_color: get_color_from_hex("#e54c37")
+            unfocus_color: get_color_from_hex("#854442")
+            text: 'CANCELAR'
+            on_press: root.switchFuncionario()
+
+
 '''
 
 
@@ -290,13 +348,15 @@ class FuncionarioPage(Screen):
     def switchCadastro(self):
         self.parent.current = 'cadastrar_funcionario'
 
+    def switchBuscar(self):
+        self.parent.current = 'buscar_funcionario'
+
 
 class CadastrarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
     def cadastrar(self):
-
         conn = psycopg2.connect(
             host = "ec2-44-198-211-34.compute-1.amazonaws.com",
             database = "ddj7ffdunshjqf", 
@@ -304,7 +364,6 @@ class CadastrarFuncionario(Screen):
             password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
             port = "5432"
         )
-
         # Create A Cursor
         c = conn.cursor()
 
@@ -325,9 +384,73 @@ class CadastrarFuncionario(Screen):
         # Close our connection
         conn.close()
 
+        self.ids.nome.text = ''
+        self.ids.cpf.text = ''
+        self.ids.salario.text = ''
+        self.ids.ferias.text = ''
+        self.ids.codigo_estabelecimento.text = ''
+
         self.parent.current = 'funcionario'
 
 
+class BuscarFuncionario(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def buscar(self):
+
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        # Add dados na tabela de Funcionario
+        sql_command = f"select * from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+
+        # Execute SQL Command
+        c.execute(sql_command)	
+
+        output = c.fetchall()
+
+        self.ids.cpf.text = ''
+        self.ids.codigo_estabelecimento.text = ''
+        conn.close()
+
+
+        # # word = ''
+        # # # Loop thru records
+        # for record in output:
+        #     record = str(record[0])
+
+        screen = Screen()
+
+        table = MDDataTable(
+            size_hint=(0.7, 0.6),
+            use_pagination=True,
+            check=True,
+            # name column, width column, sorting function column(optional)
+            column_data=[
+                ("CODIGO FUNCIONARIO"),
+                ("NOME"),
+                ("CPF"),
+                ("SALARIO"),
+                ("FERIAS"),
+                ("CODIGO ESTABELECIMENTO"),
+            ],
+            # row_data=output
+        )
+
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "BlueGray"
+        #return Builder.load_file('table.kv')
+        # Add table widget to screen
+        screen.add_widget(table)
+
+        return screen
 
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
@@ -345,11 +468,12 @@ sm = ScreenManager()
 sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
+sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
+
 
 
 class Main(MDApp):
     def build(self):
-
         conn = psycopg2.connect(
             host = "ec2-44-198-211-34.compute-1.amazonaws.com",
             database = "ddj7ffdunshjqf", 
@@ -357,7 +481,6 @@ class Main(MDApp):
             password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
             port = "5432"
         )
-
         # Create A Cursor
         c = conn.cursor()
 
