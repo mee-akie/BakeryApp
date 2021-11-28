@@ -426,9 +426,9 @@ ScreenManager:
                 root.manager.transition.direction = 'right'
                 root.switchFuncionario()
 
-<AlterarFuncionario>"
+<AlterarFuncionario>:
     name: 'alterar_funcionario'
-    
+
 
 '''
 
