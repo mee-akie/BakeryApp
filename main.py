@@ -11,8 +11,12 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
+
+# define um tamanho de tela padrao
 Window.size = (400, 650)
 
+
+# variaveis globais
 CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
 
@@ -29,6 +33,8 @@ ScreenManager:
     BuscarFuncionario:
     TabelaBusca:
     RemoverFuncionario:
+    AlterarFuncionario:
+
 
 <NavigationDrawer>
     orientation: "vertical"
@@ -221,7 +227,7 @@ ScreenManager:
             font_size : 20
             on_press :
                 root.manager.transition.direction = 'left'
-                root.s
+                root.switchAlterar()
 
 
 <CadastrarFuncionario>:
@@ -368,7 +374,6 @@ ScreenManager:
 
 <RemoverFuncionario>:
     name: 'remover_funcionario'
-
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
@@ -421,6 +426,9 @@ ScreenManager:
                 root.manager.transition.direction = 'right'
                 root.switchFuncionario()
 
+<AlterarFuncionario>"
+    name: 'alterar_funcionario'
+    
 
 '''
 
@@ -448,6 +456,9 @@ class FuncionarioPage(Screen):
 
     def switchRemover(self):
         self.parent.current = 'remover_funcionario'
+
+    def switchAlterar(self):
+        self.parent.current = 'alterar_funcionario'
 
 
 class CadastrarFuncionario(Screen):
@@ -561,6 +572,13 @@ class RemoverFuncionario(Screen):
         conn.close()
 
 
+class AlterarFuncionario(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def alterar(self):
+        ...
+
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
@@ -580,6 +598,8 @@ sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBusca(name='tabela_busca'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
+sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
+
 
 
 class Main(MDApp):
