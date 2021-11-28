@@ -8,6 +8,8 @@ import psycopg2
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.metrics import dp
+
 
 KV = '''
 #:import get_color_from_hex kivy.utils.get_color_from_hex
@@ -316,7 +318,9 @@ ScreenManager:
             focus_color: get_color_from_hex("#e54c37")
             unfocus_color: get_color_from_hex("#854442")
             text: 'BUSCAR'
-            on_press: root.buscar()
+            on_press:
+                root.buscar()
+
 
         ButtonFocus:
             size_hint_x: .35
@@ -420,34 +424,22 @@ class BuscarFuncionario(Screen):
         self.ids.codigo_estabelecimento.text = ''
         conn.close()
 
-
-        # # word = ''
-        # # # Loop thru records
-        # for record in output:
-        #     record = str(record[0])
-
         screen = Screen()
 
         table = MDDataTable(
             size_hint=(0.7, 0.6),
             use_pagination=True,
-            check=True,
-            # name column, width column, sorting function column(optional)
             column_data=[
-                ("CODIGO FUNCIONARIO"),
-                ("NOME"),
-                ("CPF"),
-                ("SALARIO"),
-                ("FERIAS"),
-                ("CODIGO ESTABELECIMENTO"),
+                ("cod_func", dp(30)),
+                ("Name", dp(30)),
+                ("cpf", dp(30)),
+                ("salario", dp(30)),
+                ("ferias", dp(30)),
+                ("departa", dp(30))
             ],
-            # row_data=output
+            row_data=output
         )
 
-        self.theme_cls.theme_style = "Light"
-        self.theme_cls.primary_palette = "BlueGray"
-        #return Builder.load_file('table.kv')
-        # Add table widget to screen
         screen.add_widget(table)
 
         return screen
