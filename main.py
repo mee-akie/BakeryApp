@@ -13,8 +13,8 @@ from kivy.metrics import dp
 from kivy.core.window import Window
 Window.size = (400, 650)
 
-CPF_FUNCIONARIO = '23456712356'
-COD_ESTABELECIMENTO = '1'
+CPF_FUNCIONARIO = '' #23456712356
+COD_ESTABELECIMENTO = ''
 
 
 KV = '''
@@ -180,7 +180,9 @@ ScreenManager:
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
             user_font_size: "64sp"
-            on_press: root.switchBuscar()
+            on_press:
+                root.manager.transition.direction = 'left'
+                root.switchBuscar()
 
         MDFillRoundFlatIconButton :
             text : 'Cadastrar um novo funcionario'
@@ -190,7 +192,9 @@ ScreenManager:
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
             user_font_size: "64sp"
-            on_press: root.switchCadastro()
+            on_press:
+                root.manager.transition.direction = 'left'
+                root.switchCadastro()
 
         MDFillRoundFlatIconButton :
             text : 'Remover um funcionario'
@@ -199,7 +203,9 @@ ScreenManager:
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
-            on_press : app.callback()
+            on_press :
+                root.manager.transition.direction = 'left'
+                app.callback()
 
         MDFillRoundFlatIconButton :
             text : 'Alterar dados de um funcionario'
@@ -208,7 +214,9 @@ ScreenManager:
             text_color : get_color_from_hex("#7E6B73")
             md_bg_color : get_color_from_hex("#FCE18E")
             font_size : 20
-            on_press : root.s
+            on_press :
+                root.manager.transition.direction = 'left'
+                root.s
 
 
 <CadastrarFuncionario>:
@@ -225,16 +233,14 @@ ScreenManager:
     MDFloatLayout:
         BoxLayout:
             orientation: "vertical"
-            size_hint_x: .9
-            size_hint_y: .8
-            pos_hint: {'center_x': .5, 'center_y': .75}
+            pos_hint: {'center_x': .5, 'center_y': .85}
 
             MDTextField:
                 id: nome
                 multiline: False
                 size_hint_x: .8
                 hint_text: 'Nome:'
-                pos_hint: {'center_x': .5, 'center_y': .7}
+                pos_hint: {'center_x': .5}
                 text_color: get_color_from_hex("#000000")
 
             MDTextField:
@@ -242,7 +248,7 @@ ScreenManager:
                 multiline: False
                 size_hint_x: .8
                 hint_text: 'CPF:'
-                pos_hint: {'center_x': .5, 'center_y': .7}
+                pos_hint: {'center_x': .5}
                 text_color: get_color_from_hex("#000000")
             
             MDTextField:
@@ -250,7 +256,7 @@ ScreenManager:
                 multiline: False
                 size_hint_x: .8
                 hint_text: 'Salario:'
-                pos_hint: {'center_x': .5, 'center_y': .8}
+                pos_hint: {'center_x': .5}
                 text_color: get_color_from_hex("#000000")
 
             MDTextField:
@@ -258,7 +264,7 @@ ScreenManager:
                 multiline: False
                 size_hint_x: .8
                 hint_text: 'Ferias:'
-                pos_hint: {'center_x': .5, 'center_y': .6}
+                pos_hint: {'center_x': .5}
                 text_color: get_color_from_hex("#000000")
     
             MDTextField:
@@ -266,24 +272,28 @@ ScreenManager:
                 multiline: False
                 size_hint_x: .8
                 hint_text: 'Codigo do estabelecimento:'
-                pos_hint: {'center_x': .5, 'center_y': .4}
+                pos_hint: {'center_x': .5}
                 text_color: get_color_from_hex("#000000")
                     
         ButtonFocus:
             size_hint_x: .35
-            pos_hint: {'center_x': .3, 'center_y': .15}
+            pos_hint: {'center_x': .3, 'center_y': .25}
+            md_bg_color: app.theme_cls.primary_light
             focus_color: get_color_from_hex("#e54c37")
-            unfocus_color: get_color_from_hex("#854442")
+            unfocus_color: app.theme_cls.primary_light
             text: 'CADASTRAR'
             on_press: root.cadastrar()
 
         ButtonFocus:
             size_hint_x: .35
-            pos_hint: {'center_x': .7, 'center_y': .15}
+            pos_hint: {'center_x': .7, 'center_y': .25}
+            md_bg_color: app.theme_cls.primary_light
             focus_color: get_color_from_hex("#e54c37")
-            unfocus_color: get_color_from_hex("#854442")
+            unfocus_color: app.theme_cls.primary_light
             text: 'CANCELAR'
-            on_press: root.switchFuncionario()
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.switchFuncionario()
 
 
 <BuscarFuncionario>:
@@ -321,9 +331,10 @@ ScreenManager:
 
         ButtonFocus:
             size_hint_x: .35
-            pos_hint: {'center_x': .3, 'center_y': .45}
+            pos_hint: {'center_x': .3, 'center_y': .40}
+            md_bg_color: app.theme_cls.primary_light
             focus_color: get_color_from_hex("#e54c37")
-            unfocus_color: get_color_from_hex("#854442")
+            unfocus_color: app.theme_cls.primary_light
             text: 'BUSCAR'
             on_press:
                 root.buscar()
@@ -332,15 +343,23 @@ ScreenManager:
 
         ButtonFocus:
             size_hint_x: .35
-            pos_hint: {'center_x': .7, 'center_y': .45}
+            pos_hint: {'center_x': .7, 'center_y': .40}
+            md_bg_color: app.theme_cls.primary_light
             focus_color: get_color_from_hex("#e54c37")
-            unfocus_color: get_color_from_hex("#854442")
+            unfocus_color: app.theme_cls.primary_light
             text: 'CANCELAR'
-            on_press: root.switchFuncionario()
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.switchFuncionario()
 
 <TabelaBusca>:
     name: 'tabela_busca'
-
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "BUSCA - FUNCIONARIO"
+        md_bg_color: get_color_from_hex("#854442")
 
 '''
 
@@ -416,7 +435,9 @@ class BuscarFuncionario(Screen):
         self.parent.current = 'tabela_busca'
 
     def buscar(self):
+        global CPF_FUNCIONARIO
         CPF_FUNCIONARIO = self.ids.cpf.text
+        global COD_ESTABELECIMENTO
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
 
 
@@ -444,15 +465,15 @@ class TabelaBusca(Screen):
         screen = AnchorLayout()
 
         self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
             size_hint=(0.9, 0.6),
-            use_pagination=True,
             column_data=[
-                ("cod_func", dp(50)),
-                ("Name", dp(50)),
-                ("cpf", dp(50)),
-                ("salario", dp(50)),
-                ("ferias", dp(50)),
-                ("departa", dp(50))
+                ("COD-FUNCIONARIO", dp(40)),
+                ("NOME", dp(40)),
+                ("CPF", dp(30)),
+                ("SALÁRIO", dp(25)),
+                ("FÉRIAS", dp(25)),
+                ("COD-ESTABELECIMENTO", dp(40))
             ],
             row_data=output
         )
@@ -486,6 +507,9 @@ sm.add_widget(TabelaBusca(name='tabela_busca'))
 
 class Main(MDApp):
     def build(self):
+
+        self.theme_cls.primary_palette = "DeepOrange"
+
         conn = psycopg2.connect(
             host = "ec2-44-198-211-34.compute-1.amazonaws.com",
             database = "ddj7ffdunshjqf", 
