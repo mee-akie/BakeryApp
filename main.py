@@ -136,7 +136,9 @@ ScreenManager:
                 name: 'screen 3'
                 text: 'Funcionarios'
                 icon: 'account-group'
-                on_enter: root.switchFuncionario()
+                on_enter:
+                    root.manager.transition.direction = 'left'
+                    root.switchFuncionario()
                 
  
 <FuncionarioPage>:
@@ -154,12 +156,15 @@ ScreenManager:
             size_hint_y: .09
             panel_color: get_color_from_hex("#854442")
             text_color_active: get_color_from_hex("#fff4e6")
+            first_widget: 'screen 3'
             
             MDBottomNavigationItem:
                 name: 'screen 1'
                 text: 'home'
                 icon: 'home-circle'
-                on_enter: root.switchHome()
+                on_enter:
+                    root.manager.transition.direction = 'right'
+                    root.switchHome()
 
             MDBottomNavigationItem:
                 name: 'screen 2'
