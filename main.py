@@ -13,7 +13,7 @@ from kivy.metrics import dp
 from kivy.core.window import Window
 Window.size = (400, 650)
 
-CPF_FUNCIONARIO = '' #23456712356
+CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
 
 
@@ -28,7 +28,7 @@ ScreenManager:
     CadastrarFuncionario:
     BuscarFuncionario:
     TabelaBusca:
-
+    RemoverFuncionario:
 
 <NavigationDrawer>
     orientation: "vertical"
@@ -210,7 +210,7 @@ ScreenManager:
             font_size : 20
             on_press :
                 root.manager.transition.direction = 'left'
-                app.callback()
+                root.switchRemover()
 
         MDFillRoundFlatIconButton :
             text : 'Alterar dados de um funcionario'
@@ -366,6 +366,62 @@ ScreenManager:
         title: "BUSCA - FUNCIONARIO"
         md_bg_color: get_color_from_hex("#854442")
 
+<RemoverFuncionario>:
+    name: 'remover_funcionario'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "REMOVER FUNCIONARIO"
+        md_bg_color: get_color_from_hex("#854442")
+        
+    MDFloatLayout:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_x: .9
+            size_hint_y: .8
+            pos_hint: {'center_x': .5, 'center_y': .9}
+
+            MDTextField:
+                id: codigo_estabelecimento
+                multiline: False
+                size_hint_x: .8
+                hint_text: 'Número do estabelecimento: '
+                pos_hint: {'center_x': .5, 'center_y': .8}
+                text_color: get_color_from_hex("#000000")
+
+            MDTextField:
+                id: cpf
+                multiline: False
+                size_hint_x: .8
+                hint_text: 'CPF do funcionário: '
+                pos_hint: {'center_x': .5, 'center_y': .7}
+                text_color: get_color_from_hex("#000000")
+
+        ButtonFocus:
+            size_hint_x: .35
+            pos_hint: {'center_x': .3, 'center_y': .40}
+            md_bg_color: app.theme_cls.primary_light
+            focus_color: get_color_from_hex("#e54c37")
+            unfocus_color: app.theme_cls.primary_light
+            text: 'REMOVER'
+            on_press:
+                root.remover()
+                root.switchFuncionario()
+
+        ButtonFocus:
+            size_hint_x: .35
+            pos_hint: {'center_x': .7, 'center_y': .40}
+            md_bg_color: app.theme_cls.primary_light
+            focus_color: get_color_from_hex("#e54c37")
+            unfocus_color: app.theme_cls.primary_light
+            text: 'CANCELAR'
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.switchFuncionario()
+
+
 '''
 
 
@@ -389,6 +445,9 @@ class FuncionarioPage(Screen):
 
     def switchBuscar(self):
         self.parent.current = 'buscar_funcionario'
+
+    def switchRemover(self):
+        self.parent.current = 'remover_funcionario'
 
 
 class CadastrarFuncionario(Screen):
@@ -480,6 +539,28 @@ class TabelaBusca(Screen):
         self.tabela()
 
 
+class RemoverFuncionario(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+
+        c.execute(sql_command)	
+        conn.commit()
+        conn.close()
+
+
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
@@ -498,6 +579,7 @@ sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBusca(name='tabela_busca'))
+sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
 
 
 class Main(MDApp):
