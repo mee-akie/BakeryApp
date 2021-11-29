@@ -4,6 +4,7 @@ from kivy.properties import ObjectProperty
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFloatingLabel, MDRaisedButton
+from kivy.uix.label import Label
 from kivymd.uix.behaviors import FocusBehavior
 import psycopg2
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -11,6 +12,8 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
+from kivy.uix.popup import Popup
+
 
 # define um tamanho de tela padrao
 Window.size = (400, 650)
@@ -117,6 +120,9 @@ class FuncionarioPage(Screen):
     def switchAlterar(self):
         self.parent.current = 'alterar_funcionario'
 
+    def mensagemPopup(self):
+         self.parent.current = 'mensagem'
+
 
 class CadastrarFuncionario(Screen):
     def switchFuncionario(self):
@@ -150,6 +156,10 @@ class CadastrarFuncionario(Screen):
         self.ids.salario.text = ''
         self.ids.ferias.text = ''
         self.ids.codigo_estabelecimento.text = ''
+
+        popup = Popup(title='CADASTRAR FUNCIONÁRIO', content=Label(text='Funcionario cadastrado com sucesso'), size_hint=(None, None), size=(300, 150))
+        popup.open()
+
         self.parent.current = 'funcionario'
 
 
@@ -236,6 +246,7 @@ class AlterarFuncionario(Screen):
     def alterar(self):
         ...
 
+
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
@@ -256,7 +267,6 @@ sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBusca(name='tabela_busca'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
 sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
-
 
 
 class Main(MDApp):
@@ -411,14 +421,7 @@ class Main(MDApp):
                         FOREIGN KEY (COD_COMPRA  ) REFERENCES COMPRA(COD_COMPRA ),
                         FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
                 """)
-    
-        sql_command = "INSERT INTO ESTABELECIMENTO(nome, rua, numero, bairro, cep, cidade) VALUES(%s, %s, %s, %s, %s, %s)"
-        values = ('Panificadora Alfa','Rua Projetada', '1', 'Ouro Verde','78135616','Várzea Grande')
-        sql_command2 = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, NULL, %s)"
-        values2 = ('MARIA AAAAAA', '23472712356', "3000", "1")
-
-        c.execute(sql_command, (values))
-        c.execute(sql_command2, (values2))	
+	
         conn.commit()
         conn.close()
 
