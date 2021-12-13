@@ -1,0 +1,170 @@
+<EstoquePage>:
+    name: 'estoque'
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "Bakery ABC"
+        md_bg_color: toolbarColor
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#854442")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'botao 2'
+            icon: 'barcode'
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionarios'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+
+    MDFillRoundFlatIconButton:
+        text : 'Consultar produtos no estoque'
+        icon : "account-search"
+        pos_hint : {"center_x":.5,"center_y":.65}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchConsultar()
+
+    MDFillRoundFlatIconButton :
+        text : 'Atualizar estoque'
+        icon : "account-plus"
+        pos_hint : {"center_x":.5,"center_y":.55}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchAtualizar()
+
+
+<ConsultarEstoque>:
+    name: 'consultar_estoque'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "DADOS DO PRODUTO"
+        md_bg_color: get_color_from_hex("#854442")
+        
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_x: .9
+        size_hint_y: .8
+        pos_hint: {'center_x': .5, 'center_y': .9}
+
+        MDTextField:
+            id: cod_barras
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Código de barras do produto: '
+            pos_hint: {'center_x': .5, 'center_y': .8}
+            text_color: get_color_from_hex("#000000")
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .40}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'BUSCAR'
+        on_press:
+            root.buscar()
+            root.switchTabelaEstoque()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .40}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFuncionario()
+
+
+<TabelaBuscaEstoque>:
+    name: 'tabela_busca_estoque'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "BUSCA - ESTOQUE"
+        md_bg_color: get_color_from_hex("#854442")
+
+
+<AtualizarEstoque>:
+    name: 'atualizar_estoque'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "DADOS DE FUNCIONARIO"
+        md_bg_color: get_color_from_hex("#854442")
+        
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_x: .9
+        size_hint_y: .8
+        pos_hint: {'center_x': .5, 'center_y': .9}
+
+        MDTextField:
+            id: codigo_estabelecimento
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Número do estabelecimento: '
+            pos_hint: {'center_x': .5, 'center_y': .8}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cpf
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CPF do funcionário: '
+            pos_hint: {'center_x': .5, 'center_y': .7}
+            text_color: get_color_from_hex("#000000")
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .40}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'BUSCAR'
+        on_press:
+            root.buscar()
+            root.switchTabela()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .40}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFuncionario()

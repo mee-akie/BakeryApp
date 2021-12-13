@@ -23,8 +23,9 @@
 
         MDBottomNavigationItem:
             name: 'screen 2'
-            text: 'botao 2'
+            text: 'Estoque'
             icon: 'barcode'
+            on_enter: root.switchEstoque()
 
         MDBottomNavigationItem:
             name: 'screen 3'
@@ -209,8 +210,8 @@
             root.manager.transition.direction = 'right'
             root.switchFuncionario()
 
-<TabelaBusca>:
-    name: 'tabela_busca'
+<TabelaBuscaFuncionario>:
+    name: 'tabela_busca_funcionario'
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}

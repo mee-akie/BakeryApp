@@ -22,11 +22,13 @@ Window.size = (400, 650)
 # variaveis globais
 CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
+COD_BARRAS = ''
 
 
 KV = '''
 #:include FuncionarioScreen.kv
 #:include HomeScreen.kv
+#:include EstoqueScreen.kv
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#854442")
 
@@ -36,9 +38,12 @@ ScreenManager:
     FuncionarioPage:
     CadastrarFuncionario:
     BuscarFuncionario:
-    TabelaBusca:
+    TabelaBuscaFuncionario:
     RemoverFuncionario:
     AlterarFuncionario:
+    EstoquePage:
+    ConsultarEstoque:
+    AtualizarEstoque:
 
 
 <NavigationDrawer>
@@ -100,6 +105,9 @@ class HomePage(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
 
 class FuncionarioPage(Screen):
     def switchHome(self):
@@ -107,6 +115,9 @@ class FuncionarioPage(Screen):
 
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
 
     def switchCadastro(self):
         self.parent.current = 'cadastrar_funcionario'
@@ -157,7 +168,11 @@ class CadastrarFuncionario(Screen):
         self.ids.ferias.text = ''
         self.ids.codigo_estabelecimento.text = ''
 
-        popup = Popup(title='CADASTRAR FUNCIONÁRIO', content=Label(text='Funcionario cadastrado com sucesso'), size_hint=(None, None), size=(300, 150))
+        popup = Popup(title='CADASTRAR FUNCIONÁRIO',
+                      content=Label(text='Funcionario cadastrado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
         self.parent.current = 'funcionario'
@@ -168,7 +183,7 @@ class BuscarFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def switchTabela(self):
-        self.parent.current = 'tabela_busca'
+        self.parent.current = 'tabela_busca_funcionario'
 
     def buscar(self):
         global CPF_FUNCIONARIO
@@ -177,7 +192,7 @@ class BuscarFuncionario(Screen):
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
 
 
-class TabelaBusca(Screen):
+class TabelaBuscaFuncionario(Screen):
     def tabela(self):
         conn = psycopg2.connect(
             host = "ec2-44-198-211-34.compute-1.amazonaws.com",
@@ -247,6 +262,81 @@ class AlterarFuncionario(Screen):
         ...
 
 
+class EstoquePage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchConsultar(self):
+        self.parent.current = 'consultar_estoque'
+
+    def switchAtualizar(self):
+        self.parent.current = 'atualizar_estoque'
+
+
+class ConsultarEstoque(Screen):
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchTabelaEstoque(self):
+        self.parent.current = 'tabela_busca_estoque'
+
+    def buscar(self):
+        global COD_BARRAS
+        COD_BARRAS = self.ids.cod_barras.text
+    
+
+class TabelaBuscaEstoque(Screen):
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
+
+        c.execute(sql_command)	
+        output = c.fetchall()
+        conn.close()
+
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            column_data=[
+                ("COD-BARRAS", dp(40)),
+                ("NOME", dp(40)),
+                ("NOME FABRICANTE", dp(30)),
+                ("PREÇO", dp(25)),
+                ("DT FABRICAÇÃO", dp(25)),
+                ("CATEGORIA", dp(40)),
+                ("QTD ESTOQUE", dp(40)),
+                ("DT VENCIMENTO", dp(40))
+            ],
+            row_data=output
+        )
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+
+
+class AtualizarEstoque(Screen):
+    ...
+
+
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
@@ -264,9 +354,14 @@ sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
-sm.add_widget(TabelaBusca(name='tabela_busca'))
+sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
 sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
+sm.add_widget(EstoquePage(name='estoque'))
+sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
+sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
+
+
 
 
 class Main(MDApp):
@@ -341,10 +436,11 @@ class Main(MDApp):
         c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO (
                         CODIGO_FUNC INT NOT NULL GENERATED ALWAYS AS IDENTITY,
                         NOME VARCHAR(70) NOT NULL,        	
-                        CPF CHAR(11) NOT NULL,
+                        CPF CHAR(11) NOT NULL PRIMARY KEY,
                         SALARIO DECIMAL (10,2), 
                         FERIAS DATE,
                         CODIGO_ESTABELECIMENTO INT NOT NULL,
+                        UNIQUE(CPF),
                         PRIMARY KEY(CODIGO_FUNC),
                         FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
                 """)
@@ -386,7 +482,7 @@ class Main(MDApp):
                         FCODIGO_FUNCIONARIO INT NOT NULL,
                         CPF CHAR(11) NOT NULL,
                         PRIMARY KEY (COD_VENDA),
-                        FOREIGN KEY (CPF  ) REFERENCES CLIENTE(CPF),
+                        FOREIGN KEY (CPF) REFERENCES CLIENTE(CPF),
                         FOREIGN KEY (FCODIGO_FUNCIONARIO) REFERENCES ATENDENTE_CAIXA(FCODIGO_FUNCIONARIO));
                 """)
                 
@@ -424,6 +520,13 @@ class Main(MDApp):
 	
         conn.commit()
         conn.close()
+
+        # popup = Popup(title='CADASTRAR FUNCIONÁRIO',
+        #               content=Label(text='Funcionario cadastrado com sucesso'),
+        #               size_hint=(None, None),
+        #               size=(300, 150),
+        #               background = 'atlas://data/images/defaulttheme/splitter_grip_h')
+        # popup.open()
 
         return Builder.load_string(KV)
 

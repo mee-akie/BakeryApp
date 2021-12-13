@@ -46,8 +46,11 @@
 
         MDBottomNavigationItem:
             name: 'screen 2'
-            text: 'botao 2'
+            text: 'Estoque'
             icon: 'barcode'
+            on_enter:
+                root.manager.transition.direction = 'left'
+                root.switchEstoque()
 
         MDBottomNavigationItem:
             name: 'screen 3'
