@@ -33,9 +33,21 @@
             on_enter: root.switchFuncionario()
 
     MDFillRoundFlatIconButton:
-        text : 'Consultar produtos no estoque'
+        text : 'Cadastrar produto'
         icon : "account-search"
         pos_hint : {"center_x":.5,"center_y":.65}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchCadastrar()
+
+    MDFillRoundFlatIconButton:
+        text : 'Consultar produtos no estoque'
+        icon : "account-search"
+        pos_hint : {"center_x":.5,"center_y":.55}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -47,7 +59,7 @@
     MDFillRoundFlatIconButton :
         text : 'Atualizar estoque'
         icon : "account-plus"
-        pos_hint : {"center_x":.5,"center_y":.55}
+        pos_hint : {"center_x":.5,"center_y":.45}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -55,6 +67,105 @@
         on_press:
             root.manager.transition.direction = 'left'
             root.switchAtualizar()
+
+
+<CadastrarProduto>:
+    name: 'cadastrar_produto'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "NOVO PRODUTO"
+        md_bg_color: get_color_from_hex("#854442")
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': .5, 'center_y': .70}
+
+        MDTextField:
+            id: nome
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Nome:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cod_barras
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Codigo de barras:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: fabricante
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Nome do fabricamente:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: preco
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Preço: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: fabricacao
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Data de fabricação:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: vencimento
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Data de vencimento:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: categoria
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Categoria:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: qtd_estoque
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Quantidade no estoque:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+                    
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .15}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CADASTRAR'
+        on_press: root.cadastrar()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .15}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchEstoque()
 
 
 <ConsultarEstoque>:

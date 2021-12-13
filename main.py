@@ -1,6 +1,7 @@
 from re import A
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
+from kivy.utils import get_color_from_hex
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFloatingLabel, MDRaisedButton
@@ -42,7 +43,9 @@ ScreenManager:
     RemoverFuncionario:
     AlterarFuncionario:
     EstoquePage:
+    CadastrarProduto:
     ConsultarEstoque:
+    TabelaBuscaEstoque:
     AtualizarEstoque:
 
 
@@ -131,8 +134,6 @@ class FuncionarioPage(Screen):
     def switchAlterar(self):
         self.parent.current = 'alterar_funcionario'
 
-    def mensagemPopup(self):
-         self.parent.current = 'mensagem'
 
 
 class CadastrarFuncionario(Screen):
@@ -222,6 +223,9 @@ class TabelaBuscaFuncionario(Screen):
                 ("FÉRIAS", dp(25)),
                 ("COD-ESTABELECIMENTO", dp(40))
             ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
             row_data=output
         )
 
@@ -271,12 +275,64 @@ class EstoquePage(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+    
+    def switchCadastrar(self):
+        self.parent.current = 'cadastrar_produto'
 
     def switchConsultar(self):
         self.parent.current = 'consultar_estoque'
 
     def switchAtualizar(self):
         self.parent.current = 'atualizar_estoque'
+
+
+class CadastrarProduto(Screen):
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        # Add dados na tabela de Funcionario
+        sql_command = "INSERT INTO PRODUTO (COD_BARRAS, NOME, NOME_FABRICANTE, PRECO, DATA_FABRICACAO, CATEGORIA, QTD_ESTOQUE, DATA_VENCIMENTO) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (self.ids.cod_barras.text,
+                  self.ids.nome.text,
+                  self.ids.fabricante.text,
+                  self.ids.preco.text,
+                  self.ids.fabricacao.text,
+                  self.ids.categoria.text,
+                  self.ids.qtd_estoque.text,
+                  self.ids.vencimento.text)
+
+        c.execute(sql_command, (values))	
+        conn.commit()
+        conn.close()
+
+        self.ids.cod_barras.text = ''
+        self.ids.nome.text = ''
+        self.ids.fabricante.text = ''
+        self.ids.preco.text = ''
+        self.ids.fabricacao.text = ''
+        self.ids.categoria.text = ''
+        self.ids.qtd_estoque.text = ''
+        self.ids.vencimento.text = ''
+
+        popup = Popup(title='CADASTRAR PRODUTO',
+                      content=Label(text='Produto cadastrado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estoque'
 
 
 class ConsultarEstoque(Screen):
@@ -306,8 +362,9 @@ class TabelaBuscaEstoque(Screen):
 
         c.execute(sql_command)	
         output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,'', ''])
+        print(output)
         conn.close()
-
         screen = AnchorLayout()
 
         self.table = MDDataTable(
@@ -318,13 +375,17 @@ class TabelaBuscaEstoque(Screen):
                 ("NOME", dp(40)),
                 ("NOME FABRICANTE", dp(30)),
                 ("PREÇO", dp(25)),
-                ("DT FABRICAÇÃO", dp(25)),
-                ("CATEGORIA", dp(40)),
+                ("DT FABRICAÇÃO", dp(40)),
+                ("CATEGORIA", dp(35)),
                 ("QTD ESTOQUE", dp(40)),
                 ("DT VENCIMENTO", dp(40))
             ],
-            row_data=output
+            row_data=output,
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2
         )
+
         self.add_widget(self.table)
         return screen
 
@@ -358,6 +419,7 @@ sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
 sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
 sm.add_widget(EstoquePage(name='estoque'))
+sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
 
