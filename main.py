@@ -16,7 +16,7 @@ from kivy.core.window import Window
 from kivy.uix.popup import Popup
 
 
-# define um tamanho de tela padrao
+# define um tamanho de tela padrao quando rodamos o main.py
 Window.size = (400, 650)
 
 
@@ -424,8 +424,6 @@ sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
 
 
-
-
 class Main(MDApp):
     def build(self):
 
@@ -582,13 +580,6 @@ class Main(MDApp):
 	
         conn.commit()
         conn.close()
-
-        # popup = Popup(title='CADASTRAR FUNCIONÁRIO',
-        #               content=Label(text='Funcionario cadastrado com sucesso'),
-        #               size_hint=(None, None),
-        #               size=(300, 150),
-        #               background = 'atlas://data/images/defaulttheme/splitter_grip_h')
-        # popup.open()
 
         return Builder.load_string(KV)
 
