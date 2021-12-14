@@ -1,10 +1,10 @@
-<EstoquePage>:
-    name: 'estoque'
+<FornecedoresPage>:
+    name: 'fornecedores'
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "Bakery ABC"
+        title: "Bakery ABC - Fornecedores"
         md_bg_color: toolbarColor
 
     MDBottomNavigation:
@@ -29,13 +29,13 @@
 
         MDBottomNavigationItem:
             name: 'screen 3'
-            text: 'Funcionarios'
+            text: 'Funcionários'
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
     MDFillRoundFlatIconButton:
-        text : 'Cadastrar produto'
-        icon : "account-search"
+        text : 'Cadastrar fornecedores'
+        icon : "account-plus"
         pos_hint : {"center_x":.5,"center_y":.65}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
@@ -46,7 +46,7 @@
             root.switchCadastrar()
 
     MDFillRoundFlatIconButton:
-        text : 'Consultar produtos no estoque'
+        text : 'Consultar fornecedores cadastrados'
         icon : "account-search"
         pos_hint : {"center_x":.5,"center_y":.55}
         text_color : get_color_from_hex("#7E6B73")
@@ -58,8 +58,8 @@
             root.switchConsultar()
 
     MDFillRoundFlatIconButton:
-        text : 'Atualizar estoque'
-        icon : "account-plus"
+        text : 'Alterar dados de um fornecedor'
+        icon : "account"
         pos_hint : {"center_x":.5,"center_y":.45}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
@@ -70,14 +70,14 @@
             root.switchAtualizar()
 
 
-<CadastrarProduto>:
-    name: 'cadastrar_produto'
+<CadastrarFornecedor>:
+    name: 'cadastrar_fornecedor'
 
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "NOVO PRODUTO"
+        title: "NOVO FORNECEDOR"
         md_bg_color: get_color_from_hex("#854442")
 
     MDBoxLayout:
@@ -85,68 +85,69 @@
         pos_hint: {'center_x': .5, 'center_y': .70}
 
         MDTextField:
+            id: cnpj
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CNPJ:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
             id: nome
             multiline: False
             size_hint_x: .8
-            hint_text: 'Nome:'
+            hint_text: 'Nome do fornecedor:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
         MDTextField:
-            id: cod_barras
+            id: rua
             multiline: False
             size_hint_x: .8
-            hint_text: 'Codigo de barras:'
+            hint_text: 'Rua:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: estado
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Estado:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cidade
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Cidade: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cep
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CEP:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: numero
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Número:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
         
         MDTextField:
-            id: fabricante
+            id: bairro
             multiline: False
             size_hint_x: .8
-            hint_text: 'Nome do fabricamente:'
+            hint_text: 'Bairro:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
-        MDTextField:
-            id: preco
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'Preço: '
-            pos_hint: {'center_x': .5}
-            text_color: get_color_from_hex("#000000")
-
-        MDTextField:
-            id: fabricacao
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'Data de fabricação:'
-            pos_hint: {'center_x': .5}
-            text_color: get_color_from_hex("#000000")
-
-        MDTextField:
-            id: vencimento
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'Data de vencimento:'
-            pos_hint: {'center_x': .5}
-            text_color: get_color_from_hex("#000000")
-        
-        MDTextField:
-            id: categoria
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'Categoria:'
-            pos_hint: {'center_x': .5}
-            text_color: get_color_from_hex("#000000")
-
-        MDTextField:
-            id: qtd_estoque
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'Quantidade no estoque:'
-            pos_hint: {'center_x': .5}
-            text_color: get_color_from_hex("#000000")
                     
     ButtonFocus:
         size_hint_x: .35
@@ -166,17 +167,17 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchEstoque()
+            root.switchFornecedor()
 
 
-<ConsultarEstoque>:
-    name: 'consultar_estoque'
+<ConsultarFornecedor>:
+    name: 'consultar_fornecedor'
 
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "DADOS DO PRODUTO"
+        title: "DADOS DO FORNECEDOR"
         md_bg_color: get_color_from_hex("#854442")
         
     MDBoxLayout:
@@ -186,10 +187,18 @@
         pos_hint: {'center_x': .5, 'center_y': .9}
 
         MDTextField:
-            id: cod_barras
+            id: cnpj
             multiline: False
             size_hint_x: .8
-            hint_text: 'Código de barras do produto: '
+            hint_text: 'CNPJ: '
+            pos_hint: {'center_x': .5, 'center_y': .8}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: nome
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CNPJ: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
@@ -202,7 +211,7 @@
         text: 'BUSCAR'
         on_press:
             root.buscar()
-            root.switchTabelaEstoque()
+            root.switchTabelaFornecedor()
 
     ButtonFocus:
         size_hint_x: .35
@@ -213,28 +222,26 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFuncionario()
+            root.switchFornecedor()
 
 
-<TabelaBuscaEstoque>:
-    name: 'tabela_busca_estoque'
+<TabelaBuscaFornecedor>:
+    name: 'tabela_busca_fornecedor'
 
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "BUSCA - ESTOQUE"
+        title: "BUSCA - FORNECEDOR"
         md_bg_color: get_color_from_hex("#854442")
 
-
-<AtualizarEstoque>:
-    name: 'atualizar_estoque'
-
+<RemoverFornecedor>:
+    name: 'remover_fornecedor'
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "DADOS DE FUNCIONARIO"
+        title: "REMOVER FORNECEDOR"
         md_bg_color: get_color_from_hex("#854442")
         
     MDBoxLayout:
@@ -244,19 +251,11 @@
         pos_hint: {'center_x': .5, 'center_y': .9}
 
         MDTextField:
-            id: codigo_estabelecimento
+            id: cnpj
             multiline: False
             size_hint_x: .8
-            hint_text: 'Número do estabelecimento: '
+            hint_text: 'CNPJ do fornecedor: '
             pos_hint: {'center_x': .5, 'center_y': .8}
-            text_color: get_color_from_hex("#000000")
-
-        MDTextField:
-            id: cpf
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'CPF do funcionário: '
-            pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
@@ -265,10 +264,10 @@
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
-        text: 'BUSCAR'
+        text: 'REMOVER'
         on_press:
-            root.buscar()
-            root.switchTabela()
+            root.remover()
+            root.switchFornecedor()
 
     ButtonFocus:
         size_hint_x: .35
@@ -279,4 +278,106 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFuncionario()
+            root.switchFornecedor()
+
+<AlterarFornecedor>:
+    name: 'alterar_fornecedor'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "ALTERAR DADOS DO FORNECEDOR"
+        md_bg_color: get_color_from_hex("#854442")
+
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_x: .9
+        size_hint_y: .8
+        pos_hint: {'center_x': .5, 'center_y': .70}
+
+        MDTextField:
+            id: cnpj
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CNPJ:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: nome
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Nome do fornecedor:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: rua
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Rua:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: estado
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Estado:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cidade
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Cidade: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cep
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CEP:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: numero
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Número:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: bairro
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Bairro:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'ALTERAR'
+        on_press:
+            root.alterar()
+            root.switchFornecedor()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFornecedor()

@@ -24,12 +24,14 @@ Window.size = (400, 650)
 CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
-
+CNPJ_FORNECEDOR = ''
+NOME_FORNECEDOR = ''
 
 KV = '''
 #:include FuncionarioScreen.kv
 #:include HomeScreen.kv
 #:include EstoqueScreen.kv
+#:include FornecedoresScreen.kv
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#854442")
 
@@ -47,7 +49,12 @@ ScreenManager:
     ConsultarEstoque:
     TabelaBuscaEstoque:
     AtualizarEstoque:
-
+    FornecedoresPage:
+    CadastrarFornecedor:
+    ConsultarFornecedor:
+    TabelaBuscaFornecedor:
+    RemoverFornecedor:
+    AlterarFornecedor:    
 
 <NavigationDrawer>
     orientation: "vertical"
@@ -402,6 +409,164 @@ class AtualizarEstoque(Screen):
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
 
+class FornecedoresPage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+    
+    def switchCadastrar(self):
+        self.parent.current = 'cadastrar_fornecedor'
+
+    def switchConsultar(self):
+        self.parent.current = 'consultar_fornecedor'
+
+    def switchAtualizar(self):
+        self.parent.current = 'alterar_fornecedor'
+
+class CadastrarFornecedor(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'cadastrar_fornecedor'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        # Add dados na tabela de fornecedor
+        sql_command = "INSERT INTO FORNECEDOR (CNPJ, NOME, RUA, ESTADO, CIDADE, CEP, NUMERO, BAIRRO) VALUES(%s, %s, %s, %s, %s,%s,%s,%s)"
+        values = (self.ids.cnpj.text,
+                  self.ids.nome.text,
+                  self.ids.rua.text,
+                  self.ids.estado.text,
+                  self.ids.cidade.text,
+                  self.ids.cep.text,
+                  self.ids.numero.text,
+                  self.ids.bairro.text)
+
+        c.execute(sql_command, (values))	
+        conn.commit()
+        conn.close()
+
+        self.ids.cnpj.text = ''
+        self.ids.nome.text = ''
+        self.ids.rua.text = ''
+        self.ids.estado.text = ''
+        self.ids.cidade.text = ''
+        self.ids.cep.text = ''
+        self.ids.numero.text = ''
+        self.ids.bairro.tex = ''
+
+        popup = Popup(title='CADASTRAR FORNECEDOR',
+                      content=Label(text='Fornecedor cadastrado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
+
+class ConsultarFornecedor(Screen):
+    def switchFornecedor(self):
+        self.parent.current = 'consultar_fornecedor'
+
+    def switchTabela(self):
+        self.parent.current = 'tabela_busca_fornecedor'
+
+    def buscar(self):
+        global CNPJ_FORNECEDOR
+        CNPJ_FORNECEDOR = self.ids.cnpj.text
+        global NOME_FORNECEDOR
+        NOME_FORNECEDOR = self.ids.nome.text
+
+
+class TabelaBuscaFornecedor(Screen):
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome_fornecedor={NOME_FORNECEDOR};"
+
+        c.execute(sql_command)	
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,'', ''])
+        print(output)
+        conn.close()
+
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            column_data=[
+                ("CNPJ", dp(40)),
+                ("NOME", dp(40)),
+                ("RUA", dp(30)),
+                ("ESTADO", dp(30)),
+                ("CIDADE", dp(30)),
+                ("CEP", dp(40)),
+                ("NUMERO", dp(25)),
+                ("BAIRRO", dp(40))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+
+class RemoverFornecedor(Screen):
+    def switchFornecedor(self):
+        self.parent.current = 'remover_fornecedor'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+
+        c.execute(sql_command)	
+        conn.commit()
+        conn.close()
+
+
+class AlterarFornecedor(Screen):
+    def switchFornecedor(self):
+        self.parent.current = 'alterar_fornecedor'
+
+    def alterar(self):
+        ...
+
+
 
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
@@ -422,8 +587,11 @@ sm.add_widget(EstoquePage(name='estoque'))
 sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
-
-
+sm.add_widget(FornecedoresPage(name='fornecedores'))
+sm.add_widget(CadastrarFornecedor(name='cadastrar_fornecedor'))
+sm.add_widget(ConsultarFornecedor(name='consultar_fornecedor'))
+sm.add_widget(AlterarFornecedor(name='alterar_fornecedor'))
+sm.add_widget(RemoverFornecedor(name='remover_fornecedor'))
 
 
 class Main(MDApp):
