@@ -233,45 +233,93 @@
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "DADOS DE FUNCIONARIO"
+        title: "ATUALIZAR PRODUTO"
         md_bg_color: get_color_from_hex("#854442")
-        
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
-        size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .9}
+        size_hint_y: .6
+        pos_hint: {'center_x': .5, 'center_y': .5}
 
         MDTextField:
-            id: codigo_estabelecimento
+            id: nome
             multiline: False
             size_hint_x: .8
-            hint_text: 'Número do estabelecimento: '
-            pos_hint: {'center_x': .5, 'center_y': .8}
+            hint_text: 'Nome do produto:'
+            pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
         MDTextField:
-            id: cpf
+            id: cod_barras
             multiline: False
             size_hint_x: .8
-            hint_text: 'CPF do funcionário: '
-            pos_hint: {'center_x': .5, 'center_y': .7}
+            hint_text: 'Codigo de barras:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: fabricante
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Nome do fabricamente:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: preco
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Preço: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: fabricacao
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Data de fabricação:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: vencimento
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Data de vencimento:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: categoria
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Categoria:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: qtd_estoque
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Quantidade no estoque:'
+            pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .3, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
-        text: 'BUSCAR'
+        text: 'ATUALIZAR DADOS'
         on_press:
-            root.buscar()
-            root.switchTabela()
+            # root.buscar()
+            # root.switchTabela()
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .7, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light

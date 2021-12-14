@@ -1,7 +1,7 @@
 from re import A
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
-from kivy.utils import get_color_from_hex
+from kivy.uix.checkbox import CheckBox
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFloatingLabel, MDRaisedButton
@@ -284,6 +284,31 @@ class EstoquePage(Screen):
 
     def switchAtualizar(self):
         self.parent.current = 'atualizar_estoque'
+    
+    def obterDadosProduto(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
+
+        c.execute(sql_command)	
+        output = c.fetchall()
+
+        self.ids.cod_barras.text = output[0]
+        self.ids.nome.text = output[1]
+        self.ids.fabricante.text = output[2]
+        self.ids.preco.text = output[3]
+        self.ids.fabricacao.text = output[4]
+        self.ids.categoria.text = output[5]
+        self.ids.qtd_estoque.text = output[6]
+        self.ids.vencimento.text = output[7]
+
 
 
 class CadastrarProduto(Screen):
