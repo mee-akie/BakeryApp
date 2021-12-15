@@ -33,7 +33,7 @@ KV = '''
 #:include EstoqueScreen.kv
 #:include FornecedoresScreen.kv
 #:import get_color_from_hex kivy.utils.get_color_from_hex
-#:set toolbarColor get_color_from_hex("#854442")
+#:set toolbarColor get_color_from_hex("#DF6710")
 
 
 ScreenManager:
@@ -55,6 +55,7 @@ ScreenManager:
     TabelaBuscaFornecedor:
     RemoverFornecedor:
     AlterarFornecedor:    
+
 
 <NavigationDrawer>
     orientation: "vertical"
@@ -84,26 +85,25 @@ ScreenManager:
         size_hint_y: None
         height: self.texture_size[1]
 
-
     ScrollView:
         MDList:
             OneLineListItem:
-                text: "Pagina 1"
+                text: "Fornecedores"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 1"
+                    root.screen_manager.current = "fornecedores"
 
             OneLineListItem:
-                text: "Pagina 2"
+                text: "Histórico de vendas"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 2"
+                    root.screen_manager.current = "Histórico de vendas"
 
             OneLineListItem:
-                text: "Pagina 3"
+                text: "Estabelecimentos"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 3"
+                    root.screen_manager.current = "Estabelecimentos"
 
 '''
 
@@ -117,6 +117,9 @@ class HomePage(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+    
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
 
 
 class FuncionarioPage(Screen):
@@ -140,6 +143,9 @@ class FuncionarioPage(Screen):
 
     def switchAlterar(self):
         self.parent.current = 'alterar_funcionario'
+    
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
 
 
 
@@ -292,6 +298,9 @@ class EstoquePage(Screen):
     def switchAtualizar(self):
         self.parent.current = 'atualizar_estoque'
 
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
 
 class CadastrarProduto(Screen):
     def switchEstoque(self):
@@ -427,6 +436,9 @@ class FornecedoresPage(Screen):
 
     def switchAtualizar(self):
         self.parent.current = 'alterar_fornecedor'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
 
 class CadastrarFornecedor(Screen):
     def switchFuncionario(self):

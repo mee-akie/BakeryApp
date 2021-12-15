@@ -9,7 +9,7 @@
 
     MDBottomNavigation:
         size_hint_y: .09
-        panel_color: get_color_from_hex("#854442")
+        panel_color: get_color_from_hex("#DF6710")
         text_color_active: get_color_from_hex("#fff4e6")
         first_widget: 'screen 3'
         
@@ -45,7 +45,7 @@
             root.manager.transition.direction = 'left'
             root.switchBuscar()
 
-    MDFillRoundFlatIconButton :
+    MDFillRoundFlatIconButton:
         text : 'Cadastrar um novo funcionario'
         icon : "account-plus"
         pos_hint : {"center_x":.5,"center_y":.55}
@@ -57,7 +57,7 @@
             root.manager.transition.direction = 'left'
             root.switchCadastro()
 
-    MDFillRoundFlatIconButton :
+    MDFillRoundFlatIconButton:
         text : 'Remover um funcionario'
         icon : "account-minus"
         pos_hint : {"center_x":.5,"center_y":.45}
@@ -68,7 +68,7 @@
             root.manager.transition.direction = 'left'
             root.switchRemover()
 
-    MDFillRoundFlatIconButton :
+    MDFillRoundFlatIconButton:
         text : 'Alterar dados de um funcionario'
         icon : "account-edit"
         pos_hint : {"center_x":.5,"center_y":.35}

@@ -8,25 +8,23 @@
         left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
         md_bg_color: toolbarColor
 
+    MDLabel:
+        text: "O que você gostaria de fazer?"
+        halign: "center"
+
     MDNavigationLayout:
         x: toolbar.height
         ScreenManager:
             id: screen_manager
             MDScreen:
-                name: "item 1"
-                MDLabel:
-                    text: "Screen 1"
-                    halign: "center"
+                name: "fornecedores"   
+                on_pre_enter: root.switchFornecedores()           
             MDScreen:
-                name: "item 2"
-                MDLabel:
-                    text: "Screen 2"
-                    halign: "center"
+                name: "Histórico de vendas"
+                
             MDScreen:
-                name: "item 3"
-                MDLabel:
-                    text: "Screen 3"
-                    halign: "center"
+                name: "Estabelecimentos"
+                
         MDNavigationDrawer:
             id: nav_drawer
             NavigationDrawer:
@@ -35,7 +33,7 @@
 
     MDBottomNavigation:
         size_hint_y: .09
-        panel_color: get_color_from_hex("#854442")
+        panel_color: get_color_from_hex("#DF6710")
         text_color_active: get_color_from_hex("#fff4e6")
         
         MDBottomNavigationItem:
