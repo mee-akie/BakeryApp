@@ -167,7 +167,7 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFornecedor()
+            root.switchFornecedores()
 
 
 <ConsultarFornecedor>:
@@ -178,7 +178,7 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "DADOS DO FORNECEDOR"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
         
     MDBoxLayout:
         orientation: "vertical"
@@ -222,7 +222,7 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFornecedor()
+            root.switchFornecedores()
 
 
 <TabelaBuscaFornecedor>:
@@ -233,7 +233,7 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "BUSCA - FORNECEDOR"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
 
 <RemoverFornecedor>:
     name: 'remover_fornecedor'
@@ -242,7 +242,7 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "REMOVER FORNECEDOR"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
         
     MDBoxLayout:
         orientation: "vertical"
@@ -267,7 +267,7 @@
         text: 'REMOVER'
         on_press:
             root.remover()
-            root.switchFornecedor()
+            root.switchFornecedores()
 
     ButtonFocus:
         size_hint_x: .35
@@ -278,7 +278,7 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFornecedor()
+            root.switchFornecedores()
 
 <AlterarFornecedor>:
     name: 'alterar_fornecedor'
@@ -288,7 +288,7 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "ALTERAR DADOS DO FORNECEDOR"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
 
     MDBoxLayout:
         orientation: "vertical"
@@ -369,7 +369,7 @@
         text: 'ALTERAR'
         on_press:
             root.alterar()
-            root.switchFornecedor()
+            root.switchFornecedores()
 
     ButtonFocus:
         size_hint_x: .35
@@ -380,4 +380,4 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFornecedor()
+            root.switchFornecedores()

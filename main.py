@@ -441,8 +441,8 @@ class FornecedoresPage(Screen):
         self.parent.current = 'fornecedores'
 
 class CadastrarFornecedor(Screen):
-    def switchFornecedor(self):
-        self.parent.current = 'cadastrar_fornecedor'
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
 
     def cadastrar(self):
         conn = psycopg2.connect(
@@ -489,8 +489,8 @@ class CadastrarFornecedor(Screen):
         self.parent.current = 'fornecedores'
 
 class ConsultarFornecedor(Screen):
-    def switchFornecedor(self):
-        self.parent.current = 'consultar_fornecedor'
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
 
     def switchTabela(self):
         self.parent.current = 'tabela_busca_fornecedor'
@@ -549,8 +549,8 @@ class TabelaBuscaFornecedor(Screen):
 
 
 class RemoverFornecedor(Screen):
-    def switchFornecedor(self):
-        self.parent.current = 'remover_fornecedor'
+    def switchFornecedores(self):
+        self.parent.current = 'switchFornecedores'
 
     def remover(self):
         conn = psycopg2.connect(
@@ -571,8 +571,8 @@ class RemoverFornecedor(Screen):
 
 
 class AlterarFornecedor(Screen):
-    def switchFornecedor(self):
-        self.parent.current = 'alterar_fornecedor'
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
 
     def alterar(self):
         ...
