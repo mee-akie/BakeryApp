@@ -4,7 +4,8 @@
 
 **Bugs notados que estão sendo resolvidos:**
   - Menu lateral só funciona as vezes 
-  - Não cancela solicitação
+  - Menu lateral deve estar em todas as páginas
+  - Não cancela solicitação [RESOLVIDO]
   - Após procurar não há como sair da tela (sem botão de voltar ou aquelas 3 opções que ficam)
   
 **Acrescentei:**
