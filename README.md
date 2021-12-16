@@ -2,12 +2,13 @@
 
 **Estou fazendo a tela de fornecedores**
 
-**Bugs notados que estão sendo resolvidos:**
+**Bugs e problemas notados, que estão sendo resolvidos:**
   - Menu lateral só funciona as vezes 
   - Menu lateral deve estar em todas as páginas
   - Não cancela solicitação [RESOLVIDO]
   - Bugs remoção [RESOLVIDO]
   - Após procurar não há como sair da tela (sem botão de voltar ou aquelas 3 opções que ficam)
+  - Falta implementar atualizar o valor
   
 **Acrescentei:**
   - Mudei a cor das telas
