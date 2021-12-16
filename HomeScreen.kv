@@ -11,20 +11,26 @@
     MDLabel:
         text: "O que você gostaria de fazer?"
         halign: "center"
-
+    
     MDNavigationLayout:
         x: toolbar.height
         ScreenManager:
             id: screen_manager
             MDScreen:
-                name: "fornecedores"   
-                on_pre_enter: root.switchFornecedores()           
+                name: "fornecedores"
+                on_enter:
+                    root.manager.transition.direction = 'right'
+                    root.switchFornecedores()   
             MDScreen:
-                name: "Histórico de vendas"
-                
+                name: "historico_vendas"
+                MDLabel:
+                    text: "hist home"
+                    halign: "center"
             MDScreen:
-                name: "Estabelecimentos"
-                
+                name: "estabelecimentos"
+                MDLabel:
+                    text: "estab home"
+                    halign: "center"
         MDNavigationDrawer:
             id: nav_drawer
             NavigationDrawer:
@@ -52,7 +58,7 @@
 
         MDBottomNavigationItem:
             name: 'screen 3'
-            text: 'Funcionarios'
+            text: 'Funcionários'
             icon: 'account-group'
             on_enter:
                 root.manager.transition.direction = 'left'

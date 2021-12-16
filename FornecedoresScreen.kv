@@ -78,7 +78,7 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "NOVO FORNECEDOR"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
 
     MDBoxLayout:
         orientation: "vertical"
@@ -198,7 +198,7 @@
             id: nome
             multiline: False
             size_hint_x: .8
-            hint_text: 'CNPJ: '
+            hint_text: 'NOME: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
@@ -211,7 +211,7 @@
         text: 'BUSCAR'
         on_press:
             root.buscar()
-            root.switchTabelaFornecedor()
+            root.switchTabela()
 
     ButtonFocus:
         size_hint_x: .35

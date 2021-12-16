@@ -97,20 +97,20 @@ ScreenManager:
                 text: "Histórico de vendas"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "Histórico de vendas"
+                    root.screen_manager.current = "historico_vendas"
 
             OneLineListItem:
                 text: "Estabelecimentos"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "Estabelecimentos"
+                    root.screen_manager.current = "estabelecimentos"
 
 '''
 
 
 class HomePage(Screen):
     def switchHome(self):
-        self.parent.current = 'home'
+        self.parent.current = 'inicio'
 
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
@@ -441,7 +441,7 @@ class FornecedoresPage(Screen):
         self.parent.current = 'fornecedores'
 
 class CadastrarFornecedor(Screen):
-    def switchFuncionario(self):
+    def switchFornecedor(self):
         self.parent.current = 'cadastrar_fornecedor'
 
     def cadastrar(self):
@@ -477,7 +477,7 @@ class CadastrarFornecedor(Screen):
         self.ids.cidade.text = ''
         self.ids.cep.text = ''
         self.ids.numero.text = ''
-        self.ids.bairro.tex = ''
+        self.ids.bairro.text = ''        
 
         popup = Popup(title='CADASTRAR FORNECEDOR',
                       content=Label(text='Fornecedor cadastrado com sucesso'),
@@ -513,14 +513,13 @@ class TabelaBuscaFornecedor(Screen):
         )
         c = conn.cursor()
 
-        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome_fornecedor={NOME_FORNECEDOR};"
+        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' or nome='{NOME_FORNECEDOR}';"
 
         c.execute(sql_command)	
         output = c.fetchall()
         output.append(['', '', '', '', '', '' ,'', ''])
         print(output)
         conn.close()
-
         screen = AnchorLayout()
 
         self.table = MDDataTable(
