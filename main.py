@@ -14,6 +14,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
+from components.loginComponent.login import LoginPage
 
 
 # define um tamanho de tela padrao quando rodamos o main.py
@@ -35,6 +36,7 @@ KV = '''
 
 
 ScreenManager:
+    LoginPage:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
@@ -447,6 +449,7 @@ sm.add_widget(EstoquePage(name='estoque'))
 sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
+sm.add_widget(LoginPage(name='login'))
 
 
 class Main(MDApp):
@@ -525,6 +528,7 @@ class Main(MDApp):
                         SALARIO DECIMAL (10,2), 
                         FERIAS DATE,
                         CODIGO_ESTABELECIMENTO INT NOT NULL,
+                        SENHA VARCHAR(50) DEFAULT 123321123,
                         UNIQUE(CPF),
                         PRIMARY KEY(CODIGO_FUNC),
                         FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
@@ -606,7 +610,7 @@ class Main(MDApp):
         conn.commit()
         conn.close()
 
-        return Builder.load_string(KV)
+        return LoginPage()
 
 
 Main().run()

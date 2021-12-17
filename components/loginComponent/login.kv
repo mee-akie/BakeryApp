@@ -1,0 +1,26 @@
+#:kivy 1.0.9  
+
+<LoginPage>:
+    name: 'login'
+    Screen:
+        MDTextField:
+            id: cpf
+            hint_text: "Insira seu CPF"
+            mode: "rectangle"
+            pos_hint: {"x": .25, "y": .7}
+            size_hint: 0.5, None
+            max_text_length: 14
+        MDTextField:
+            id: senha
+            hint_text: "Insira sua senha"
+            mode: "rectangle"
+            pos_hint: {"x": .25, "y": .6}
+            size_hint: 0.5, None
+            password: True
+        MDRoundFlatButton:
+            text: "Entrar"
+            pos_hint: {"x": .25, "y": .5}
+            size_hint: 0.5, None
+            on_release: root.validaLogin()
+
+            
