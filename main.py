@@ -690,7 +690,46 @@ class AlterarFornecedor(Screen):
         self.parent.current = 'estoque'
 
     def alterar(self):
-        ...
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update fornecedor
+                            set cnpj=%s,
+                                nome=%s,
+                                rua=%s,
+                                estado=%s,
+                                cidade=%s,
+                                cep=%s,
+                                numero=%s,
+                                bairro=%s
+                            where cnpj=%s and nome =%s;"""
+
+        values = (self.ids.cnpj.text,
+                  self.ids.nome.text,
+                  self.ids.rua.text,
+                  self.ids.estado.text,
+                  self.ids.cidade.text,
+                  self.ids.cep.text,
+                  self.ids.numero.text,
+                  self.ids.bairro.text)
+
+        c.execute(sql_command, values)
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DO FORNECDOR',
+                      content=Label(text='Fornecedor atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estoque'
 
 
 
