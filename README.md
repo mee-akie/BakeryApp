@@ -1,6 +1,10 @@
-# BakeryApp 12345678910112
+# BakeryApp 
 
-**Estou fazendo a tela de fornecedores**
+**TELA FORNECEDOR**
+CADASTRAR FORNECEDOR  [CORRETO] <br>
+CONSULTAR FORNECEDOR [CORRETO] <br>
+ALTERAR DADOS FORNECEDOR -> BUGADO,  IndexError: tuple index out of range <br>
+REMOVER FORNECEDOR -> BUGADO, ALGUM SE REFERE AO CNPJ <br>
 
 **Bugs e problemas notados, que estão sendo resolvidos:**
   - Menu lateral: clicar só funciona as vezes 
@@ -8,8 +12,6 @@
   - Não cancela solicitação [RESOLVIDO]
   - Bugs remoção [RESOLVIDO]
   - 3 botoes em baixo nao estao em todas as telas [RESOLVIDO]
-  - Falta implementar atualizar o valor 
-  - Bugou o banco de dados
   
 **Acrescentei:**
   - Mudei a cor das telas
@@ -18,9 +20,3 @@
 **EXCEÇÕES**
 (a serem resolvidas após todas as telas serem feitas)
   - Digitar valor incorreto 
-
-
-CADASTRAR FORNECEDOR
-CONSULTAR FORNECEDOR
-ALTERAR DADOS FORNECEDOR
-REMOVER FORNECEDOR
