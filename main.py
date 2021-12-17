@@ -25,6 +25,8 @@ CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
 
+DADOS_PRODUTO = ()
+
 
 KV = '''
 #:include FuncionarioScreen.kv
@@ -47,6 +49,7 @@ ScreenManager:
     ConsultarEstoque:
     TabelaBuscaEstoque:
     AtualizarEstoque:
+    AtualizarEstoque_2:
 
 
 <NavigationDrawer>
@@ -284,30 +287,6 @@ class EstoquePage(Screen):
 
     def switchAtualizar(self):
         self.parent.current = 'atualizar_estoque'
-    
-    def obterDadosProduto(self):
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
-        c = conn.cursor()
-
-        sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
-
-        c.execute(sql_command)	
-        output = c.fetchall()
-
-        self.ids.cod_barras.text = output[0]
-        self.ids.nome.text = output[1]
-        self.ids.fabricante.text = output[2]
-        self.ids.preco.text = output[3]
-        self.ids.fabricacao.text = output[4]
-        self.ids.categoria.text = output[5]
-        self.ids.qtd_estoque.text = output[6]
-        self.ids.vencimento.text = output[7]
 
 
 
@@ -420,7 +399,63 @@ class TabelaBuscaEstoque(Screen):
 
 
 class AtualizarEstoque(Screen):
-    ...
+    def recolherDados(self):	
+        global COD_BARRAS
+        COD_BARRAS = self.ids.cod_barras.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'atualizar_estoque_2'
+    
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+
+class AtualizarEstoque_2(Screen):
+
+    def atualizar(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update produto
+
+                            set cod_barras=%s,
+                                nome=%s,
+                                nome_fabricante=%s,
+                                preco=%s,
+                                data_fabricacao=%s,
+                                categoria=%s,
+                                qtd_estoque=%s,
+                                data_vencimento=%s
+
+                            where cod_barras=%s;"""
+
+        values = (self.ids.cod_barras.text,
+                  self.ids.nome.text,
+                  self.ids.fabricante.text,
+                  self.ids.preco.text,
+                  self.ids.fabricacao.text,
+                  self.ids.categoria.text,
+                  self.ids.qtd_estoque.text,
+                  self.ids.vencimento.text)
+
+        c.execute(sql_command, values)
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DO PRODUTO',
+                      content=Label(text='Produto atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estoque'
+
 
 
 # botao do cadastro do funcionario
@@ -446,6 +481,8 @@ sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
 sm.add_widget(EstoquePage(name='estoque'))
 sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
+sm.add_widget(AtualizarEstoque(name='atualizar_estoque'))
+sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
 
 
