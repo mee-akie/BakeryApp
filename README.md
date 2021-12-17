@@ -6,7 +6,7 @@ CADASTRAR FORNECEDOR  [CORRETO] <br>
 CONSULTAR FORNECEDOR [CORRETO] <br>
 ALTERAR DADOS FORNECEDOR -> BUGADO,  IndexError: tuple index out of range <br>.
 Mudar para primeiro procura o fornecedor, e depois o altera.
-REMOVER FORNECEDOR -> BUGADO, ALGUM SE REFERE AO CNPJ <br>
+REMOVER FORNECEDOR [CORRETO] <br>
 
 **Estabelecimento+contas** <br>
 
