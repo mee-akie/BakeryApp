@@ -14,7 +14,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
-from components.loginComponent.login import LoginPage
+from utils.connectionDatabase import ConnectionDatabase
 
 
 # define um tamanho de tela padrao quando rodamos o main.py
@@ -26,6 +26,8 @@ CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
 
+DADOS_PRODUTO = ()
+
 
 KV = '''
 #:include FuncionarioScreen.kv
@@ -36,7 +38,6 @@ KV = '''
 
 
 ScreenManager:
-    LoginPage:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
@@ -49,6 +50,7 @@ ScreenManager:
     ConsultarEstoque:
     TabelaBuscaEstoque:
     AtualizarEstoque:
+    AtualizarEstoque_2:
 
 
 <NavigationDrawer>
@@ -286,30 +288,6 @@ class EstoquePage(Screen):
 
     def switchAtualizar(self):
         self.parent.current = 'atualizar_estoque'
-    
-    def obterDadosProduto(self):
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
-        c = conn.cursor()
-
-        sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
-
-        c.execute(sql_command)	
-        output = c.fetchall()
-
-        self.ids.cod_barras.text = output[0]
-        self.ids.nome.text = output[1]
-        self.ids.fabricante.text = output[2]
-        self.ids.preco.text = output[3]
-        self.ids.fabricacao.text = output[4]
-        self.ids.categoria.text = output[5]
-        self.ids.qtd_estoque.text = output[6]
-        self.ids.vencimento.text = output[7]
 
 
 
@@ -422,7 +400,63 @@ class TabelaBuscaEstoque(Screen):
 
 
 class AtualizarEstoque(Screen):
-    ...
+    def recolherDados(self):	
+        global COD_BARRAS
+        COD_BARRAS = self.ids.cod_barras.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'atualizar_estoque_2'
+    
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+
+class AtualizarEstoque_2(Screen):
+
+    def atualizar(self):
+        conn = psycopg2.connect(
+            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
+            database = "ddj7ffdunshjqf", 
+            user = "vuxxgxylynkvnk",
+            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update produto
+
+                            set cod_barras=%s,
+                                nome=%s,
+                                nome_fabricante=%s,
+                                preco=%s,
+                                data_fabricacao=%s,
+                                categoria=%s,
+                                qtd_estoque=%s,
+                                data_vencimento=%s
+
+                            where cod_barras=%s;"""
+
+        values = (self.ids.cod_barras.text,
+                  self.ids.nome.text,
+                  self.ids.fabricante.text,
+                  self.ids.preco.text,
+                  self.ids.fabricacao.text,
+                  self.ids.categoria.text,
+                  self.ids.qtd_estoque.text,
+                  self.ids.vencimento.text)
+
+        c.execute(sql_command, values)
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DO PRODUTO',
+                      content=Label(text='Produto atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estoque'
+
 
 
 # botao do cadastro do funcionario
@@ -448,169 +482,25 @@ sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
 sm.add_widget(EstoquePage(name='estoque'))
 sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
+sm.add_widget(AtualizarEstoque(name='atualizar_estoque'))
+sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
-sm.add_widget(LoginPage(name='login'))
 
 
 class Main(MDApp):
     def build(self):
+        
+        ####################
+        ###EXEMPLO DE USO###
+        ####################
+
+        ##conn = ConnectionDatabase.getConnection()
+        ##c = conn.cursor()
+        ##conn.close()
 
         self.theme_cls.primary_palette = "DeepOrange"
-
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
-
-        c = conn.cursor()
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ESTABELECIMENTO (
-                        CODIGO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        NOME VARCHAR(70) NOT NULL,
-                        BAIRRO VARCHAR(100),
-                        RUA VARCHAR(100),
-                        CEP CHAR(8),
-                        CIDADE VARCHAR(100),
-                        NUMERO VARCHAR(10),
-                        PRIMARY KEY(CODIGO));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS FORNECEDOR (
-                        CNPJ CHAR (14) NOT NULL,
-                        NOME VARCHAR (70) NOT NULL,
-                        RUA VARCHAR(100) NOT NULL,
-                        ESTADO VARCHAR(30) NOT NULL,
-                        CIDADE VARCHAR(100) NOT NULL,
-                        CEP CHAR(8),
-                        NUMERO VARCHAR(10),
-                        BAIRRO VARCHAR(100),
-                        PRIMARY KEY (CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS CLIENTE (
-                        NOME VARCHAR(70) NOT NULL,
-                        CPF CHAR(11) NOT NULL,
-                        DATANASC DATE,
-                        PRIMARY KEY(CPF));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO (
-                 	COD_BARRAS CHAR(15) NOT NULL,
-                    NOME VARCHAR(50) NOT NULL,
-                    NOME_FABRICANTE VARCHAR(100) NOT NULL,
-                    PRECO DECIMAL(18,2) NOT NULL,
-                    DATA_FABRICACAO DATE NOT NULL,
-                    CATEGORIA VARCHAR(50) NOT NULL,
-                    QTD_ESTOQUE INT NOT NULL,
-                    DATA_VENCIMENTO DATE NOT NULL,
-                    PRIMARY KEY (COD_BARRAS));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS CONTA (
-                 		COD_BARRAS CHAR(48) NOT NULL,
-                        TIPO CHAR(35) NOT NULL,
-                        VALOR DECIMAL (10,2) NOT NULL,
-                        DATA_VENCIMENTO DATE NOT NULL,
-                        DATA_PAGAMENTO DATE NULL,
-                        PAGO BOOLEAN,
-                        CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        PRIMARY KEY(COD_BARRAS),
-                        FOREIGN KEY(CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
-                """)      
-
-        c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO (
-                        CODIGO_FUNC INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        NOME VARCHAR(70) NOT NULL,        	
-                        CPF CHAR(11) NOT NULL PRIMARY KEY,
-                        SALARIO DECIMAL (10,2), 
-                        FERIAS DATE,
-                        CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        SENHA VARCHAR(50) DEFAULT 123321123,
-                        UNIQUE(CPF),
-                        PRIMARY KEY(CODIGO_FUNC),
-                        FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS HISTORICO_TRABALHO (
-                        DATA_REGISTRO  DATE NOT NULL,
-                        HORA_ENTRADA_R TIME NOT NULL,
-                        HORA_SAIDA_R TIME NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        PRIMARY KEY(DATA_REGISTRO, HORA_ENTRADA_R, HORA_SAIDA_R, FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ADMINISTRADOR (
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        ESPECIALIDADE VARCHAR(30) NOT NULL,
-                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ATENDENTE_CAIXA (
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        NIVEL_ESCOLARIDADE VARCHAR(30) NOT NULL,
-                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS TELEFONE_CONTATO (
-                        TELEFONE VARCHAR (14) NOT NULL,
-                        TCODIGO CHAR(14) NOT NULL,
-                        PRIMARY KEY (TELEFONE),
-                        FOREIGN KEY(TCODIGO) REFERENCES FORNECEDOR(CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS VENDE (
-                    	COD_VENDA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        DT_VENDA TIMESTAMP NOT NULL,
-                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        CPF CHAR(11) NOT NULL,
-                        PRIMARY KEY (COD_VENDA),
-                        FOREIGN KEY (CPF) REFERENCES CLIENTE(CPF),
-                        FOREIGN KEY (FCODIGO_FUNCIONARIO) REFERENCES ATENDENTE_CAIXA(FCODIGO_FUNCIONARIO));
-                """)
-                
-        c.execute("""CREATE TABLE IF NOT EXISTS VENDIDO (
-                        COD_PRODUTO_VENDIDO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        QUANTIDADE INT NOT NULL,
-                        COD_VENDA INT NOT NULL,
-                        COD_BARRAS CHAR(15) NOT NULL,
-                        PRIMARY KEY (COD_PRODUTO_VENDIDO),
-                        FOREIGN KEY (COD_VENDA ) REFERENCES VENDE(COD_VENDA),
-                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS COMPRA (
-                        COD_COMPRA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        DT_SOLICITACAO TIMESTAMP NOT NULL,
-                        DT_ENTREGA TIMESTAMP NOT NULL,
-                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        CNPJ CHAR (14) NOT NULL,
-                        PRIMARY KEY (COD_COMPRA),
-                        FOREIGN KEY (FCODIGO_FUNCIONARIO ) REFERENCES ADMINISTRADOR(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY (CNPJ) REFERENCES FORNECEDOR(CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO_COMPRADO (
-                        COD_PRODUTO_COMPRADO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        QUANTIDADE INT NOT NULL,
-                        COD_COMPRA INT NOT NULL,
-                        COD_BARRAS CHAR(15) NOT NULL,
-                        PRIMARY KEY (COD_PRODUTO_COMPRADO ),
-                        FOREIGN KEY (COD_COMPRA  ) REFERENCES COMPRA(COD_COMPRA ),
-                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
-                """)
-	
-        conn.commit()
-        conn.close()
-
-        return LoginPage()
+    
+        return Builder.load_string(KV)
 
 
 Main().run()
