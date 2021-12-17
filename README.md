@@ -2,12 +2,11 @@
 
 TELAS:
 
-Login: *SILAS*
-Cadastro:
-Inicio:
-Estoque+Compra: *MELISSA*
-Compra do cliente+cadastro do cliente: 
-Empregados: *MELISSA*
-Fornecedores: *THATA*
-Histórico de vendas:
-Estabelecimento+contas:
+Login: *SILAS* <br>
+Inicio:          <br>
+Estoque+Compra: *MELISSA* <br>
+Compra do cliente+cadastro do cliente:    <br>
+Empregados: *MELISSA*  <br>
+Fornecedores: *THATA*   <br>
+Histórico de vendas:    <br>
+Estabelecimento+contas:     <br>
