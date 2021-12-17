@@ -498,6 +498,8 @@ class Main(MDApp):
         ##c = conn.cursor()
         ##conn.close()
 
+        self.theme_cls.primary_palette = "DeepOrange"
+    
         return Builder.load_string(KV)
 
 
