@@ -4,8 +4,34 @@
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "Bakery ABC"
+        title: "Bakery ABC - Estoque"
+        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
         md_bg_color: toolbarColor
+
+    MDNavigationLayout:
+        x: toolbar.height
+        ScreenManager:
+            id: screen_manager
+            MDScreen:
+                name: "fornecedores"
+                on_enter:
+                    root.manager.transition.direction = 'right'
+                    root.switchFornecedores()   
+            MDScreen:
+                name: "historico_vendas"
+                MDLabel:
+                    text: "hist home"
+                    halign: "center"
+            MDScreen:
+                name: "estabelecimentos"
+                MDLabel:
+                    text: "estab home"
+                    halign: "center"
+        MDNavigationDrawer:
+            id: nav_drawer
+            NavigationDrawer:
+                screen_manager: screen_manager
+                nav_drawer: nav_drawer
 
     MDBottomNavigation:
         size_hint_y: .09
@@ -25,6 +51,7 @@
             name: 'screen 2'
             text: 'Estoque'
             icon: 'barcode'
+            on_enter: root.switchEstoque()
 
         MDBottomNavigationItem:
             name: 'screen 3'
@@ -77,7 +104,33 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "NOVO PRODUTO"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
 
     MDBoxLayout:
         orientation: "vertical"
@@ -176,7 +229,33 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "DADOS DO PRODUTO"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
         
     MDBoxLayout:
         orientation: "vertical"
@@ -212,7 +291,7 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFuncionario()
+            root.switchEstoque()
 
 
 <TabelaBuscaEstoque>:
@@ -225,6 +304,32 @@
         title: "BUSCA - ESTOQUE"
         md_bg_color: get_color_from_hex("#854442")
 
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+
 
 <AtualizarEstoque>:
     name: 'atualizar_estoque'
@@ -234,7 +339,33 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "ATUALIZAR PRODUTO"
-        md_bg_color: get_color_from_hex("#854442")
+        md_bg_color: get_color_from_hex("#DF6710")
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
 
     MDBoxLayout:
         orientation: "vertical"
@@ -326,4 +457,4 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFuncionario()
+            root.switchEstoque()

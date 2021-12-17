@@ -89,7 +89,7 @@ ScreenManager:
         MDList:
             OneLineListItem:
                 text: "Fornecedores"
-                on_press:
+                on_release:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "fornecedores"
 
@@ -153,12 +153,18 @@ class CadastrarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def cadastrar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
@@ -196,6 +202,12 @@ class BuscarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def switchTabela(self):
         self.parent.current = 'tabela_busca_funcionario'
 
@@ -207,17 +219,18 @@ class BuscarFuncionario(Screen):
 
 
 class TabelaBuscaFuncionario(Screen):
+
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
 
-        sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
+        sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento='{COD_ESTABELECIMENTO}';"
 
         c.execute(sql_command)	
         output = c.fetchall()
@@ -248,23 +261,38 @@ class TabelaBuscaFuncionario(Screen):
     def on_enter(self):
         self.tabela()
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
 
 class RemoverFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def switchHome(self):
+        self.parent.current = ''
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def remover(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
         c = conn.cursor()
 
-        sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+        sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento='{self.ids.codigo_estabelecimento.text}';"
 
         c.execute(sql_command)	
         conn.commit()
@@ -274,6 +302,12 @@ class RemoverFuncionario(Screen):
 class AlterarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
 
     def alterar(self):
         ...
@@ -306,12 +340,18 @@ class CadastrarProduto(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
     def cadastrar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
@@ -355,6 +395,12 @@ class ConsultarEstoque(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
     def switchTabelaEstoque(self):
         self.parent.current = 'tabela_busca_estoque'
 
@@ -364,12 +410,22 @@ class ConsultarEstoque(Screen):
     
 
 class TabelaBuscaEstoque(Screen):
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
@@ -411,8 +467,15 @@ class TabelaBuscaEstoque(Screen):
 
 
 class AtualizarEstoque(Screen):
-    ...
+    def switchHome(self):
+        self.parent.current = 'home'
 
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+    
 
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
@@ -440,16 +503,28 @@ class FornecedoresPage(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
+    def switchRemover(self):
+        self.parent.current = 'remover_fornecedor'
+
 class CadastrarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def cadastrar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
@@ -492,6 +567,15 @@ class ConsultarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def switchTabela(self):
         self.parent.current = 'tabela_busca_fornecedor'
 
@@ -503,12 +587,25 @@ class ConsultarFornecedor(Screen):
 
 
 class TabelaBuscaFornecedor(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
@@ -550,20 +647,29 @@ class TabelaBuscaFornecedor(Screen):
 
 class RemoverFornecedor(Screen):
     def switchFornecedores(self):
-        self.parent.current = 'switchFornecedores'
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
 
     def remover(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
         c = conn.cursor()
 
-        sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+        sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
 
         c.execute(sql_command)	
         conn.commit()
@@ -573,6 +679,15 @@ class RemoverFornecedor(Screen):
 class AlterarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
 
     def alterar(self):
         ...
@@ -609,165 +724,6 @@ class Main(MDApp):
     def build(self):
 
         self.theme_cls.primary_palette = "DeepOrange"
-
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
-
-        c = conn.cursor()
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ESTABELECIMENTO (
-                        CODIGO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        NOME VARCHAR(70) NOT NULL,
-                        BAIRRO VARCHAR(100),
-                        RUA VARCHAR(100),
-                        CEP CHAR(8),
-                        CIDADE VARCHAR(100),
-                        NUMERO VARCHAR(10),
-                        PRIMARY KEY(CODIGO));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS FORNECEDOR (
-                        CNPJ CHAR (14) NOT NULL,
-                        NOME VARCHAR (70) NOT NULL,
-                        RUA VARCHAR(100) NOT NULL,
-                        ESTADO VARCHAR(30) NOT NULL,
-                        CIDADE VARCHAR(100) NOT NULL,
-                        CEP CHAR(8),
-                        NUMERO VARCHAR(10),
-                        BAIRRO VARCHAR(100),
-                        PRIMARY KEY (CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS CLIENTE (
-                        NOME VARCHAR(70) NOT NULL,
-                        CPF CHAR(11) NOT NULL,
-                        DATANASC DATE,
-                        PRIMARY KEY(CPF));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO (
-                 	COD_BARRAS CHAR(15) NOT NULL,
-                    NOME VARCHAR(50) NOT NULL,
-                    NOME_FABRICANTE VARCHAR(100) NOT NULL,
-                    PRECO DECIMAL(18,2) NOT NULL,
-                    DATA_FABRICACAO DATE NOT NULL,
-                    CATEGORIA VARCHAR(50) NOT NULL,
-                    QTD_ESTOQUE INT NOT NULL,
-                    DATA_VENCIMENTO DATE NOT NULL,
-                    PRIMARY KEY (COD_BARRAS));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS CONTA (
-                 		COD_BARRAS CHAR(48) NOT NULL,
-                        TIPO CHAR(35) NOT NULL,
-                        VALOR DECIMAL (10,2) NOT NULL,
-                        DATA_VENCIMENTO DATE NOT NULL,
-                        DATA_PAGAMENTO DATE NULL,
-                        PAGO BOOLEAN,
-                        CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        PRIMARY KEY(COD_BARRAS),
-                        FOREIGN KEY(CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
-                """)      
-
-        c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO (
-                        CODIGO_FUNC INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        NOME VARCHAR(70) NOT NULL,        	
-                        CPF CHAR(11) NOT NULL PRIMARY KEY,
-                        SALARIO DECIMAL (10,2), 
-                        FERIAS DATE,
-                        CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        UNIQUE(CPF),
-                        PRIMARY KEY(CODIGO_FUNC),
-                        FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS HISTORICO_TRABALHO (
-                        DATA_REGISTRO  DATE NOT NULL,
-                        HORA_ENTRADA_R TIME NOT NULL,
-                        HORA_SAIDA_R TIME NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        PRIMARY KEY(DATA_REGISTRO, HORA_ENTRADA_R, HORA_SAIDA_R, FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ADMINISTRADOR (
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        ESPECIALIDADE VARCHAR(30) NOT NULL,
-                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ATENDENTE_CAIXA (
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        NIVEL_ESCOLARIDADE VARCHAR(30) NOT NULL,
-                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS TELEFONE_CONTATO (
-                        TELEFONE VARCHAR (14) NOT NULL,
-                        TCODIGO CHAR(14) NOT NULL,
-                        PRIMARY KEY (TELEFONE),
-                        FOREIGN KEY(TCODIGO) REFERENCES FORNECEDOR(CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS VENDE (
-                    	COD_VENDA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        DT_VENDA TIMESTAMP NOT NULL,
-                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        CPF CHAR(11) NOT NULL,
-                        PRIMARY KEY (COD_VENDA),
-                        FOREIGN KEY (CPF) REFERENCES CLIENTE(CPF),
-                        FOREIGN KEY (FCODIGO_FUNCIONARIO) REFERENCES ATENDENTE_CAIXA(FCODIGO_FUNCIONARIO));
-                """)
-                
-        c.execute("""CREATE TABLE IF NOT EXISTS VENDIDO (
-                        COD_PRODUTO_VENDIDO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        QUANTIDADE INT NOT NULL,
-                        COD_VENDA INT NOT NULL,
-                        COD_BARRAS CHAR(15) NOT NULL,
-                        PRIMARY KEY (COD_PRODUTO_VENDIDO),
-                        FOREIGN KEY (COD_VENDA ) REFERENCES VENDE(COD_VENDA),
-                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS COMPRA (
-                        COD_COMPRA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        DT_SOLICITACAO TIMESTAMP NOT NULL,
-                        DT_ENTREGA TIMESTAMP NOT NULL,
-                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        CNPJ CHAR (14) NOT NULL,
-                        PRIMARY KEY (COD_COMPRA),
-                        FOREIGN KEY (FCODIGO_FUNCIONARIO ) REFERENCES ADMINISTRADOR(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY (CNPJ) REFERENCES FORNECEDOR(CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO_COMPRADO (
-                        COD_PRODUTO_COMPRADO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        QUANTIDADE INT NOT NULL,
-                        COD_COMPRA INT NOT NULL,
-                        COD_BARRAS CHAR(15) NOT NULL,
-                        PRIMARY KEY (COD_PRODUTO_COMPRADO ),
-                        FOREIGN KEY (COD_COMPRA  ) REFERENCES COMPRA(COD_COMPRA ),
-                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
-                """)
-	
-        conn.commit()
-        conn.close()
-
-        # popup = Popup(title='CADASTRAR FUNCIONÁRIO',
-        #               content=Label(text='Funcionario cadastrado com sucesso'),
-        #               size_hint=(None, None),
-        #               size=(300, 150),
-        #               background = 'atlas://data/images/defaulttheme/splitter_grip_h')
-        # popup.open()
 
         return Builder.load_string(KV)
 
