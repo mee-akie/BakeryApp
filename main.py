@@ -410,6 +410,7 @@ class AtualizarEstoque(Screen):
         self.parent.current = 'estoque'
 
 
+
 class AtualizarEstoque_2(Screen):
 
     def atualizar(self):
@@ -432,7 +433,6 @@ class AtualizarEstoque_2(Screen):
                                 categoria=%s,
                                 qtd_estoque=%s,
                                 data_vencimento=%s
-
                             where cod_barras=%s;"""
 
         values = (self.ids.cod_barras.text,
@@ -442,9 +442,11 @@ class AtualizarEstoque_2(Screen):
                   self.ids.fabricacao.text,
                   self.ids.categoria.text,
                   self.ids.qtd_estoque.text,
-                  self.ids.vencimento.text)
+                  self.ids.vencimento.text,
+                  COD_BARRAS)
 
         c.execute(sql_command, values)
+        conn.commit()
         conn.close()
 
         popup = Popup(title='ATUALIZAR DADOS DO PRODUTO',
