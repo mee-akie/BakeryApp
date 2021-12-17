@@ -1,4 +1,4 @@
-# BakeryApp
+# BakeryApp 12345678910112
 
 **Estou fazendo a tela de fornecedores**
 
@@ -9,6 +9,7 @@
   - Bugs remoção [RESOLVIDO]
   - 3 botoes em baixo nao estao em todas as telas [RESOLVIDO]
   - Falta implementar atualizar o valor 
+  - Bugou o banco de dados
   
 **Acrescentei:**
   - Mudei a cor das telas
@@ -17,3 +18,9 @@
 **EXCEÇÕES**
 (a serem resolvidas após todas as telas serem feitas)
   - Digitar valor incorreto 
+
+
+CADASTRAR FORNECEDOR
+CONSULTAR FORNECEDOR
+ALTERAR DADOS FORNECEDOR
+REMOVER FORNECEDOR
