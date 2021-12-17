@@ -1,6 +1,6 @@
 # BakeryApp 
 
-**TELA FORNECEDOR**
+**TELA FORNECEDOR** <br>
 CADASTRAR FORNECEDOR  [CORRETO] <br>
 CONSULTAR FORNECEDOR [CORRETO] <br>
 ALTERAR DADOS FORNECEDOR -> BUGADO,  IndexError: tuple index out of range <br>
