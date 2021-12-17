@@ -38,6 +38,7 @@ KV = '''
 
 
 ScreenManager:
+    LoginPage:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
@@ -485,6 +486,7 @@ sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(AtualizarEstoque(name='atualizar_estoque'))
 sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
+sm.add_widget(LoginPage(name='login'))
 
 
 class Main(MDApp):
