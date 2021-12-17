@@ -492,10 +492,10 @@ class Main(MDApp):
         self.theme_cls.primary_palette = "DeepOrange"
 
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
 
@@ -555,17 +555,17 @@ class Main(MDApp):
                         FOREIGN KEY(CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
                 """)      
 
-        c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO (
+        c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO ( 
                         CODIGO_FUNC INT NOT NULL GENERATED ALWAYS AS IDENTITY,
                         NOME VARCHAR(70) NOT NULL,        	
-                        CPF CHAR(11) NOT NULL PRIMARY KEY,
+                        CPF CHAR(11) NOT NULL,
                         SALARIO DECIMAL (10,2), 
                         FERIAS DATE,
                         CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        UNIQUE(CPF),
                         PRIMARY KEY(CODIGO_FUNC),
                         FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
                 """)
+
 
         c.execute("""CREATE TABLE IF NOT EXISTS HISTORICO_TRABALHO (
                         DATA_REGISTRO  DATE NOT NULL,
