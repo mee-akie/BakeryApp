@@ -44,6 +44,7 @@ ScreenManager:
     TabelaBuscaFuncionario:
     RemoverFuncionario:
     AlterarFuncionario:
+    AlterarFuncionario2:
     EstoquePage:
     CadastrarProduto:
     ConsultarEstoque:
@@ -265,8 +266,53 @@ class AlterarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def recolherDados(self):	
+        global CPF_FUNCIONARIO
+        CPF_FUNCIONARIO = self.ids.cpf.text
+        self.parent.current = 'alterar_funcionario_2'
+
+
+class AlterarFuncionario2(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
     def alterar(self):
-        ...
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update funcionario
+                            set nome=%s,
+                                cpf=%s,
+                                salario=%s,
+                                ferias=%s,
+                                codigo_estabelecimento=%s
+                            where cpf=%s;"""
+
+        values = (self.ids.nome.text,
+                  self.ids.cpf.text,
+                  self.ids.salario.text,
+                  self.ids.ferias.text,
+                  self.ids.codigo_estabelecimento.text,
+                  CPF_FUNCIONARIO)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DE FUNCIONARIO',
+                      content=Label(text='Funcionario atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'funcionario'
 
 
 class EstoquePage(Screen):
@@ -480,6 +526,7 @@ sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
 sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
+sm.add_widget(AlterarFuncionario2(name='alterar_funcionario_2'))
 sm.add_widget(EstoquePage(name='estoque'))
 sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
