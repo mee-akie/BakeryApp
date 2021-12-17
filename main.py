@@ -145,10 +145,10 @@ class CadastrarFuncionario(Screen):
 
     def cadastrar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
@@ -199,10 +199,10 @@ class BuscarFuncionario(Screen):
 class TabelaBuscaFuncionario(Screen):
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
@@ -354,10 +354,10 @@ class ConsultarEstoque(Screen):
 class TabelaBuscaEstoque(Screen):
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
@@ -414,10 +414,10 @@ class AtualizarEstoque_2(Screen):
 
     def atualizar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
