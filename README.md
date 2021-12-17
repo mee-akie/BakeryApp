@@ -3,7 +3,7 @@
 **Estou fazendo a tela de fornecedores**
 
 **Bugs e problemas notados, que estão sendo resolvidos:**
-  - Menu lateral só funciona as vezes 
+  - Menu lateral: clicar só funciona as vezes 
   - Menu lateral está em todas as páginas, mas ao abrir, o conteúdo da outra parte vai junto 
   - Não cancela solicitação [RESOLVIDO]
   - Bugs remoção [RESOLVIDO]
