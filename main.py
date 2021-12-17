@@ -14,6 +14,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
+from utils.connectionDatabase import ConnectionDatabase
 
 
 # define um tamanho de tela padrao quando rodamos o main.py
@@ -488,7 +489,15 @@ sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
 
 class Main(MDApp):
     def build(self):
-    
+        
+        ####################
+        ###EXEMPLO DE USO###
+        ####################
+
+        ##conn = ConnectionDatabase.getConnection()
+        ##c = conn.cursor()
+        ##conn.close()
+
         return Builder.load_string(KV)
 
 
