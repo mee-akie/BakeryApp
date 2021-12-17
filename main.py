@@ -488,6 +488,7 @@ sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
 
 class Main(MDApp):
     def build(self):
+        self.theme_cls.primary_palette = "DeepOrange"
     
         return Builder.load_string(KV)
 
