@@ -47,6 +47,7 @@ ScreenManager:
     AlterarFuncionario2:
     EstoquePage:
     CadastrarProduto:
+    RemoverProduto:
     ConsultarEstoque:
     TabelaBuscaEstoque:
     AtualizarEstoque:
@@ -328,6 +329,9 @@ class EstoquePage(Screen):
     def switchCadastrar(self):
         self.parent.current = 'cadastrar_produto'
 
+    def switchRemover(self):
+        self.parent.current = 'remover_produto'
+
     def switchConsultar(self):
         self.parent.current = 'consultar_estoque'
 
@@ -382,6 +386,37 @@ class CadastrarProduto(Screen):
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
+        self.parent.current = 'estoque'
+
+class RemoverProduto(Screen):
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+
+        c.execute(sql_command)	
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='REMOVER PRODUTO',
+                      content=Label(text='Produto removido com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+        
+        self.parent.current = 'estoque'
+
+    
+    def switchEstoque(self):
         self.parent.current = 'estoque'
 
 
@@ -533,6 +568,7 @@ sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(AtualizarEstoque(name='atualizar_estoque'))
 sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
+sm.add_widget(RemoverProduto(name='remover_produto'))
 
 
 class Main(MDApp):
