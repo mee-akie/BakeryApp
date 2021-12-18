@@ -13,6 +13,7 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
+from kivymd.uix.label import MDLabel
 from kivy.uix.popup import Popup
 from utils.connectionDatabase import ConnectionDatabase
 
@@ -33,11 +34,13 @@ KV = '''
 #:include FuncionarioScreen.kv
 #:include HomeScreen.kv
 #:include EstoqueScreen.kv
+#:include Login.kv
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#854442")
 
 
 ScreenManager:
+    LoginPage:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
@@ -104,6 +107,39 @@ ScreenManager:
 
 '''
 
+class LoginPage(Screen):
+    
+    def validaLogin(self, *args):
+
+        ##recebendo o cpf e a senha do usuario
+        cpfUsuario = self.ids.cpf.text.replace('.','').replace('-','')
+        senhaUsuario = self.ids.senha.text
+        
+        #iniciando conexao, criando o cursor
+        conn = ConnectionDatabase.getConnection()
+        c = conn.cursor()
+        
+        #executando o select que verifica se o login esta correto ou nao
+        c.execute("SET search_path TO PADARIA;")
+        c.execute(f"SELECT COUNT(1) AS LOGIN FROM FUNCIONARIO WHERE CPF = '{cpfUsuario}' AND SENHA = '{senhaUsuario}';")
+        output = c.fetchall()
+        c.close()
+        
+        #recebendo o resultado do select
+        for row in output:
+            result = row[0]
+        
+        if result == 1:
+            self.parent.current = 'home'
+        else:
+            self.add_widget(
+                MDLabel(
+                    text="CPF ou Senha incorretos",
+                    halign="center",
+                    pos_hint= { "y": -0.35},
+                    theme_text_color="Error",
+                )
+            )
 
 class HomePage(Screen):
     def switchHome(self):
@@ -485,6 +521,7 @@ sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(AtualizarEstoque(name='atualizar_estoque'))
 sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
+sm.add_widget(LoginPage(name='login'))
 
 
 class Main(MDApp):
@@ -499,7 +536,7 @@ class Main(MDApp):
         ##conn.close()
 
         self.theme_cls.primary_palette = "DeepOrange"
-    
+        
         return Builder.load_string(KV)
 
 
