@@ -44,28 +44,28 @@
             root.switchCadastrar()
 
     MDRectangleFlatIconButton :
-        text : 'Remover produto'
-        icon : "basket-remove"
-        pos_hint : {"center_x":.5,"center_y":.55}
-        text_color : get_color_from_hex("#7E6B73")
-        font_size : 20
+        text: 'Remover produto'
+        icon: "basket-remove"
+        pos_hint: {"center_x":.5,"center_y":.55}
+        text_color: get_color_from_hex("#7E6B73")
+        font_size: 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
             root.switchRemover()
 
     MDRectangleFlatIconButton:
-        text : 'Consultar produtos no estoque'
-        icon : "magnify"
-        pos_hint : {"center_x":.5,"center_y":.45}
-        text_color : get_color_from_hex("#7E6B73")
-        font_size : 20
+        text: 'Consultar produtos no estoque'
+        icon: "magnify"
+        pos_hint: {"center_x":.5,"center_y":.45}
+        text_color: get_color_from_hex("#7E6B73")
+        font_size: 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
             root.switchConsultar()
 
-    MDRectangleFlatIconButton :
+    MDRectangleFlatIconButton:
         text : 'Atualizar estoque'
         icon : "basket"
         pos_hint : {"center_x":.5,"center_y":.35}
