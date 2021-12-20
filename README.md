@@ -8,7 +8,7 @@ ALTERAR DADOS FORNECEDOR -> BUGADO,  IndexError: tuple index out of range <br>.
 Mudar para primeiro procura o fornecedor, e depois o altera. <br>
 REMOVER FORNECEDOR [CORRETO] <br>
 
-**Estabelecimento+contas** <br>
+**ESTABELECIMENTO + CONTAS** <br>
 
 Ainda não comecei <br>
 
