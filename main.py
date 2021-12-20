@@ -14,7 +14,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
-
+from utils.connectionDatabase import ConnectionDatabase
 
 # define um tamanho de tela padrao
 Window.size = (400, 650)
@@ -54,7 +54,8 @@ ScreenManager:
     ConsultarFornecedor:
     TabelaBuscaFornecedor:
     RemoverFornecedor:
-    AlterarFornecedor:    
+    AlterarFornecedor:
+    AlterarFornecedor2:    
 
 
 <NavigationDrawer>
@@ -531,7 +532,7 @@ class CadastrarFornecedor(Screen):
         c = conn.cursor()
 
         # Add dados na tabela de fornecedor
-        sql_command = "INSERT INTO FORNECEDOR (CNPJ, NOME, RUA, ESTADO, CIDADE, CEP, NUMERO, BAIRRO) VALUES(%s, %s, %s, %s, %s,%s,%s,%s)"
+        sql_command = "INSERT INTO fornecedor (CNPJ, NOME, RUA, ESTADO, CIDADE, CEP, NUMERO, BAIRRO) VALUES(%s, %s, %s, %s, %s,%s,%s,%s)"
         values = (self.ids.cnpj.text,
                   self.ids.nome.text,
                   self.ids.rua.text,
@@ -675,8 +676,28 @@ class RemoverFornecedor(Screen):
         conn.commit()
         conn.close()
 
-
 class AlterarFornecedor(Screen):
+    def recolherDados(self):    
+        global CNPJ_FORNECEDOR
+        CNPJ_FORNECEDOR = self.ids.cnpj.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'alterar_fornecedor2'
+    
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+class AlterarFornecedor2(Screen):
+
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
@@ -708,7 +729,7 @@ class AlterarFornecedor(Screen):
                                 cep=%s,
                                 numero=%s,
                                 bairro=%s
-                            where cnpj=%s and nome =%s;"""
+                            where cnpj=%s;"""
 
         values = (self.ids.cnpj.text,
                   self.ids.nome.text,
@@ -717,19 +738,21 @@ class AlterarFornecedor(Screen):
                   self.ids.cidade.text,
                   self.ids.cep.text,
                   self.ids.numero.text,
-                  self.ids.bairro.text)
+                  self.ids.bairro.text,
+                  CNPJ_FORNECEDOR)
 
         c.execute(sql_command, values)
+        conn.commit()
         conn.close()
 
-        popup = Popup(title='ATUALIZAR DADOS DO FORNECDOR',
+        popup = Popup(title='ATUALIZAR DADOS DO FORNECEDOR',
                       content=Label(text='Fornecedor atualizado com sucesso'),
                       size_hint=(None, None),
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
-        self.parent.current = 'estoque'
+        self.parent.current = 'fornecedores'
 
 
 
@@ -763,6 +786,12 @@ class Main(MDApp):
     def build(self):
 
         self.theme_cls.primary_palette = "DeepOrange"
+        conn = ConnectionDatabase.getConnection()
+        # conn.executeSchema("01.01.sql") -> mudar depois quem eh qual
+        # conn.executeQuery("01.01.sql")
+
+        c = conn.cursor()
+        conn.close()
 
         return Builder.load_string(KV)
 
