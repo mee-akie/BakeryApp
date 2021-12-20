@@ -9,8 +9,9 @@ REMOVER FORNECEDOR <br>
 
 **ESTABELECIMENTO + CONTAS** [EM ANDAMENTO] <br>
 
-CADASTRAR ESTABELECIMENTO <br>
+CADASTRAR ESTABELECIMENTO [CORRETO] <br>
 CADASTRAR CONTA EM ESTABELECIMENTO <br>
+CONSULTAR ESTABELECIMENTOS <br>
 ALTERAR ESTABELECIMENTO <br>
 ALTERAR CONTA <br>
 REMOVER ESTABELECIMENTO <br>
@@ -20,7 +21,7 @@ CONTAS PASSADAS <br>
 
 **Bugs e problemas notados, que estão sendo resolvidos:**
 
-  - Menu lateral: clicar só funciona as vezes 
+  - Menu lateral: O primeiro item não funciona para clicar, acredito que ele considera a home
   - Menu lateral está em todas as páginas, mas ao abrir, o conteúdo da outra parte vai junto 
   
 **Acrescentei:**
