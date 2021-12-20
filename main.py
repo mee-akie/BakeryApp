@@ -32,6 +32,7 @@ KV = '''
 #:include HomeScreen.kv
 #:include EstoqueScreen.kv
 #:include FornecedoresScreen.kv
+#:include EstabelecimentoScreen.kv
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#DF6710")
 
@@ -55,7 +56,8 @@ ScreenManager:
     TabelaBuscaFornecedor:
     RemoverFornecedor:
     AlterarFornecedor:
-    AlterarFornecedor2:    
+    AlterarFornecedor2: 
+    EstabelecimentoPage:   
 
 
 <NavigationDrawer>
@@ -95,16 +97,16 @@ ScreenManager:
                     root.screen_manager.current = "fornecedores"
 
             OneLineListItem:
-                text: "Histórico de vendas"
-                on_press:
+                text: "Estabelecimentos"
+                on_release:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "historico_vendas"
+                    root.screen_manager.current = "estabelecimento"
 
             OneLineListItem:
-                text: "Estabelecimentos"
+                text: "Historico"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "estabelecimentos"
+                    root.screen_manager.current = "historico"
 
 '''
 
@@ -121,6 +123,9 @@ class HomePage(Screen):
     
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
 
 class FuncionarioPage(Screen):
@@ -148,7 +153,8 @@ class FuncionarioPage(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
-
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
 class CadastrarFuncionario(Screen):
     def switchFuncionario(self):
@@ -159,6 +165,12 @@ class CadastrarFuncionario(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
         conn = psycopg2.connect(
@@ -208,6 +220,12 @@ class BuscarFuncionario(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def switchTabela(self):
         self.parent.current = 'tabela_busca_funcionario'
@@ -271,6 +289,12 @@ class TabelaBuscaFuncionario(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
 
 class RemoverFuncionario(Screen):
     def switchFuncionario(self):
@@ -281,6 +305,12 @@ class RemoverFuncionario(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def remover(self):
         conn = psycopg2.connect(
@@ -310,6 +340,12 @@ class AlterarFuncionario(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
     def alterar(self):
         ...
 
@@ -336,6 +372,9 @@ class EstoquePage(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
 
 class CadastrarProduto(Screen):
     def switchEstoque(self):
@@ -346,6 +385,12 @@ class CadastrarProduto(Screen):
 
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
         conn = psycopg2.connect(
@@ -402,6 +447,12 @@ class ConsultarEstoque(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
     def switchTabelaEstoque(self):
         self.parent.current = 'tabela_busca_estoque'
 
@@ -420,6 +471,12 @@ class TabelaBuscaEstoque(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def tabela(self):
         conn = psycopg2.connect(
@@ -476,6 +533,12 @@ class AtualizarEstoque(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
     
 
 # botao do cadastro do funcionario
@@ -507,6 +570,9 @@ class FornecedoresPage(Screen):
     def switchRemover(self):
         self.parent.current = 'remover_fornecedor'
 
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
 class CadastrarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
@@ -519,6 +585,9 @@ class CadastrarFornecedor(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
         conn = psycopg2.connect(
@@ -577,6 +646,9 @@ class ConsultarFornecedor(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
     def switchTabela(self):
         self.parent.current = 'tabela_busca_fornecedor'
 
@@ -600,6 +672,9 @@ class TabelaBuscaFornecedor(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def tabela(self):
         conn = psycopg2.connect(
@@ -659,6 +734,9 @@ class RemoverFornecedor(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
     def remover(self):
         conn = psycopg2.connect(
             host = "localhost",
@@ -696,6 +774,9 @@ class AlterarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
 
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
 class AlterarFornecedor2(Screen):
 
     def switchFornecedores(self):
@@ -709,6 +790,9 @@ class AlterarFornecedor2(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
     def alterar(self):
         conn = psycopg2.connect(
@@ -754,7 +838,45 @@ class AlterarFornecedor2(Screen):
 
         self.parent.current = 'fornecedores'
 
+class EstabelecimentoPage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
 
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+    
+    def switchCadastrar(self):
+        self.parent.current = 'cadastrar_estabelecimento'
+
+    def switchInserir(self):
+        self.parent.current = 'inserir_conta'
+
+    def switchAlterar(self):
+        self.parent.current = 'alterar_estabelecimento'
+
+    def switchModificar(self):
+        self.parent.current = 'modificar_compra'
+
+    def switchRemover(self):
+        self.parent.current = 'remover_estabelecimento'
+
+    def switchExcluir(self):
+        self.parent.current = 'excluir_conta'
+
+    def switchAtivas(self):
+        self.parent.current = 'ver_ativa'
+
+    def switchPassadas(self):
+        self.parent.current = 'ver_passada'
 
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
@@ -780,6 +902,7 @@ sm.add_widget(CadastrarFornecedor(name='cadastrar_fornecedor'))
 sm.add_widget(ConsultarFornecedor(name='consultar_fornecedor'))
 sm.add_widget(AlterarFornecedor(name='alterar_fornecedor'))
 sm.add_widget(RemoverFornecedor(name='remover_fornecedor'))
+sm.add_widget(EstabelecimentoPage(name='estabelecimento'))
 
 
 class Main(MDApp):

@@ -18,14 +18,14 @@
                     root.manager.transition.direction = 'right'
                     root.switchFornecedores()   
             MDScreen:
-                name: "historico_vendas"
-                MDLabel:
-                    text: "hist home"
-                    halign: "center"
+                name: "estabelecimento"
+                on_enter:
+                    root.manager.transition.direction = 'right'
+                    root.switchEstabelecimento() 
             MDScreen:
-                name: "estabelecimentos"
+                name: "historico"
                 MDLabel:
-                    text: "estab home"
+                    text: "historico home"
                     halign: "center"
         MDNavigationDrawer:
             id: nav_drawer
