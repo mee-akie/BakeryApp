@@ -1,16 +1,22 @@
 # BakeryApp 
 
-**TELA FORNECEDOR** <br>
+**TELA FORNECEDOR** [FINALIZADA] <br>
 
 CADASTRAR FORNECEDOR  [CORRETO] <br>
 CONSULTAR FORNECEDOR [CORRETO] <br>
-ALTERAR DADOS FORNECEDOR -> BUGADO,  IndexError: tuple index out of range <br>.
-Mudar para primeiro procura o fornecedor, e depois o altera. <br>
+ALTERAR DADOS FORNECEDOR [CORRETO] <br>
 REMOVER FORNECEDOR [CORRETO] <br>
 
-**ESTABELECIMENTO + CONTAS** <br>
+**ESTABELECIMENTO + CONTAS** [EM ANDAMENTO] <br>
 
-Ainda não comecei <br>
+CADASTRAR ESTABELECIMENTO <br>
+CADASTRAR CONTA EM ESTABELECIMENTO <br>
+ALTERAR ESTABELECIMENTO <br>
+ALTERAR CONTA <br>
+REMOVER ESTABELECIMENTO <br>
+REMOVER CONTA <br>
+CONTAS ATIVAS <br>
+CONTAS PASSADAS <br>
 
 **Bugs e problemas notados, que estão sendo resolvidos:**
 
