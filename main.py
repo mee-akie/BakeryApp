@@ -58,7 +58,9 @@ ScreenManager:
     AlterarFornecedor:
     AlterarFornecedor2: 
     EstabelecimentoPage:
-    CadastrarEstabelecimento:   
+    CadastrarEstabelecimento:
+    AlterarEstabelecimento:   
+    AlterarEstabelecimento2: 
 
 
 <NavigationDrawer>
@@ -944,6 +946,88 @@ class CadastrarEstabelecimento(Screen):
 
         self.parent.current = 'estabelecimento'
 
+
+class AlterarEstabelecimento(Screen):
+    def recolherDados(self):    
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'alterar_estabelecimento2'
+    
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+class AlterarEstabelecimento2(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def alterar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update estabelecimento
+                            set nome=%s,
+                                bairro=%s,
+                                rua=%s,
+                                cep=%s,
+                                cidade=%s,
+                                numero=%s
+                            where codigo=%s;"""
+
+        values = (self.ids.nome.text,
+                  self.ids.bairro.text,
+                  self.ids.rua.text,
+                  self.ids.cep.text,
+                  self.ids.cidade.text,
+                  self.ids.numero.text,
+                  COD_ESTABELECIMENTO)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DO ESTABELECIMENTO',
+                      content=Label(text='Estabelecimento atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estabelecimento'
+
+
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
@@ -970,7 +1054,8 @@ sm.add_widget(AlterarFornecedor(name='alterar_fornecedor'))
 sm.add_widget(RemoverFornecedor(name='remover_fornecedor'))
 sm.add_widget(EstabelecimentoPage(name='estabelecimento'))
 sm.add_widget(CadastrarEstabelecimento(name='CadastrarEstabelecimento'))
-
+sm.add_widget(AlterarEstabelecimento(name='alterar_estabelecimento'))
+sm.add_widget(AlterarEstabelecimento2(name='alterar_estabelecimento2'))
 
 class Main(MDApp):
     def build(self):

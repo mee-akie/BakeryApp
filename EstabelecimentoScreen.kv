@@ -281,4 +281,187 @@
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
 
+<AlterarEstabelecimento>:
+    name: 'alterar_estabelecimento'
 
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "ALTERAR DADOS DO ESTABELECIMENTO"
+        md_bg_color: get_color_from_hex("#DF6710")
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+        
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_x: .9
+        size_hint_y: .8
+        pos_hint: {'center_x': .5, 'center_y': .9}
+
+        MDTextField:
+            id: codigo
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CODIGO do fornecedor: '
+            pos_hint: {'center_x': .5, 'center_y': .8}
+            text_color: get_color_from_hex("#000000")
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .40}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'BUSCAR'
+        on_press:
+            root.recolherDados()
+            root.switchAtualiza()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .40}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchEstabelecimento()
+
+<AlterarEstabelecimento2>:
+    name: 'alterar_estabelecimento2'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "ALTERAR DADOS DO ESTABELECIMENTO"
+        md_bg_color: get_color_from_hex("#DF6710")
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_x: .9
+        size_hint_y: .6
+        pos_hint: {'center_x': .5, 'center_y': .55}
+
+        MDTextField:
+            id: nome
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Nome:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: bairro
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Bairro:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: rua
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Rua:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cep
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CEP:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cidade
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Cidade: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+
+        MDTextField:
+            id: numero
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Número:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'ALTERAR'
+        on_press:
+            root.alterar()
+            root.switchEstabelecimento()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchEstabelecimento()
