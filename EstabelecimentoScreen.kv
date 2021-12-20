@@ -13,6 +13,12 @@
         ScreenManager:
             id: screen_manager
             MDScreen:
+                name: "home"
+                text: "O que você gostaria de fazer?"
+                on_enter:
+                    root.manager.transition.direction = 'right'
+                    root.switchHome() 
+            MDScreen:
                 name: "fornecedores"
                 on_enter:
                     root.manager.transition.direction = 'right'
@@ -72,21 +78,9 @@
             root.switchCadastrar()
 
     MDFillRoundFlatIconButton:
-        text : 'Inserir contas'
-        icon : "basket-plus"
-        pos_hint : {"center_x":.5,"center_y":.75}
-        text_color : get_color_from_hex("#7E6B73")
-        md_bg_color : get_color_from_hex("#FCE18E")
-        font_size : 20
-        user_font_size: "64sp"
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.switchInserir()
-
-    MDFillRoundFlatIconButton:
         text : 'Alterar estabelecimento'
         icon : "cart-arrow-up"
-        pos_hint : {"center_x":.5,"center_y":.65}
+        pos_hint : {"center_x":.5,"center_y":.77}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -96,21 +90,21 @@
             root.switchAlterar()
 
     MDFillRoundFlatIconButton:
-        text : 'Modificar contas'
-        icon : "basket-fill"
-        pos_hint : {"center_x":.5,"center_y":.55}
+        text : 'Consultar estabelecimentos'
+        icon : "clipboard-text-search-outline"
+        pos_hint : {"center_x":.5,"center_y":.69}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
-            root.switchModificar()
+            root.switchConsultar()
 
     MDFillRoundFlatIconButton:
         text : 'Remover estabelecimento'
         icon : "store-remove"
-        pos_hint : {"center_x":.5,"center_y":.45}
+        pos_hint : {"center_x":.5,"center_y":.61}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -120,9 +114,33 @@
             root.switchRemover()
 
     MDFillRoundFlatIconButton:
+        text : 'Inserir contas'
+        icon : "basket-plus"
+        pos_hint : {"center_x":.5,"center_y":.53}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchInserir()    
+
+    MDFillRoundFlatIconButton:
+        text : 'Modificar contas'
+        icon : "basket-fill"
+        pos_hint : {"center_x":.5,"center_y":.45}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchModificar()
+
+    MDFillRoundFlatIconButton:
         text : 'Excluir contas'
         icon : "basket-remove"
-        pos_hint : {"center_x":.5,"center_y":.35}
+        pos_hint : {"center_x":.5,"center_y":.37}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -134,7 +152,7 @@
     MDFillRoundFlatIconButton:
         text : 'Ver contas ativas'
         icon : "credit-card-clock-outline"
-        pos_hint : {"center_x":.5,"center_y":.25}
+        pos_hint : {"center_x":.5,"center_y":.29}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -146,7 +164,7 @@
     MDFillRoundFlatIconButton:
         text : 'Ver contas passadas'
         icon : "credit-card-refund"
-        pos_hint : {"center_x":.5,"center_y":.15}
+        pos_hint : {"center_x":.5,"center_y":.21}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -154,3 +172,113 @@
         on_press:
             root.manager.transition.direction = 'left'
             root.switchPassadas()
+
+<CadastrarEstabelecimento>:
+    name: 'cadastrar_estabelecimento'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "NOVO ESTABELECIMENTO"
+        md_bg_color: get_color_from_hex("#DF6710")
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionários'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': .5, 'center_y': .80}
+
+        MDTextField:
+            id: nome
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Nome do estabelecimento:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: bairro
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Bairro:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: rua
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Rua:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cep
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CEP: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: cidade
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Cidade:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: numero
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'Número:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+                    
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CADASTRAR'
+        on_press: root.cadastrar()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchEstabelecimento()
+
+

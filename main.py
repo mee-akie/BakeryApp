@@ -57,7 +57,8 @@ ScreenManager:
     RemoverFornecedor:
     AlterarFornecedor:
     AlterarFornecedor2: 
-    EstabelecimentoPage:   
+    EstabelecimentoPage:
+    CadastrarEstabelecimento:   
 
 
 <NavigationDrawer>
@@ -91,6 +92,12 @@ ScreenManager:
     ScrollView:
         MDList:
             OneLineListItem:
+                text: "Início"
+                on_release:
+                    root.nav_drawer.set_state("close")
+                    root.screen_manager.current = "home"
+
+            OneLineListItem:
                 text: "Fornecedores"
                 on_release:
                     root.nav_drawer.set_state("close")
@@ -113,7 +120,7 @@ ScreenManager:
 
 class HomePage(Screen):
     def switchHome(self):
-        self.parent.current = 'inicio'
+        self.parent.current = 'home'
 
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
@@ -863,6 +870,9 @@ class EstabelecimentoPage(Screen):
     def switchAlterar(self):
         self.parent.current = 'alterar_estabelecimento'
 
+    def switchConsultar(self):
+        self.parent.current = 'consultar_fornecedor'
+
     def switchModificar(self):
         self.parent.current = 'modificar_compra'
 
@@ -877,6 +887,62 @@ class EstabelecimentoPage(Screen):
 
     def switchPassadas(self):
         self.parent.current = 'ver_passada'
+
+class CadastrarEstabelecimento(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        # Add dados na tabela de estabelecimento
+        sql_command = "INSERT INTO estabelecimento (nome, bairro, rua, cep, cidade, numero) VALUES(%s, %s, %s, %s,%s,%s)"
+        values = (self.ids.nome.text,
+                  self.ids.bairro.text,
+                  self.ids.rua.text,
+                  self.ids.cep.text,
+                  self.ids.cidade.text,
+                  self.ids.numero.text)
+
+        c.execute(sql_command, (values))    
+        conn.commit()
+        conn.close()
+
+        self.ids.nome.text = ''
+        self.ids.bairro.text = ''
+        self.ids.rua.text = ''
+        self.ids.cep.text = ''
+        self.ids.cidade.text = ''
+        self.ids.numero.text = ''      
+
+        popup = Popup(title='CADASTRAR ESTABELECIMENTO',
+                      content=Label(text='Estabelecimento cadastrado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estabelecimento'
 
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
@@ -903,6 +969,7 @@ sm.add_widget(ConsultarFornecedor(name='consultar_fornecedor'))
 sm.add_widget(AlterarFornecedor(name='alterar_fornecedor'))
 sm.add_widget(RemoverFornecedor(name='remover_fornecedor'))
 sm.add_widget(EstabelecimentoPage(name='estabelecimento'))
+sm.add_widget(CadastrarEstabelecimento(name='CadastrarEstabelecimento'))
 
 
 class Main(MDApp):

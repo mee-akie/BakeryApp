@@ -7,15 +7,17 @@
         title: "Bakery ABC - Home"
         left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
         md_bg_color: toolbarColor
-
-    MDLabel:
-        text: "O que você gostaria de fazer?"
-        halign: "center"
     
     MDNavigationLayout:
         x: toolbar.height
         ScreenManager:
             id: screen_manager
+            MDScreen:
+                name: "home"
+                text: "O que você gostaria de fazer?"
+                on_enter:
+                    root.manager.transition.direction = 'right'
+                    root.switchHome()   
             MDScreen:
                 name: "fornecedores"
                 on_enter:
