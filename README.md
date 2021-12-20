@@ -16,9 +16,6 @@ Ainda não comecei <br>
 
   - Menu lateral: clicar só funciona as vezes 
   - Menu lateral está em todas as páginas, mas ao abrir, o conteúdo da outra parte vai junto 
-  - Não cancela solicitação [RESOLVIDO]
-  - Bugs remoção [RESOLVIDO]
-  - 3 botoes em baixo nao estao em todas as telas [RESOLVIDO]
   
 **Acrescentei:**
 
