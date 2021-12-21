@@ -25,7 +25,8 @@ CPF_FUNCIONARIO = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
 CNPJ_FORNECEDOR = ''
-NOME_FORNECEDOR = ''
+NOME_FORNECEDOR = '' 
+NOME_ESTABELECIMENTO = ''
 
 KV = '''
 #:include FuncionarioScreen.kv
@@ -61,6 +62,8 @@ ScreenManager:
     CadastrarEstabelecimento:
     AlterarEstabelecimento:   
     AlterarEstabelecimento2: 
+    ConsultarEstabelecimento:
+    TabelaBuscaEStabelecimento:
 
 
 <NavigationDrawer>
@@ -695,7 +698,7 @@ class TabelaBuscaFornecedor(Screen):
         )
         c = conn.cursor()
 
-        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' or nome='{NOME_FORNECEDOR}';"
+        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
 
         c.execute(sql_command)	
         output = c.fetchall()
@@ -873,7 +876,7 @@ class EstabelecimentoPage(Screen):
         self.parent.current = 'alterar_estabelecimento'
 
     def switchConsultar(self):
-        self.parent.current = 'consultar_fornecedor'
+        self.parent.current = 'consultar_estabelecimento'
 
     def switchModificar(self):
         self.parent.current = 'modificar_compra'
@@ -1027,6 +1030,125 @@ class AlterarEstabelecimento2(Screen):
 
         self.parent.current = 'estabelecimento'
 
+class ConsultarEstabelecimento(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchTabela(self):
+        self.parent.current = 'tabela_busca_estabelecimento'
+
+    def buscar(self):
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo.text
+        global NOME_ESTABELECIMENTO
+        NOME_ESTABELECIMENTO = self.ids.nome.text
+
+
+class TabelaBuscaEStabelecimento(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            column_data=[
+                ("CODIGO", dp(30)),
+                ("NOME", dp(40)),
+                ("BAIRRO", dp(40)),
+                ("RUA", dp(30)),
+                ("CEP", dp(30)),
+                ("CIDADE", dp(30)),
+                ("NUMERO", dp(25))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+
+class RemoverEstabelecimento(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
+
+        c.execute(sql_command)  
+        conn.commit()
+        conn.close()
 
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
@@ -1056,6 +1178,8 @@ sm.add_widget(EstabelecimentoPage(name='estabelecimento'))
 sm.add_widget(CadastrarEstabelecimento(name='CadastrarEstabelecimento'))
 sm.add_widget(AlterarEstabelecimento(name='alterar_estabelecimento'))
 sm.add_widget(AlterarEstabelecimento2(name='alterar_estabelecimento2'))
+sm.add_widget(ConsultarEstabelecimento(name='consultar_estabelecimento'))
+sm.add_widget(TabelaBuscaEStabelecimento(name='tabela_busca_estabelecimento'))
 
 class Main(MDApp):
     def build(self):
