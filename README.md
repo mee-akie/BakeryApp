@@ -11,9 +11,9 @@ REMOVER FORNECEDOR <br>
 
 CADASTRAR ESTABELECIMENTO [CORRETO] <br>
 ALTERAR ESTABELECIMENTO [CORRETO] <br>
-CONSULTAR ESTABELECIMENTOS <br>
+CONSULTAR ESTABELECIMENTOS [CORRETO]<br>
 REMOVER ESTABELECIMENTO <br>
-CADASTRAR CONTA EM ESTABELECIMENTO <br>
+CADASTRAR CONTA <br>
 ALTERAR CONTA <br>
 REMOVER CONTA <br>
 CONTAS ATIVAS <br>
@@ -24,10 +24,9 @@ CONTAS PASSADAS <br>
   - Menu lateral: O primeiro item não funciona para clicar, acredito que ele considera a home
   - Menu lateral está em todas as páginas, mas ao abrir, o conteúdo da outra parte vai junto 
   
-**Acrescentei:**
+**Além de funcionalidades, mudei:**
 
   - Mudei a cor das telas
-  - Na procura ele pode encontrar como um item ou como outro, ou seja, alguém com o cpf igual ou o nome igual. Possibilitando que caso só saiba o nome, seja possível encontrar
   
 **EXCEÇÕES**
 
