@@ -64,6 +64,7 @@ ScreenManager:
     AlterarEstabelecimento2: 
     ConsultarEstabelecimento:
     TabelaBuscaEStabelecimento:
+    RemoverEstabelecimento:
 
 
 <NavigationDrawer>
@@ -766,6 +767,13 @@ class RemoverFornecedor(Screen):
         conn.commit()
         conn.close()
 
+        popup = Popup(title='DELETAR FORNECEDOR',
+                      content=Label(text='Fornecedor deletado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
 class AlterarFornecedor(Screen):
     def recolherDados(self):    
         global CNPJ_FORNECEDOR
@@ -1144,11 +1152,18 @@ class RemoverEstabelecimento(Screen):
         
         c = conn.cursor()
 
-        sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
+        sql_command = f"delete from estabelecimento WHERE codigo='{self.ids.codigo.text}' and nome='{self.ids.nome.text}';"
 
         c.execute(sql_command)  
         conn.commit()
         conn.close()
+
+        popup = Popup(title='DELETAR ESTABELECIMENTO',
+                      content=Label(text='Estabelecimento deletado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
 
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
@@ -1180,6 +1195,7 @@ sm.add_widget(AlterarEstabelecimento(name='alterar_estabelecimento'))
 sm.add_widget(AlterarEstabelecimento2(name='alterar_estabelecimento2'))
 sm.add_widget(ConsultarEstabelecimento(name='consultar_estabelecimento'))
 sm.add_widget(TabelaBuscaEStabelecimento(name='tabela_busca_estabelecimento'))
+sm.add_widget(RemoverEstabelecimento(name='remover_estabelecimento'))
 
 class Main(MDApp):
     def build(self):
