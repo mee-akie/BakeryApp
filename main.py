@@ -252,6 +252,7 @@ class TabelaBuscaFuncionario(Screen):
 
         self.table = MDDataTable(
             pos_hint={'center_x': .5, 'center_y': .5},
+            use_pagination=True,
             size_hint=(0.9, 0.6),
             column_data=[
                 ("COD-FUNCIONARIO", dp(40)),
@@ -541,6 +542,7 @@ class TabelaBuscaEstoque(Screen):
 
         self.table = MDDataTable(
             pos_hint={'center_x': .5, 'center_y': .5},
+            use_pagination=True,
             size_hint=(0.9, 0.6),
             column_data=[
                 ("COD-BARRAS", dp(40)),
