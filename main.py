@@ -1,7 +1,6 @@
 from re import A
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
-from kivy.uix.checkbox import CheckBox
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFloatingLabel, MDRaisedButton
