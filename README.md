@@ -16,8 +16,8 @@ REMOVER ESTABELECIMENTO [CORRETO] <br>
 CADASTRAR CONTA <br>
 ALTERAR CONTA <br>
 REMOVER CONTA <br>
-CONTAS ATIVAS <br>
-CONTAS PASSADAS <br>
+CONTAS ATIVAS [CORRETO] <br>
+CONTAS PASSADAS [CORRETO] <br>
 
 **Bugs e problemas notados, que estão sendo resolvidos:**
 
