@@ -10,8 +10,8 @@ Compra do cliente+cadastro do cliente: *SILAS* <br>
 Empregados: *MELISSA* [PRONTO] <br>
 Fornecedores: *THATA*  [PRONTO] <br>
 Histórico de vendas: *THEO*   <br>
-Estabelecimento+contas:  *THATA*   <br>
+Estabelecimento+contas:  *THATA* [PRONTO] <br>
 
 PROBLEMAS EXTRAS:
 - Preparar para situações de exceções (digitar incorretamente, por exemplo) <br>
-- 
+- Botões do menu de navegação, em baixo, bugados
