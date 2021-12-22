@@ -70,8 +70,9 @@ ScreenManager:
     ConsultarContasPassadas:
     RemoverConta:
     CadastrarConta:
-
-
+    AlterarConta:
+    AlterarConta2:
+    
 
 <NavigationDrawer>
     orientation: "vertical"
@@ -894,7 +895,7 @@ class EstabelecimentoPage(Screen):
         self.parent.current = 'consultar_estabelecimento'
 
     def switchModificar(self):
-        self.parent.current = 'modificar_compra'
+        self.parent.current = 'alterar_conta'
 
     def switchRemover(self):
         self.parent.current = 'remover_estabelecimento'
@@ -1405,6 +1406,111 @@ class CadastrarConta(Screen):
 
         self.parent.current = 'fornecedores'
 
+class AlterarConta(Screen):
+    def recolherDados(self):    
+        global COD_BARRAS
+        COD_BARRAS = self.ids.cod_barras.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'alterar_conta2'
+    
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+class AlterarConta2(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def alterar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        if(self.ids.pago.text == 's'):
+            self.ids.pago.text = 'true'
+        else:
+            self.ids.pago.text = 'false'
+  
+        if(self.ids.data_pagamento.text != ''):
+            sql_command = f"""update conta
+                            set cod_barras=%s,
+                                tipo=%s,
+                                valor=%s,
+                                data_vencimento=%s,
+                                data_pagamento=%s,
+                                pago=%s,
+                                codigo_estabelecimento=%s
+                            where cod_barras=%s;"""
+
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.data_pagamento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text,
+                      COD_BARRAS)
+        else:
+            sql_command = f"""update conta 
+                            set cod_barras=%s,
+                                tipo=%s,
+                                valor=%s,
+                                data_vencimento=%s,
+                                data_pagamento=null,
+                                pago=%s,
+                                codigo_estabelecimento=%s
+                            where cod_barras=%s;;"""
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text,
+                      COD_BARRAS)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DA CONTA',
+                      content=Label(text='CONTA atualizada com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
+
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
@@ -1440,6 +1546,8 @@ sm.add_widget(ConsultaContasAtivas(name='consultar_contas_ativas'))
 sm.add_widget(ConsultarContasPassadas(name='consultar_contas_passadas'))
 sm.add_widget(RemoverConta(name='remover_conta'))
 sm.add_widget(CadastrarConta(name='cadastrar_conta'))
+sm.add_widget(AlterarConta(name='alterar_conta'))
+sm.add_widget(AlterarConta2(name='alterar_conta2'))
 
 class Main(MDApp):
     def build(self):
