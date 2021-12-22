@@ -185,13 +185,7 @@ class CadastrarFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         
         c = conn.cursor()
 
@@ -243,13 +237,7 @@ class BuscarFuncionario(Screen):
 
 class TabelaBuscaFuncionario(Screen):
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = ''
@@ -317,13 +305,7 @@ class RemoverFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         
         c = conn.cursor()
 
@@ -349,13 +331,7 @@ class AlterarFuncionario2(Screen):
         self.parent.current = 'funcionario'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"""update funcionario
@@ -415,13 +391,7 @@ class CadastrarProduto(Screen):
         self.parent.current = 'estoque'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         
         c = conn.cursor()
 
@@ -461,13 +431,7 @@ class CadastrarProduto(Screen):
         
 class RemoverProduto(Screen):
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         
         c = conn.cursor()
 
@@ -511,13 +475,7 @@ class ConsultarEstoque(Screen):
 
 class TabelaBuscaEstoque(Screen):
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = ''
@@ -621,13 +579,7 @@ class AtualizarEstoque(Screen):
 class AtualizarEstoque_2(Screen):
 
     def atualizar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"""update produto
