@@ -68,6 +68,8 @@ ScreenManager:
     RemoverEstabelecimento:
     ConsultaContasAtivas:
     ConsultarContasPassadas:
+    RemoverConta:
+
 
 
 <NavigationDrawer>
@@ -897,7 +899,7 @@ class EstabelecimentoPage(Screen):
         self.parent.current = 'remover_estabelecimento'
 
     def switchExcluir(self):
-        self.parent.current = 'excluir_conta'
+        self.parent.current = 'remover_conta'
 
     def switchAtivas(self):
         self.parent.current = 'consultar_contas_ativas'
@@ -1291,6 +1293,47 @@ class ConsultarContasPassadas(Screen):
     def on_enter(self):
         self.tabela()
 
+class RemoverConta(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from conta WHERE cod_barras='{self.ids.cod_barras.text}';"
+
+        c.execute(sql_command)  
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='DELETAR CONTA',
+                      content=Label(text='Conta deletada com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
@@ -1324,6 +1367,7 @@ sm.add_widget(TabelaBuscaEStabelecimento(name='tabela_busca_estabelecimento'))
 sm.add_widget(RemoverEstabelecimento(name='remover_estabelecimento'))
 sm.add_widget(ConsultaContasAtivas(name='consultar_contas_ativas'))
 sm.add_widget(ConsultarContasPassadas(name='consultar_contas_passadas'))
+sm.add_widget(RemoverConta(name='remover_conta'))
 
 class Main(MDApp):
     def build(self):
