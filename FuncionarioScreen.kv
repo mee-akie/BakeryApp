@@ -1,3 +1,5 @@
+# https://www.youtube.com/watch?v=oFDQbyc_TMU
+
 <FuncionarioPage>:
     name: 'funcionario'
     MDToolbar:
@@ -33,48 +35,44 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
-    MDFillRoundFlatIconButton:
+    MDRectangleFlatIconButton:
         text : 'Buscar um funcionario'
         icon : "account-search"
         pos_hint : {"center_x":.5,"center_y":.65}
         text_color : get_color_from_hex("#7E6B73")
-        md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
             root.switchBuscar()
 
-    MDFillRoundFlatIconButton :
+    MDRectangleFlatIconButton:
         text : 'Cadastrar um novo funcionario'
         icon : "account-plus"
         pos_hint : {"center_x":.5,"center_y":.55}
         text_color : get_color_from_hex("#7E6B73")
-        md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
             root.switchCadastro()
 
-    MDFillRoundFlatIconButton :
-        text : 'Remover um funcionario'
-        icon : "account-minus"
-        pos_hint : {"center_x":.5,"center_y":.45}
-        text_color : get_color_from_hex("#7E6B73")
-        md_bg_color : get_color_from_hex("#FCE18E")
-        font_size : 20
-        on_press :
+    MDRectangleFlatIconButton:
+        text: 'Remover um funcionario'
+        icon: "account-minus"
+        pos_hint:  {"center_x":.5,"center_y":.45}
+        text_color: get_color_from_hex("#7E6B73")
+        font_size: 20
+        on_press:
             root.manager.transition.direction = 'left'
             root.switchRemover()
 
-    MDFillRoundFlatIconButton :
-        text : 'Alterar dados de um funcionario'
-        icon : "account-edit"
-        pos_hint : {"center_x":.5,"center_y":.35}
-        text_color : get_color_from_hex("#7E6B73")
-        md_bg_color : get_color_from_hex("#FCE18E")
-        font_size : 20
+    MDRectangleFlatIconButton :
+        text: 'Alterar dados de um funcionario'
+        icon: "account-edit"
+        pos_hint: {"center_x":.5,"center_y":.35}
+        text_color: get_color_from_hex("#7E6B73")
+        font_size: 20
         on_press :
             root.manager.transition.direction = 'left'
             root.switchAlterar()
@@ -163,52 +161,57 @@
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "DADOS DE FUNCIONARIO"
+        title: "BUSCA - FUNCIONARIO"
         md_bg_color: get_color_from_hex("#854442")
-        
-    MDBoxLayout:
-        orientation: "vertical"
-        size_hint_x: .9
-        size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .9}
 
-        MDTextField:
-            id: codigo_estabelecimento
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'Número do estabelecimento: '
-            pos_hint: {'center_x': .5, 'center_y': .8}
-            text_color: get_color_from_hex("#000000")
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        font_name: 'Georgia'
+        text: 'Preencha os dados do funcionário para\n realizar a busca. Caso não tenha um dos\n dados, apenas deixe o campo vazio.'
 
-        MDTextField:
-            id: cpf
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'CPF do funcionário: '
-            pos_hint: {'center_x': .5, 'center_y': .7}
-            text_color: get_color_from_hex("#000000")
+    MDTextField:
+        id: codigo_estabelecimento
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .6}
+        size_hint_x: .7
+        hint_text: 'Número do estabelecimento:'
+        text_color: get_color_from_hex("#000000")
 
-    ButtonFocus:
-        size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
-        md_bg_color: app.theme_cls.primary_light
-        focus_color: get_color_from_hex("#e54c37")
-        unfocus_color: app.theme_cls.primary_light
-        text: 'BUSCAR'
-        on_press:
-            root.buscar()
-            root.switchTabela()
+    MDTextField:
+        id: nome
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        size_hint_x: .7
+        hint_text: 'Nome do funcionário:'
+        text_color: get_color_from_hex("#000000")
 
-    ButtonFocus:
-        size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
-        md_bg_color: app.theme_cls.primary_light
-        focus_color: get_color_from_hex("#e54c37")
-        unfocus_color: app.theme_cls.primary_light
-        text: 'CANCELAR'
+    MDTextField:
+        id: cpf
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .4}
+        size_hint_x: .7
+        hint_text: 'CPF do funcionário: '
+        text_color: get_color_from_hex("#000000")
+
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.2}
         on_press:
             root.manager.transition.direction = 'right'
             root.switchFuncionario()
+
+    MDFloatingActionButton:
+        icon: "arrow-right-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.8,"center_y":.2}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.buscar()
+            root.switchTabela()
+
 
 <TabelaBuscaFuncionario>:
     name: 'tabela_busca_funcionario'
@@ -276,6 +279,52 @@
 
 <AlterarFuncionario>:
     name: 'alterar_funcionario'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "BUSCANDO FUNCIONARIO PARA ALTERAR SEUS DADOS"
+        md_bg_color: get_color_from_hex("#854442")
+
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_x: .9
+        size_hint_y: .8
+        pos_hint: {'center_x': .5, 'center_y': .70}
+
+        MDTextField:
+            id: cpf
+            multiline: False
+            size_hint_x: .8
+            hint_text: 'CPF: '
+            pos_hint: {'center_x': .5, 'center_y': .7}
+            text_color: get_color_from_hex("#000000")
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .3, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'BUSCAR'
+        on_press:
+            root.recolherDados()
+
+    ButtonFocus:
+        size_hint_x: .35
+        pos_hint: {'center_x': .7, 'center_y': .20}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFuncionario()
+
+
+<AlterarFuncionario2>:
+    name: 'alterar_funcionario_2'
 
     MDToolbar:
         id: toolbar
