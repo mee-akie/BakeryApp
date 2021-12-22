@@ -22,10 +22,9 @@ Window.size = (400, 650)
 
 # variaveis globais
 CPF_FUNCIONARIO = ''
+NOME_FUNC = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
-
-DADOS_PRODUTO = ()
 
 
 KV = '''
@@ -196,6 +195,10 @@ class BuscarFuncionario(Screen):
         CPF_FUNCIONARIO = self.ids.cpf.text
         global COD_ESTABELECIMENTO
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
+        global NOME_FUNC
+        NOME_FUNC = self.ids.nome.text
+        print(CPF_FUNCIONARIO)
+        print(COD_ESTABELECIMENTO)
 
 
 class TabelaBuscaFuncionario(Screen):
@@ -209,7 +212,32 @@ class TabelaBuscaFuncionario(Screen):
         )
         c = conn.cursor()
 
-        sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
+        sql_command = ''
+        
+        if CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC != '':
+            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO} and nome={NOME_FUNC};"
+
+        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
+            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
+        
+        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO == '' and NOME_FUNC == '':
+            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}';"
+
+        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
+            sql_command = f"select * from funcionario WHERE codigo_estabelecimento='{COD_ESTABELECIMENTO}';"
+
+        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO == '' and NOME_FUNC != '':
+            sql_command = f"select * from funcionario WHERE nome='{NOME_FUNC}';"
+        
+        else:
+            popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
 
         c.execute(sql_command)	
         output = c.fetchall()

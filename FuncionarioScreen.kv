@@ -1,3 +1,5 @@
+# https://www.youtube.com/watch?v=oFDQbyc_TMU
+
 <FuncionarioPage>:
     name: 'funcionario'
     MDToolbar:
@@ -164,108 +166,53 @@
 
     Label:
         id: num_estabelecimento
-        pos_hint: {'x': 0.1, 'y': 0.5}
-        size_hint_x: .8
-        size_hint_y: .7
-        font_size: '14sp'
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
         color: get_color_from_hex("#000000")
-        text: 'ESCOLHA O TIPO DE FILTRO PARA REALIZAR A BUSCA'
+        font_name: 'Georgia'
+        text: 'Preencha os dados do funcionário para\n realizar a busca. Caso não tenha um dos\n dados, apenas deixe o campo vazio.'
 
-    Label:
-        id: num_estabelecimento
-        pos_hint: {'x': 0, 'y': 0.4}
-        size_hint_x: .95
-        size_hint_y: .4
-        font_size: '14sp'
-        color: app.theme_cls.primary_dark
-        text: 'Número do estabelecimento'
+    MDTextField:
+        id: codigo_estabelecimento
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .6}
+        size_hint_x: .7
+        hint_text: 'Número do estabelecimento'
+        text_color: get_color_from_hex("#000000")
 
-    CheckBox:
-        id: num_estabelecimento
-        group: 'tipo_de_busca'
-        pos_hint: {'x': 0, 'y': 0.4}
-        size_hint_x: .4
-        size_hint_y: .4
-        color: 'black'
-
-
-    Label:
+    MDTextField:
         id: nome
-        pos_hint: {'x': 0, 'y': 0.3}
-        size_hint_x: .95
-        size_hint_y: .3
-        font_size: '14sp'
-        color: app.theme_cls.primary_dark
-        text: 'Nome do funcionário'
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        size_hint_x: .7
+        hint_text: 'Nome do funcionário'
+        text_color: get_color_from_hex("#000000")
 
-    CheckBox:
-        id: nome
-        group: 'tipo_de_busca'
-        pos_hint: {'x': 0.1, 'y': 0.3}
-        size_hint_x: .2
-        size_hint_y: .3
-        color: 'black'
+    MDTextField:
+        id: cpf
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .4}
+        size_hint_x: .7
+        hint_text: 'CPF do funcionário: '
+        text_color: get_color_from_hex("#000000")
 
-    # Label:
-    #     id: cpf
-    #     pos_hint: {'x': 0, 'y': 0.5}
-    #     size_hint_x: .70
-    #     size_hint_y: .05
-    #     font_size: '14sp'
-    #     color: app.theme_cls.primary_dark
-    #     text: 'CPF do funcionário'
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.2}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFuncionario()
 
-    # CheckBox:
-    #     id: cpf
-    #     group: 'tipo_de_busca'
-    #     pos_hint: {'x': 0.1, 'y': 0.5}
-    #     size_hint_x: .1
-    #     size_hint_y: .05
-    #     color: 'black'
+    MDFloatingActionButton:
+        icon: "arrow-right-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.8,"center_y":.2}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.buscar()
+            root.switchTabela()
 
-    # MDBoxLayout:
-    #     orientation: "vertical"
-    #     size_hint_x: .9
-    #     size_hint_y: .8
-    #     pos_hint: {'center_x': .5, 'center_y': .9}
-
-        # MDTextField:
-        #     id: codigo_estabelecimento
-        #     multiline: False
-        #     size_hint_x: .8
-        #     hint_text: 'Número do estabelecimento: '
-        #     pos_hint: {'center_x': .5, 'center_y': .8}
-        #     text_color: get_color_from_hex("#000000")
-
-        # MDTextField:
-        #     id: cpf
-        #     multiline: False
-        #     size_hint_x: .8
-        #     hint_text: 'CPF do funcionário: '
-        #     pos_hint: {'center_x': .5, 'center_y': .7}
-        #     text_color: get_color_from_hex("#000000")
-
-    # ButtonFocus:
-    #     size_hint_x: .35
-    #     pos_hint: {'center_x': .3, 'center_y': .40}
-    #     md_bg_color: app.theme_cls.primary_light
-    #     focus_color: get_color_from_hex("#e54c37")
-    #     unfocus_color: app.theme_cls.primary_light
-    #     text: 'BUSCAR'
-    #     on_press:
-    #         root.buscar()
-    #         root.switchTabela()
-
-    # ButtonFocus:
-    #     size_hint_x: .35
-    #     pos_hint: {'center_x': .7, 'center_y': .40}
-    #     md_bg_color: app.theme_cls.primary_light
-    #     focus_color: get_color_from_hex("#e54c37")
-    #     unfocus_color: app.theme_cls.primary_light
-    #     text: 'CANCELAR'
-    #     on_press:
-    #         root.manager.transition.direction = 'right'
-    #         root.switchFuncionario()
 
 <TabelaBuscaFuncionario>:
     name: 'tabela_busca_funcionario'
