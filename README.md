@@ -12,7 +12,7 @@ REMOVER FORNECEDOR <br>
 CADASTRAR ESTABELECIMENTO [CORRETO] <br>
 ALTERAR ESTABELECIMENTO [CORRETO] <br>
 CONSULTAR ESTABELECIMENTOS [CORRETO]<br>
-REMOVER ESTABELECIMENTO <br>
+REMOVER ESTABELECIMENTO [CORRETO] <br>
 CADASTRAR CONTA <br>
 ALTERAR CONTA <br>
 REMOVER CONTA <br>
@@ -23,6 +23,7 @@ CONTAS PASSADAS <br>
 
   - Menu lateral: O primeiro item não funciona para clicar, acredito que ele considera a home
   - Menu lateral está em todas as páginas, mas ao abrir, o conteúdo da outra parte vai junto 
+  - Depois de realizar a tarefa, o texto continua lá
   
 **Além de funcionalidades, mudei:**
 
