@@ -69,6 +69,7 @@ ScreenManager:
     ConsultaContasAtivas:
     ConsultarContasPassadas:
     RemoverConta:
+    CadastrarConta:
 
 
 
@@ -884,7 +885,7 @@ class EstabelecimentoPage(Screen):
         self.parent.current = 'cadastrar_estabelecimento'
 
     def switchInserir(self):
-        self.parent.current = 'inserir_conta'
+        self.parent.current = 'cadastrar_conta'
 
     def switchAlterar(self):
         self.parent.current = 'alterar_estabelecimento'
@@ -1333,6 +1334,76 @@ class RemoverConta(Screen):
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
+class CadastrarConta(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        if(self.ids.pago.text == 's'):
+            self.ids.pago.text = 'true'
+        else:
+            self.ids.pago.text = 'false'
+  
+        if(self.ids.data_pagamento.text != ''):
+            sql_command = "INSERT INTO conta (cod_barras, tipo, valor, data_vencimento, data_pagamento, pago, codigo_estabelecimento) VALUES(%s, %s, %s, %s, %s,%s,%s)"
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.data_pagamento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text)
+        else:
+            sql_command = "INSERT INTO conta (cod_barras, tipo, valor, data_vencimento, pago, codigo_estabelecimento) VALUES(%s, %s, %s, %s, %s,%s)"
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text)
+
+        c.execute(sql_command, (values))    
+        conn.commit()
+        conn.close()
+
+        self.ids.cod_barras.text = ''
+        self.ids.tipo.text = ''
+        self.ids.valor.text = ''
+        self.ids.data_vencimento.text = ''
+        self.ids.data_pagamento.text = ''
+        self.ids.pago.text = ''
+        self.ids.codigo_estabelecimento.text = ''        
+
+        popup = Popup(title='CADASTRAR CONTA',
+                      content=Label(text='Conta cadastrada com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
 
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
@@ -1368,6 +1439,7 @@ sm.add_widget(RemoverEstabelecimento(name='remover_estabelecimento'))
 sm.add_widget(ConsultaContasAtivas(name='consultar_contas_ativas'))
 sm.add_widget(ConsultarContasPassadas(name='consultar_contas_passadas'))
 sm.add_widget(RemoverConta(name='remover_conta'))
+sm.add_widget(CadastrarConta(name='cadastrar_conta'))
 
 class Main(MDApp):
     def build(self):
