@@ -241,6 +241,8 @@ class TabelaBuscaFuncionario(Screen):
 
         c.execute(sql_command)	
         output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,'', ''])
+
         conn.close()
 
         screen = AnchorLayout()
@@ -476,7 +478,6 @@ class TabelaBuscaEstoque(Screen):
         c.execute(sql_command)	
         output = c.fetchall()
         output.append(['', '', '', '', '', '' ,'', ''])
-        print(output)
         conn.close()
         screen = AnchorLayout()
 
