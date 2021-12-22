@@ -1,7 +1,6 @@
 from re import A
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
-from kivy.uix.checkbox import CheckBox
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFloatingLabel, MDRaisedButton
@@ -24,10 +23,12 @@ Window.size = (400, 650)
 
 # variaveis globais
 CPF_FUNCIONARIO = ''
+NOME_FUNC = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
-
-DADOS_PRODUTO = ()
+NOME_PROD = ''
+CATEGORIA_PROD = ''
+NOME_FABRIC = ''
 
 
 KV = '''
@@ -48,8 +49,10 @@ ScreenManager:
     TabelaBuscaFuncionario:
     RemoverFuncionario:
     AlterarFuncionario:
+    AlterarFuncionario2:
     EstoquePage:
     CadastrarProduto:
+    RemoverProduto:
     ConsultarEstoque:
     TabelaBuscaEstoque:
     AtualizarEstoque:
@@ -141,6 +144,7 @@ class LoginPage(Screen):
                 )
             )
 
+
 class HomePage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -182,10 +186,10 @@ class CadastrarFuncionario(Screen):
 
     def cadastrar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
@@ -231,29 +235,61 @@ class BuscarFuncionario(Screen):
         CPF_FUNCIONARIO = self.ids.cpf.text
         global COD_ESTABELECIMENTO
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
+        global NOME_FUNC
+        NOME_FUNC = self.ids.nome.text
+        print(CPF_FUNCIONARIO)
+        print(COD_ESTABELECIMENTO)
 
 
 class TabelaBuscaFuncionario(Screen):
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
 
-        sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
+        sql_command = ''
+        
+        if CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC != '':
+            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO} and nome={NOME_FUNC};"
+
+        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
+            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
+        
+        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO == '' and NOME_FUNC == '':
+            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}';"
+
+        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
+            sql_command = f"select * from funcionario WHERE codigo_estabelecimento='{COD_ESTABELECIMENTO}';"
+
+        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO == '' and NOME_FUNC != '':
+            sql_command = f"select * from funcionario WHERE nome='{NOME_FUNC}';"
+        
+        else:
+            popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
 
         c.execute(sql_command)	
         output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,'', ''])
+
         conn.close()
 
         screen = AnchorLayout()
 
         self.table = MDDataTable(
             pos_hint={'center_x': .5, 'center_y': .5},
+            use_pagination=True,
             size_hint=(0.9, 0.6),
             column_data=[
                 ("COD-FUNCIONARIO", dp(40)),
@@ -302,8 +338,53 @@ class AlterarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
 
+    def recolherDados(self):	
+        global CPF_FUNCIONARIO
+        CPF_FUNCIONARIO = self.ids.cpf.text
+        self.parent.current = 'alterar_funcionario_2'
+
+
+class AlterarFuncionario2(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
     def alterar(self):
-        ...
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update funcionario
+                            set nome=%s,
+                                cpf=%s,
+                                salario=%s,
+                                ferias=%s,
+                                codigo_estabelecimento=%s
+                            where cpf=%s;"""
+
+        values = (self.ids.nome.text,
+                  self.ids.cpf.text,
+                  self.ids.salario.text,
+                  self.ids.ferias.text,
+                  self.ids.codigo_estabelecimento.text,
+                  CPF_FUNCIONARIO)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DE FUNCIONARIO',
+                      content=Label(text='Funcionario atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'funcionario'
 
 
 class EstoquePage(Screen):
@@ -319,12 +400,14 @@ class EstoquePage(Screen):
     def switchCadastrar(self):
         self.parent.current = 'cadastrar_produto'
 
+    def switchRemover(self):
+        self.parent.current = 'remover_produto'
+
     def switchConsultar(self):
         self.parent.current = 'consultar_estoque'
 
     def switchAtualizar(self):
         self.parent.current = 'atualizar_estoque'
-
 
 
 class CadastrarProduto(Screen):
@@ -375,6 +458,38 @@ class CadastrarProduto(Screen):
 
         self.parent.current = 'estoque'
 
+        
+class RemoverProduto(Screen):
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+
+        c.execute(sql_command)	
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='REMOVER PRODUTO',
+                      content=Label(text='Produto removido com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+        
+        self.parent.current = 'estoque'
+
+    
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
 
 class ConsultarEstoque(Screen):
     def switchEstoque(self):
@@ -386,30 +501,85 @@ class ConsultarEstoque(Screen):
     def buscar(self):
         global COD_BARRAS
         COD_BARRAS = self.ids.cod_barras.text
+        global NOME_PROD
+        NOME_PROD = self.ids.nome.text
+        global CATEGORIA_PROD
+        CATEGORIA_PROD = self.ids.categoria.text
+        global NOME_FABRIC
+        NOME_FABRIC = self.ids.nome_fabricante.text
     
 
 class TabelaBuscaEstoque(Screen):
     def tabela(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
 
-        sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
+        sql_command = ''
+        
+        if COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
+        
+        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
+
+        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
+
+        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE nome='{NOME_PROD}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE nome_fabricante='{NOME_FABRIC}';"
+
+        else:
+            popup = Popup(title='ERRO - CONSULTAR ESTOQUE',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
 
         c.execute(sql_command)	
         output = c.fetchall()
         output.append(['', '', '', '', '', '' ,'', ''])
-        print(output)
         conn.close()
         screen = AnchorLayout()
 
         self.table = MDDataTable(
             pos_hint={'center_x': .5, 'center_y': .5},
+            use_pagination=True,
             size_hint=(0.9, 0.6),
             column_data=[
                 ("COD-BARRAS", dp(40)),
@@ -447,14 +617,15 @@ class AtualizarEstoque(Screen):
         self.parent.current = 'estoque'
 
 
+
 class AtualizarEstoque_2(Screen):
 
     def atualizar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         c = conn.cursor()
@@ -469,7 +640,6 @@ class AtualizarEstoque_2(Screen):
                                 categoria=%s,
                                 qtd_estoque=%s,
                                 data_vencimento=%s
-
                             where cod_barras=%s;"""
 
         values = (self.ids.cod_barras.text,
@@ -479,9 +649,11 @@ class AtualizarEstoque_2(Screen):
                   self.ids.fabricacao.text,
                   self.ids.categoria.text,
                   self.ids.qtd_estoque.text,
-                  self.ids.vencimento.text)
+                  self.ids.vencimento.text,
+                  COD_BARRAS)
 
         c.execute(sql_command, values)
+        conn.commit()
         conn.close()
 
         popup = Popup(title='ATUALIZAR DADOS DO PRODUTO',
@@ -492,6 +664,7 @@ class AtualizarEstoque_2(Screen):
         popup.open()
 
         self.parent.current = 'estoque'
+            
 
 
 
@@ -515,12 +688,14 @@ sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
 sm.add_widget(AlterarFuncionario(name='alterar_funcionario'))
+sm.add_widget(AlterarFuncionario2(name='alterar_funcionario_2'))
 sm.add_widget(EstoquePage(name='estoque'))
 sm.add_widget(CadastrarProduto(name='cadastrar_produto'))
 sm.add_widget(ConsultarEstoque(name='consultar_estoque'))
 sm.add_widget(AtualizarEstoque(name='atualizar_estoque'))
 sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
+sm.add_widget(RemoverProduto(name='remover_produto'))
 sm.add_widget(LoginPage(name='login'))
 
 
