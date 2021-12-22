@@ -198,7 +198,13 @@
         elevation: 10
         title: "REMOVER PRODUTO"
         md_bg_color: get_color_from_hex("#854442")
-        
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha o campo abaixo para\n realizar a remoção do produto.\nCaso não tenha seu código de barras,\nvocê poderá encontra-lo na página\nde ESTOQUE, em "Consultar produtos\nno estoque".'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -225,6 +231,7 @@
         on_press:
             root.remover()
             root.switchEstoque()
+            root.manager.transition.direction = 'left'
 
     ButtonFocus:
         size_hint_x: .35
