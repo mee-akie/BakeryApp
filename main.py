@@ -27,6 +27,7 @@ COD_BARRAS = ''
 CNPJ_FORNECEDOR = ''
 NOME_FORNECEDOR = '' 
 NOME_ESTABELECIMENTO = ''
+DATA_ATUAL = ''
 
 KV = '''
 #:include FuncionarioScreen.kv
@@ -65,6 +66,8 @@ ScreenManager:
     ConsultarEstabelecimento:
     TabelaBuscaEStabelecimento:
     RemoverEstabelecimento:
+    ConsultaContasAtivas:
+    ConsultarContasPassadas:
 
 
 <NavigationDrawer>
@@ -711,6 +714,7 @@ class TabelaBuscaFornecedor(Screen):
         self.table = MDDataTable(
             pos_hint={'center_x': .5, 'center_y': .5},
             size_hint=(0.9, 0.6),
+            use_pagination=True,
             column_data=[
                 ("CNPJ", dp(40)),
                 ("NOME", dp(40)),
@@ -896,10 +900,10 @@ class EstabelecimentoPage(Screen):
         self.parent.current = 'excluir_conta'
 
     def switchAtivas(self):
-        self.parent.current = 'ver_ativa'
+        self.parent.current = 'consultar_contas_ativas'
 
     def switchPassadas(self):
-        self.parent.current = 'ver_passada'
+        self.parent.current = 'consultar_contas_passadas'
 
 class CadastrarEstabelecimento(Screen):
     def switchHome(self):
@@ -1103,6 +1107,7 @@ class TabelaBuscaEStabelecimento(Screen):
         self.table = MDDataTable(
             pos_hint={'center_x': .5, 'center_y': .5},
             size_hint=(0.9, 0.6),
+            use_pagination=True,
             column_data=[
                 ("CODIGO", dp(30)),
                 ("NOME", dp(40)),
@@ -1165,6 +1170,127 @@ class RemoverEstabelecimento(Screen):
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
+
+class ConsultaContasAtivas(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) >= 0;"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("COD_BARRAS", dp(60)),
+                ("TIPO", dp(40)),
+                ("VALOR", dp(30)),
+                ("DATA_VENCIMENTO", dp(32)),
+                ("DATA_PAGAMENTO", dp(32)),
+                ("PAGO", dp(30)),
+                ("CODIGO_ESTABELECIMENTO", dp(25))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+class ConsultarContasPassadas(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) < 0;"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("COD_BARRAS", dp(60)),
+                ("TIPO", dp(40)),
+                ("VALOR", dp(30)),
+                ("DATA_VENCIMENTO", dp(32)),
+                ("DATA_PAGAMENTO", dp(32)),
+                ("PAGO", dp(30)),
+                ("CODIGO_ESTABELECIMENTO", dp(25))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
 # auxiliar para criar o "menu" do lado esquerdo da tela (botao superior esquerdo na Home)
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
@@ -1196,6 +1322,8 @@ sm.add_widget(AlterarEstabelecimento2(name='alterar_estabelecimento2'))
 sm.add_widget(ConsultarEstabelecimento(name='consultar_estabelecimento'))
 sm.add_widget(TabelaBuscaEStabelecimento(name='tabela_busca_estabelecimento'))
 sm.add_widget(RemoverEstabelecimento(name='remover_estabelecimento'))
+sm.add_widget(ConsultaContasAtivas(name='consultar_contas_ativas'))
+sm.add_widget(ConsultarContasPassadas(name='consultar_contas_passadas'))
 
 class Main(MDApp):
     def build(self):
