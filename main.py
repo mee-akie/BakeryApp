@@ -73,61 +73,6 @@ ScreenManager:
     AlterarConta:
     AlterarConta2:
     
-
-<NavigationDrawer>
-    orientation: "vertical"
-    padding: "8dp"
-    spacing: "8dp"
-
-    AnchorLayout:
-        anchor_x: "left"
-        size_hint_y: None
-        height: avatar.height
-
-        Image:
-            id: avatar
-            size_hint: None, None
-            size: "56dp", "56dp"
-            source: "user.png"
-
-    MDLabel:
-        text: "USERNAME"
-        font_style: "Button"
-        size_hint_y: None
-        height: self.texture_size[1]
-
-    MDLabel:
-        text: "userEmail@gmail.com"
-        font_style: "Caption"
-        size_hint_y: None
-        height: self.texture_size[1]
-
-    ScrollView:
-        MDList:
-            OneLineListItem:
-                text: "Início"
-                on_release:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "home"
-
-            OneLineListItem:
-                text: "Fornecedores"
-                on_release:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "fornecedores"
-
-            OneLineListItem:
-                text: "Estabelecimentos"
-                on_release:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "estabelecimento"
-
-            OneLineListItem:
-                text: "Historico"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "historico"
-
 '''
 
 

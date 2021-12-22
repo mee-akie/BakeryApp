@@ -5,39 +5,43 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "Bakery ABC - Home"
-        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
         md_bg_color: toolbarColor
     
-    MDNavigationLayout:
-        x: toolbar.height
-        ScreenManager:
-            id: screen_manager
-            MDScreen:
-                name: "home"
-                text: "O que você gostaria de fazer?"
-                on_enter:
-                    root.manager.transition.direction = 'right'
-                    root.switchHome()   
-            MDScreen:
-                name: "fornecedores"
-                on_enter:
-                    root.manager.transition.direction = 'right'
-                    root.switchFornecedores()   
-            MDScreen:
-                name: "estabelecimento"
-                on_enter:
-                    root.manager.transition.direction = 'right'
-                    root.switchEstabelecimento() 
-            MDScreen:
-                name: "historico"
-                MDLabel:
-                    text: "historico home"
-                    halign: "center"
-        MDNavigationDrawer:
-            id: nav_drawer
-            NavigationDrawer:
-                screen_manager: screen_manager
-                nav_drawer: nav_drawer
+    MDFillRoundFlatIconButton:
+        text : 'Estabelecimento e contas'
+        icon : "store"
+        pos_hint : {"center_x":.5,"center_y":.70}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchEstabelecimento()
+
+    MDFillRoundFlatIconButton:
+        text : 'Fornecedores'
+        icon : "package-variant"
+        pos_hint : {"center_x":.5,"center_y":.60}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchFornecedores()
+
+    MDFillRoundFlatIconButton:
+        text : 'Histórico de vendas'
+        icon : "cart"
+        pos_hint : {"center_x":.5,"center_y":.50}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchHome()
 
     MDBottomNavigation:
         size_hint_y: .09
