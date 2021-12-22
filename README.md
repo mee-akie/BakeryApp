@@ -11,3 +11,7 @@ Empregados: *MELISSA* [PRONTO] <br>
 Fornecedores: *THATA*  [PRONTO] <br>
 Histórico de vendas: *THEO*   <br>
 Estabelecimento+contas:  *THATA*   <br>
+
+PROBLEMAS EXTRAS:
+- Preparar para situações de exceções (digitar incorretamente, por exemplo) <br>
+- 
