@@ -25,6 +25,9 @@ CPF_FUNCIONARIO = ''
 NOME_FUNC = ''
 COD_ESTABELECIMENTO = ''
 COD_BARRAS = ''
+NOME_PROD = ''
+CATEGORIA_PROD = ''
+NOME_FABRIC = ''
 
 
 KV = '''
@@ -460,6 +463,12 @@ class ConsultarEstoque(Screen):
     def buscar(self):
         global COD_BARRAS
         COD_BARRAS = self.ids.cod_barras.text
+        global NOME_PROD
+        NOME_PROD = self.ids.nome.text
+        global CATEGORIA_PROD
+        CATEGORIA_PROD = self.ids.categoria.text
+        global NOME_FABRIC
+        NOME_FABRIC = self.ids.nome_fabricante.text
     
 
 class TabelaBuscaEstoque(Screen):
@@ -473,7 +482,56 @@ class TabelaBuscaEstoque(Screen):
         )
         c = conn.cursor()
 
-        sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
+        sql_command = ''
+        
+        if COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
+        
+        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome_fabricante='{NOME_FABRIC}';"
+
+        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
+
+        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
+
+        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE nome='{NOME_PROD}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
+            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}';"
+
+        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
+            sql_command = f"select * from produto WHERE nome_fabricante='{NOME_FABRIC}';"
+
+        else:
+            popup = Popup(title='ERRO - CONSULTAR ESTOQUE',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
 
         c.execute(sql_command)	
         output = c.fetchall()
