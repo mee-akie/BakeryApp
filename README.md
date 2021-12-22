@@ -3,7 +3,7 @@
 TELAS:
 
 Login: *SILAS* [PRONTO] <br>
-Início: *THATA* <br>
+Início: *THATA* [PRONTO] <br>
 Cadastro: *THEO*    <br>
 Estoque+Compra: *MELISSA* [PRONTO] <br>
 Compra do cliente+cadastro do cliente: *SILAS* <br>
