@@ -1,4 +1,8 @@
 # BakeryApp
+**PARA LOGAR:** <br>
+
+cpf: 23456712356 <br>
+senha: 123321 <br>
 
 TELAS:
 
