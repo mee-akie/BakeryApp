@@ -136,7 +136,7 @@
             size_hint_x: .8
             mode: "rectangle"
             max_text_length: 10
-            hint_text: 'Data de fabricação:'
+            hint_text: 'Data de fabricação: <dd-mm-aaaa>'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -146,7 +146,7 @@
             size_hint_x: .8
             mode: "rectangle"
             max_text_length: 10
-            hint_text: 'Data de vencimento:'
+            hint_text: 'Data de vencimento: <dd-mm-aaaa>'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
         
@@ -326,8 +326,16 @@
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "BUSCA - ESTOQUE"
+        title: "RESULTADO DA BUSCA"
         md_bg_color: get_color_from_hex("#854442")
+
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchEstoque()
 
 
 <AtualizarEstoque>:
