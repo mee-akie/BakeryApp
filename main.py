@@ -1557,6 +1557,23 @@ class NavigationDrawer(MDBoxLayout):
     nav_drawer = ObjectProperty()
 
 
+    
+####### METODOS AUXIARES ########
+
+# Converte 'dd-mm-aaaa' para 'aaaa-mm-dd' (padrao do Postgresql)
+def ConversorData(dataDesformatada):
+    if dataDesformatada == '': return dataDesformatada 
+    return str(dataDesformatada[len(dataDesformatada)-4:len(dataDesformatada)] + '-' + dataDesformatada[3:5] + '-' + dataDesformatada[0:2])
+
+# Troca o caracter ',' por '.' (padrao do Postgresql)
+def FormataFloat(num):
+    numFormatado = num
+    if ',' in num:
+        numFormatado = numFormatado.replace(',', '.') 
+    return numFormatado
+
+
+
 # Gerenciador de paginas
 sm = ScreenManager()
 sm.add_widget(HomePage(name='home'))
