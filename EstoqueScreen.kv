@@ -259,7 +259,7 @@
         pos_hint : {"center_x":.5,"center_y":.75}
         font_size: '20sp'
         color: get_color_from_hex("#000000")
-        text: 'Preencha os dados do produto para\n realizar a busca. Caso não tenha um dos\n dados, apenas deixe o campo vazio.'
+        text: 'Preencha o campo abaixo para\n realizar a atualização do produto.\nCaso não tenha seu código de barras,\nvocê poderá encontra-lo na página\nde ESTOQUE, em "Consultar produtos\nno estoque".'
 
     MDTextField:
         id: cod_barras
@@ -512,4 +512,4 @@
         text: 'CANCELAR'
         on_press:
             root.manager.transition.direction = 'right'
-            root.switchFuncionario()
+            root.switchEstoque()
