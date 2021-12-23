@@ -43,7 +43,7 @@ KV = '''
 #:include EstabelecimentoScreen.kv
 
 #:import get_color_from_hex kivy.utils.get_color_from_hex
-#:set toolbarColor get_color_from_hex("#854442")
+#:set toolbarColor get_color_from_hex("#DF6710")
 
 
 ScreenManager:
