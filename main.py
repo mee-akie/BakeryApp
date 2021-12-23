@@ -167,7 +167,13 @@ class CadastrarFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def cadastrar(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         
         c = conn.cursor()
 
@@ -219,7 +225,13 @@ class BuscarFuncionario(Screen):
 
 class TabelaBuscaFuncionario(Screen):
     def tabela(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         c = conn.cursor()
 
         sql_command = ''
@@ -287,7 +299,13 @@ class RemoverFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def remover(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         
         c = conn.cursor()
 
@@ -313,7 +331,13 @@ class AlterarFuncionario2(Screen):
         self.parent.current = 'funcionario'
 
     def alterar(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         c = conn.cursor()
 
         sql_command = f"""update funcionario
@@ -368,25 +392,53 @@ class EstoquePage(Screen):
         self.parent.current = 'atualizar_estoque'
 
 
+
 class CadastrarProduto(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
     def cadastrar(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         
         c = conn.cursor()
 
-        # Add dados na tabela de Funcionario
+        fabricacao = ConversorData(self.ids.fabricacao.text)
+        vencimento = ConversorData(self.ids.vencimento.text)
+        cod_barras = self.ids.cod_barras.text
+        nome = (self.ids.nome.text).lower()
+        preco = FormataFloat(self.ids.preco.text)
+        categoria = (self.ids.categoria.text).lower()
+        qts_estoque = self.ids.qtd_estoque.text
+        fabricante = (self.ids.fabricante.text).lower()
+
+
+        if fabricacao == '' or vencimento == '' or cod_barras == '' or nome == '' or preco == '' or categoria == '' or qts_estoque == '' or fabricante == '':
+
+            popup = Popup(title='ERRO - CADASTRAR PRODUTO',
+                    content=Label(text='Alguns campos não foram\npreenchidos. Por favor, preencha\n todos os dados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return   
+
         sql_command = "INSERT INTO PRODUTO (COD_BARRAS, NOME, NOME_FABRICANTE, PRECO, DATA_FABRICACAO, CATEGORIA, QTD_ESTOQUE, DATA_VENCIMENTO) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (self.ids.cod_barras.text,
-                  self.ids.nome.text,
-                  self.ids.fabricante.text,
-                  self.ids.preco.text,
-                  self.ids.fabricacao.text,
-                  self.ids.categoria.text,
-                  self.ids.qtd_estoque.text,
-                  self.ids.vencimento.text)
+
+        values = (cod_barras,
+                  nome,
+                  fabricante,
+                  preco,
+                  fabricacao,
+                  categoria,
+                  qts_estoque,
+                  vencimento)
 
         c.execute(sql_command, (values))	
         conn.commit()
@@ -402,22 +454,38 @@ class CadastrarProduto(Screen):
         self.ids.vencimento.text = ''
 
         popup = Popup(title='CADASTRAR PRODUTO',
-                      content=Label(text='Produto cadastrado com sucesso'),
+                      content=Label(text='Produto cadastrado com sucesso.'),
                       size_hint=(None, None),
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
-
         self.parent.current = 'estoque'
 
-        
+
 class RemoverProduto(Screen):
     def remover(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         
         c = conn.cursor()
 
-        sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+        if (self.ids.cod_barras.text != ''):
+            sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+        
+        else:
+            popup = Popup(title='ERRO - EXCLUSÃO DO PRODUTO',
+                    content=Label(text='Não foi informado nenhum código\n de barras para realizar a remoção\ndo produto.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
 
         c.execute(sql_command)	
         conn.commit()
@@ -457,7 +525,13 @@ class ConsultarEstoque(Screen):
 
 class TabelaBuscaEstoque(Screen):
     def tabela(self):
-        conn = ConnectionDatabase.getConnection()
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
         c = conn.cursor()
 
         sql_command = ''
@@ -524,8 +598,8 @@ class TabelaBuscaEstoque(Screen):
             column_data=[
                 ("COD-BARRAS", dp(40)),
                 ("NOME", dp(40)),
-                ("NOME FABRICANTE", dp(30)),
-                ("PREÇO", dp(25)),
+                ("NOME FABRICANTE", dp(40)),
+                ("PREÇO", dp(30)),
                 ("DT FABRICAÇÃO", dp(40)),
                 ("CATEGORIA", dp(35)),
                 ("QTD ESTOQUE", dp(40)),
