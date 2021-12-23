@@ -280,10 +280,10 @@ class RemoverFuncionario(Screen):
 
     def remover(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
@@ -379,25 +379,46 @@ class CadastrarProduto(Screen):
 
     def cadastrar(self):
         conn = psycopg2.connect(
-            host = "ec2-44-198-211-34.compute-1.amazonaws.com",
-            database = "ddj7ffdunshjqf", 
-            user = "vuxxgxylynkvnk",
-            password = "e7f1713e3c7c4907b83a8e412f5373c52e1bf5e7a741e6667957bb41bcbecd69",
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
             port = "5432"
         )
         
         c = conn.cursor()
 
-        # Add dados na tabela de Funcionario
+        fabricacao = ConversorData(self.ids.fabricacao.text)
+        vencimento = ConversorData(self.ids.vencimento.text)
+        cod_barras = self.ids.cod_barras.text
+        nome = (self.ids.nome.text).lower()
+        preco = FormataFloat(self.ids.preco.text)
+        categoria = (self.ids.categoria.text).lower()
+        qts_estoque = self.ids.qtd_estoque.text
+        fabricante = (self.ids.fabricante.text).lower()
+
+
+        if fabricacao == '' or vencimento == '' or cod_barras == '' or nome == '' or preco == '' or categoria == '' or qts_estoque == '' or fabricante == '':
+
+            popup = Popup(title='ERRO - CADASTRAR PRODUTO',
+                    content=Label(text='Alguns campos não foram\npreenchidos. Por favor, preencha\n todos os dados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return   
+
         sql_command = "INSERT INTO PRODUTO (COD_BARRAS, NOME, NOME_FABRICANTE, PRECO, DATA_FABRICACAO, CATEGORIA, QTD_ESTOQUE, DATA_VENCIMENTO) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (self.ids.cod_barras.text,
-                  self.ids.nome.text,
-                  self.ids.fabricante.text,
-                  self.ids.preco.text,
-                  self.ids.fabricacao.text,
-                  self.ids.categoria.text,
-                  self.ids.qtd_estoque.text,
-                  self.ids.vencimento.text)
+
+        values = (cod_barras,
+                  nome,
+                  fabricante,
+                  preco,
+                  fabricacao,
+                  categoria,
+                  qts_estoque,
+                  vencimento)
 
         c.execute(sql_command, (values))	
         conn.commit()
@@ -413,13 +434,13 @@ class CadastrarProduto(Screen):
         self.ids.vencimento.text = ''
 
         popup = Popup(title='CADASTRAR PRODUTO',
-                      content=Label(text='Produto cadastrado com sucesso'),
+                      content=Label(text='Produto cadastrado com sucesso.'),
                       size_hint=(None, None),
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
-
         self.parent.current = 'estoque'
+
 
 class RemoverProduto(Screen):
     def remover(self):
@@ -433,7 +454,18 @@ class RemoverProduto(Screen):
         
         c = conn.cursor()
 
-        sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+        if (self.ids.cod_barras.text != ''):
+            sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+        
+        else:
+            popup = Popup(title='ERRO - EXCLUSÃO DO PRODUTO',
+                    content=Label(text='Não foi informado nenhum código\n de barras para realizar a remoção\ndo produto.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
 
         c.execute(sql_command)	
         conn.commit()
@@ -546,8 +578,8 @@ class TabelaBuscaEstoque(Screen):
             column_data=[
                 ("COD-BARRAS", dp(40)),
                 ("NOME", dp(40)),
-                ("NOME FABRICANTE", dp(30)),
-                ("PREÇO", dp(25)),
+                ("NOME FABRICANTE", dp(40)),
+                ("PREÇO", dp(30)),
                 ("DT FABRICAÇÃO", dp(40)),
                 ("CATEGORIA", dp(35)),
                 ("QTD ESTOQUE", dp(40)),
@@ -638,6 +670,21 @@ class ButtonFocus(MDRaisedButton, FocusBehavior):
 class NavigationDrawer(MDBoxLayout):
     screen_manager = ObjectProperty()
     nav_drawer = ObjectProperty()
+
+
+####### METODOS AUXIARES ########
+
+# Converte 'dd-mm-aaaa' para 'aaaa-mm-dd' (padrao do Postgresql)
+def ConversorData(dataDesformatada):
+    if dataDesformatada == '': return dataDesformatada 
+    return str(dataDesformatada[len(dataDesformatada)-4:len(dataDesformatada)] + '-' + dataDesformatada[3:5] + '-' + dataDesformatada[0:2])
+
+# Troca o caracter ',' por '.' (padrao do Postgresql)
+def FormataFloat(num):
+    numFormatado = num
+    if ',' in num:
+        numFormatado = numFormatado.replace(',', '.') 
+    return numFormatado
 
 
 # Gerenciador de paginas
