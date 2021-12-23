@@ -29,6 +29,9 @@ COD_BARRAS = ''
 NOME_PROD = ''
 CATEGORIA_PROD = ''
 NOME_FABRIC = ''
+CNPJ_FORNECEDOR = ''
+NOME_FORNECEDOR = '' 
+NOME_ESTABELECIMENTO = ''
 
 
 KV = '''
@@ -36,6 +39,9 @@ KV = '''
 #:include HomeScreen.kv
 #:include EstoqueScreen.kv
 #:include Login.kv
+#:include FornecedoresScreen.kv
+#:include EstabelecimentoScreen.kv
+
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#854442")
 
@@ -57,56 +63,26 @@ ScreenManager:
     TabelaBuscaEstoque:
     AtualizarEstoque:
     AtualizarEstoque_2:
-
-
-<NavigationDrawer>
-    orientation: "vertical"
-    padding: "8dp"
-    spacing: "8dp"
-
-    AnchorLayout:
-        anchor_x: "left"
-        size_hint_y: None
-        height: avatar.height
-
-        Image:
-            id: avatar
-            size_hint: None, None
-            size: "56dp", "56dp"
-            source: "user.png"
-
-    MDLabel:
-        text: "USERNAME"
-        font_style: "Button"
-        size_hint_y: None
-        height: self.texture_size[1]
-
-    MDLabel:
-        text: "userEmail@gmail.com"
-        font_style: "Caption"
-        size_hint_y: None
-        height: self.texture_size[1]
-
-
-    ScrollView:
-        MDList:
-            OneLineListItem:
-                text: "Pagina 1"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 1"
-
-            OneLineListItem:
-                text: "Pagina 2"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 2"
-
-            OneLineListItem:
-                text: "Pagina 3"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 3"
+    FornecedoresPage:
+    CadastrarFornecedor:
+    ConsultarFornecedor:
+    TabelaBuscaFornecedor:
+    RemoverFornecedor:
+    AlterarFornecedor:
+    AlterarFornecedor2: 
+    EstabelecimentoPage:
+    CadastrarEstabelecimento:
+    AlterarEstabelecimento:   
+    AlterarEstabelecimento2: 
+    ConsultarEstabelecimento:
+    TabelaBuscaEStabelecimento:
+    RemoverEstabelecimento:
+    ConsultaContasAtivas:
+    ConsultarContasPassadas:
+    RemoverConta:
+    CadastrarConta:
+    AlterarConta:
+    AlterarConta2:
 
 '''
 
@@ -144,7 +120,7 @@ class LoginPage(Screen):
                 )
             )
 
-
+#thata
 class HomePage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -154,6 +130,12 @@ class HomePage(Screen):
 
     def switchEstoque(self):
         self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
 
 
 class FuncionarioPage(Screen):
@@ -617,7 +599,951 @@ class AtualizarEstoque_2(Screen):
 
         self.parent.current = 'estoque'
             
+class FornecedoresPage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
 
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+    
+    def switchCadastrar(self):
+        self.parent.current = 'cadastrar_fornecedor'
+
+    def switchConsultar(self):
+        self.parent.current = 'consultar_fornecedor'
+
+    def switchAtualizar(self):
+        self.parent.current = 'alterar_fornecedor'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchRemover(self):
+        self.parent.current = 'remover_fornecedor'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+class CadastrarFornecedor(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        # Add dados na tabela de fornecedor
+        sql_command = "INSERT INTO fornecedor (CNPJ, NOME, RUA, ESTADO, CIDADE, CEP, NUMERO, BAIRRO) VALUES(%s, %s, %s, %s, %s,%s,%s,%s)"
+        values = (self.ids.cnpj.text,
+                  self.ids.nome.text,
+                  self.ids.rua.text,
+                  self.ids.estado.text,
+                  self.ids.cidade.text,
+                  self.ids.cep.text,
+                  self.ids.numero.text,
+                  self.ids.bairro.text)
+
+        c.execute(sql_command, (values))    
+        conn.commit()
+        conn.close()
+
+        self.ids.cnpj.text = ''
+        self.ids.nome.text = ''
+        self.ids.rua.text = ''
+        self.ids.estado.text = ''
+        self.ids.cidade.text = ''
+        self.ids.cep.text = ''
+        self.ids.numero.text = ''
+        self.ids.bairro.text = ''        
+
+        popup = Popup(title='CADASTRAR FORNECEDOR',
+                      content=Label(text='Fornecedor cadastrado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
+
+class ConsultarFornecedor(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchTabela(self):
+        self.parent.current = 'tabela_busca_fornecedor'
+
+    def buscar(self):
+        global CNPJ_FORNECEDOR
+        CNPJ_FORNECEDOR = self.ids.cnpj.text
+        global NOME_FORNECEDOR
+        NOME_FORNECEDOR = self.ids.nome.text
+
+
+class TabelaBuscaFornecedor(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,'', ''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("CNPJ", dp(40)),
+                ("NOME", dp(40)),
+                ("RUA", dp(30)),
+                ("ESTADO", dp(30)),
+                ("CIDADE", dp(30)),
+                ("CEP", dp(40)),
+                ("NUMERO", dp(25)),
+                ("BAIRRO", dp(40))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+
+class RemoverFornecedor(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
+
+        c.execute(sql_command)  
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='DELETAR FORNECEDOR',
+                      content=Label(text='Fornecedor deletado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+class AlterarFornecedor(Screen):
+    def recolherDados(self):    
+        global CNPJ_FORNECEDOR
+        CNPJ_FORNECEDOR = self.ids.cnpj.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'alterar_fornecedor2'
+    
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+class AlterarFornecedor2(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def alterar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update fornecedor
+                            set cnpj=%s,
+                                nome=%s,
+                                rua=%s,
+                                estado=%s,
+                                cidade=%s,
+                                cep=%s,
+                                numero=%s,
+                                bairro=%s
+                            where cnpj=%s;"""
+
+        values = (self.ids.cnpj.text,
+                  self.ids.nome.text,
+                  self.ids.rua.text,
+                  self.ids.estado.text,
+                  self.ids.cidade.text,
+                  self.ids.cep.text,
+                  self.ids.numero.text,
+                  self.ids.bairro.text,
+                  CNPJ_FORNECEDOR)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DO FORNECEDOR',
+                      content=Label(text='Fornecedor atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
+
+class EstabelecimentoPage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+    
+    def switchCadastrar(self):
+        self.parent.current = 'cadastrar_estabelecimento'
+
+    def switchInserir(self):
+        self.parent.current = 'cadastrar_conta'
+
+    def switchAlterar(self):
+        self.parent.current = 'alterar_estabelecimento'
+
+    def switchConsultar(self):
+        self.parent.current = 'consultar_estabelecimento'
+
+    def switchModificar(self):
+        self.parent.current = 'alterar_conta'
+
+    def switchRemover(self):
+        self.parent.current = 'remover_estabelecimento'
+
+    def switchExcluir(self):
+        self.parent.current = 'remover_conta'
+
+    def switchAtivas(self):
+        self.parent.current = 'consultar_contas_ativas'
+
+    def switchPassadas(self):
+        self.parent.current = 'consultar_contas_passadas'
+
+class CadastrarEstabelecimento(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        # Add dados na tabela de estabelecimento
+        sql_command = "INSERT INTO estabelecimento (nome, bairro, rua, cep, cidade, numero) VALUES(%s, %s, %s, %s,%s,%s)"
+        values = (self.ids.nome.text,
+                  self.ids.bairro.text,
+                  self.ids.rua.text,
+                  self.ids.cep.text,
+                  self.ids.cidade.text,
+                  self.ids.numero.text)
+
+        c.execute(sql_command, (values))    
+        conn.commit()
+        conn.close()
+
+        self.ids.nome.text = ''
+        self.ids.bairro.text = ''
+        self.ids.rua.text = ''
+        self.ids.cep.text = ''
+        self.ids.cidade.text = ''
+        self.ids.numero.text = ''      
+
+        popup = Popup(title='CADASTRAR ESTABELECIMENTO',
+                      content=Label(text='Estabelecimento cadastrado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estabelecimento'
+
+
+class AlterarEstabelecimento(Screen):
+    def recolherDados(self):    
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'alterar_estabelecimento2'
+    
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+class AlterarEstabelecimento2(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def alterar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"""update estabelecimento
+                            set nome=%s,
+                                bairro=%s,
+                                rua=%s,
+                                cep=%s,
+                                cidade=%s,
+                                numero=%s
+                            where codigo=%s;"""
+
+        values = (self.ids.nome.text,
+                  self.ids.bairro.text,
+                  self.ids.rua.text,
+                  self.ids.cep.text,
+                  self.ids.cidade.text,
+                  self.ids.numero.text,
+                  COD_ESTABELECIMENTO)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DO ESTABELECIMENTO',
+                      content=Label(text='Estabelecimento atualizado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'estabelecimento'
+
+class ConsultarEstabelecimento(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchTabela(self):
+        self.parent.current = 'tabela_busca_estabelecimento'
+
+    def buscar(self):
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo.text
+        global NOME_ESTABELECIMENTO
+        NOME_ESTABELECIMENTO = self.ids.nome.text
+
+
+class TabelaBuscaEStabelecimento(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("CODIGO", dp(30)),
+                ("NOME", dp(40)),
+                ("BAIRRO", dp(40)),
+                ("RUA", dp(30)),
+                ("CEP", dp(30)),
+                ("CIDADE", dp(30)),
+                ("NUMERO", dp(25))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+
+class RemoverEstabelecimento(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from estabelecimento WHERE codigo='{self.ids.codigo.text}' and nome='{self.ids.nome.text}';"
+
+        c.execute(sql_command)  
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='DELETAR ESTABELECIMENTO',
+                      content=Label(text='Estabelecimento deletado com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+
+class ConsultaContasAtivas(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) >= 0;"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("COD_BARRAS", dp(60)),
+                ("TIPO", dp(40)),
+                ("VALOR", dp(30)),
+                ("DATA_VENCIMENTO", dp(32)),
+                ("DATA_PAGAMENTO", dp(32)),
+                ("PAGO", dp(30)),
+                ("CODIGO_ESTABELECIMENTO", dp(25))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+class ConsultarContasPassadas(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def tabela(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) < 0;"
+
+        c.execute(sql_command)  
+        output = c.fetchall()
+        output.append(['', '', '', '', '', '' ,''])
+        print(output)
+        conn.close()
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("COD_BARRAS", dp(60)),
+                ("TIPO", dp(40)),
+                ("VALOR", dp(30)),
+                ("DATA_VENCIMENTO", dp(32)),
+                ("DATA_PAGAMENTO", dp(32)),
+                ("PAGO", dp(30)),
+                ("CODIGO_ESTABELECIMENTO", dp(25))
+            ],
+            sorted_on="NOME",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+
+class RemoverConta(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def remover(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        sql_command = f"delete from conta WHERE cod_barras='{self.ids.cod_barras.text}';"
+
+        c.execute(sql_command)  
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='DELETAR CONTA',
+                      content=Label(text='Conta deletada com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+class CadastrarConta(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        if(self.ids.pago.text == 's'):
+            self.ids.pago.text = 'true'
+        else:
+            self.ids.pago.text = 'false'
+  
+        if(self.ids.data_pagamento.text != ''):
+            sql_command = "INSERT INTO conta (cod_barras, tipo, valor, data_vencimento, data_pagamento, pago, codigo_estabelecimento) VALUES(%s, %s, %s, %s, %s,%s,%s)"
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.data_pagamento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text)
+        else:
+            sql_command = "INSERT INTO conta (cod_barras, tipo, valor, data_vencimento, pago, codigo_estabelecimento) VALUES(%s, %s, %s, %s, %s,%s)"
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text)
+
+        c.execute(sql_command, (values))    
+        conn.commit()
+        conn.close()
+
+        self.ids.cod_barras.text = ''
+        self.ids.tipo.text = ''
+        self.ids.valor.text = ''
+        self.ids.data_vencimento.text = ''
+        self.ids.data_pagamento.text = ''
+        self.ids.pago.text = ''
+        self.ids.codigo_estabelecimento.text = ''        
+
+        popup = Popup(title='CADASTRAR CONTA',
+                      content=Label(text='Conta cadastrada com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
+
+class AlterarConta(Screen):
+    def recolherDados(self):    
+        global COD_BARRAS
+        COD_BARRAS = self.ids.cod_barras.text
+    
+    def switchAtualiza(self):
+        self.parent.current = 'alterar_conta2'
+    
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+class AlterarConta2(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def alterar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        c = conn.cursor()
+
+        if(self.ids.pago.text == 's'):
+            self.ids.pago.text = 'true'
+        else:
+            self.ids.pago.text = 'false'
+  
+        if(self.ids.data_pagamento.text != ''):
+            sql_command = f"""update conta
+                            set cod_barras=%s,
+                                tipo=%s,
+                                valor=%s,
+                                data_vencimento=%s,
+                                data_pagamento=%s,
+                                pago=%s,
+                                codigo_estabelecimento=%s
+                            where cod_barras=%s;"""
+
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.data_pagamento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text,
+                      COD_BARRAS)
+        else:
+            sql_command = f"""update conta 
+                            set cod_barras=%s,
+                                tipo=%s,
+                                valor=%s,
+                                data_vencimento=%s,
+                                data_pagamento=null,
+                                pago=%s,
+                                codigo_estabelecimento=%s
+                            where cod_barras=%s;;"""
+            values = (self.ids.cod_barras.text,
+                      self.ids.tipo.text,
+                      self.ids.valor.text,
+                      self.ids.data_vencimento.text,
+                      self.ids.pago.text,
+                      self.ids.codigo_estabelecimento.text,
+                      COD_BARRAS)
+
+        c.execute(sql_command, values)
+        conn.commit()
+        conn.close()
+
+        popup = Popup(title='ATUALIZAR DADOS DA CONTA',
+                      content=Label(text='CONTA atualizada com sucesso'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+        self.parent.current = 'fornecedores'
 
 
 # botao do cadastro do funcionario
@@ -649,7 +1575,24 @@ sm.add_widget(AtualizarEstoque_2(name='atualizar_estoque_2'))
 sm.add_widget(TabelaBuscaEstoque(name='tabela_busca_estoque'))
 sm.add_widget(RemoverProduto(name='remover_produto'))
 sm.add_widget(LoginPage(name='login'))
-
+sm.add_widget(FornecedoresPage(name='fornecedores'))
+sm.add_widget(CadastrarFornecedor(name='cadastrar_fornecedor'))
+sm.add_widget(ConsultarFornecedor(name='consultar_fornecedor'))
+sm.add_widget(AlterarFornecedor(name='alterar_fornecedor'))
+sm.add_widget(RemoverFornecedor(name='remover_fornecedor'))
+sm.add_widget(EstabelecimentoPage(name='estabelecimento'))
+sm.add_widget(CadastrarEstabelecimento(name='CadastrarEstabelecimento'))
+sm.add_widget(AlterarEstabelecimento(name='alterar_estabelecimento'))
+sm.add_widget(AlterarEstabelecimento2(name='alterar_estabelecimento2'))
+sm.add_widget(ConsultarEstabelecimento(name='consultar_estabelecimento'))
+sm.add_widget(TabelaBuscaEStabelecimento(name='tabela_busca_estabelecimento'))
+sm.add_widget(RemoverEstabelecimento(name='remover_estabelecimento'))
+sm.add_widget(ConsultaContasAtivas(name='consultar_contas_ativas'))
+sm.add_widget(ConsultarContasPassadas(name='consultar_contas_passadas'))
+sm.add_widget(RemoverConta(name='remover_conta'))
+sm.add_widget(CadastrarConta(name='cadastrar_conta'))
+sm.add_widget(AlterarConta(name='alterar_conta'))
+sm.add_widget(AlterarConta2(name='alterar_conta2'))
 
 class Main(MDApp):
     def build(self):
@@ -661,8 +1604,6 @@ class Main(MDApp):
         ##conn = ConnectionDatabase.getConnection()
         ##c = conn.cursor()
         ##conn.close()
-
-        self.theme_cls.primary_palette = "DeepOrange"
         
         return Builder.load_string(KV)
 
