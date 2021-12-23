@@ -5,33 +5,43 @@
         pos_hint: {"top": 1}
         elevation: 10
         title: "Bakery ABC"
-        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
         md_bg_color: toolbarColor
 
-    MDNavigationLayout:
-        x: toolbar.height
-        ScreenManager:
-            id: screen_manager
-            MDScreen:
-                name: "item 1"
-                MDLabel:
-                    text: "Screen 1"
-                    halign: "center"
-            MDScreen:
-                name: "item 2"
-                MDLabel:
-                    text: "Screen 2"
-                    halign: "center"
-            MDScreen:
-                name: "item 3"
-                MDLabel:
-                    text: "Screen 3"
-                    halign: "center"
-        MDNavigationDrawer:
-            id: nav_drawer
-            NavigationDrawer:
-                screen_manager: screen_manager
-                nav_drawer: nav_drawer
+    MDFillRoundFlatIconButton:
+        text : 'Estabelecimento e contas'
+        icon : "store"
+        pos_hint : {"center_x":.5,"center_y":.70}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchEstabelecimento()
+
+    MDFillRoundFlatIconButton:
+        text : 'Fornecedores'
+        icon : "package-variant"
+        pos_hint : {"center_x":.5,"center_y":.60}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchFornecedores()
+
+    MDFillRoundFlatIconButton:
+        text : 'Histórico de vendas'
+        icon : "cart"
+        pos_hint : {"center_x":.5,"center_y":.50}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchHome()
 
     MDBottomNavigation:
         size_hint_y: .09
