@@ -613,6 +613,8 @@ class AtualizarEstoque(Screen):
 
 
 class AtualizarEstoque_2(Screen):
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
 
     def atualizar(self):
         conn = psycopg2.connect(
@@ -624,8 +626,378 @@ class AtualizarEstoque_2(Screen):
         )
         c = conn.cursor()
 
-        sql_command = f"""update produto
+        fabricacao = self.ids.fabricacao.text
+        vencimento = self.ids.vencimento.text
+        cod_barras = self.ids.cod_barras.text
+        nome = self.ids.nome.text
+        preco = self.ids.preco.text
+        categoria = self.ids.categoria.text
+        qts_estoque = self.ids.qtd_estoque.text
+        fabricante = self.ids.fabricante.text
 
+        sql_command = ''
+        values = ()
+
+        if fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            popup = Popup(title='ATUALIZAR PRODUTO',
+                    content=Label(text='Nenhuma alteração do produto foi feita.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria != '' and qts_estoque != '' and fabricante != '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                    nome_fabricante=%s,
+                                    preco=%s,
+                                    data_fabricacao=%s,
+                                    categoria=%s,
+                                    qtd_estoque=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+
+            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.fabricante.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.categoria.text, self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                        set data_fabricacao=%s
+                        where cod_barras=%s;"""
+            values = (self.ids.fabricacao.text, COD_BARRAS)
+        
+        elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                        set cod_barras=%s
+                        where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, COD_BARRAS)
+
+        
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                        set nome=%s,
+                        where cod_barras=%s;"""
+            values = (self.ids.nome.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set preco=%s,
+                                where cod_barras=%s;"""
+            values = (self.ids.preco.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                        set categoria=%s
+                        where cod_barras=%s;"""
+            values = (self.ids.categoria.text, COD_BARRAS)
+        
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                        set qtd_estoque=%s
+                        where cod_barras=%s;"""
+            values = (self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome_fabricante=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricante.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set data_fabricacao=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    data_fabricacao=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.fabricacao.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                    data_fabricacao=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                    preco=%s,
+                                    data_fabricacao=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                    nome_fabricante=%s,
+                                    preco=%s,
+                                    data_fabricacao=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.fabricante.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria != '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                    preco=%s,
+                                    data_fabricacao=%s,
+                                    categoria=%s,
+                                    qtd_estoque=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.categoria.text, self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    data_fabricacao=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.fabricacao.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set nome=%s,
+                                    data_fabricacao=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.nome.text, self.ids.fabricacao.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set preco=%s,
+                                    data_fabricacao=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.preco.text, self.ids.fabricacao.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set data_fabricacao=%s,
+                                    categoria=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricacao.text, self.ids.categoria.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set data_fabricacao=%s,
+                                    qtd_estoque=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricacao.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome_fabricante=%s,
+                                    data_fabricacao=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricante.text, self.ids.fabricacao.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set nome=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.nome.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set preco=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.preco.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set categoria=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.categoria.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set qtd_estoque=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome_fabricante=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricante.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.nome.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    preco=%s,
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.preco.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    categoria=%s,
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.categoria.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    qtd_estoque=%s,
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome_fabricante=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.fabricante.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set nome=%s,
+                                    preco=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.nome.text, self.ids.preco.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set nome=%s,
+                                    categoria=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.nome.text, self.ids.categoria.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set nome=%s,
+                                    qtd_estoque=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.nome.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome=%s,
+                                    nome_fabricante=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.nome.text, self.ids.fabricante.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set preco=%s,
+                                    categoria=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.preco.text, self.ids.categoria.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set preco=%s,
+                                    qtd_estoque=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.preco.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome_fabricante=%s,
+                                    preco=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricante.text, self.ids.preco.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set categoria=%s,
+                                    qtd_estoque=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.categoria.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome_fabricante=%s,
+                                    categoria=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricante.text, self.ids.categoria.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante != '':
+            sql_command = f"""update produto
+                                set nome_fabricante=%s,
+                                    qtd_estoque=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.fabricante.text, self.ids.qtd_estoque.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    nome=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    preco=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.preco.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    categoria=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.categoria.text, self.ids.vencimento.text, COD_BARRAS)
+
+        elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
+            sql_command = f"""update produto
+                                set cod_barras=%s,
+                                    qtd_estoque=%s,
+                                    data_vencimento=%s
+                                where cod_barras=%s;"""
+            values = (self.ids.cod_barras.text, self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+                               
+
+        fabricacao = ConversorData(self.ids.fabricacao.text)
+        vencimento = ConversorData(self.ids.vencimento.text)
+        nome = (self.ids.nome.text).lower()
+        preco = FormataFloat(self.ids.preco.text)
+        categoria = (self.ids.categoria.text).lower()
+        fabricante = (self.ids.fabricante.text).lower()
+
+        sql_command = f"""update produto
                             set cod_barras=%s,
                                 nome=%s,
                                 nome_fabricante=%s,
