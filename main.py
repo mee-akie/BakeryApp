@@ -340,27 +340,61 @@ class AlterarFuncionario2(Screen):
         )
         c = conn.cursor()
 
-        sql_command = f"""update funcionario
-                            set nome=%s,
-                                cpf=%s,
-                                salario=%s,
-                                ferias=%s,
-                                codigo_estabelecimento=%s
-                            where cpf=%s;"""
+        lista_atributos = [self.ids.nome.text,
+                            self.ids.cpf.text,
+                            self.ids.salario.text,
+                            self.ids.ferias.text,
+                            self.ids.codigo_estabelecimento.text]
+        sql_command = ''
+        lista_values = []
 
-        values = (self.ids.nome.text,
-                  self.ids.cpf.text,
-                  self.ids.salario.text,
-                  self.ids.ferias.text,
-                  self.ids.codigo_estabelecimento.text,
-                  CPF_FUNCIONARIO)
+        comAlteracoes = 0
+        lista_comAlteracoes = []
+        aux = 0
 
-        c.execute(sql_command, values)
+        for atributo in lista_atributos:
+            if atributo != '':
+                comAlteracoes += 1
+                if aux == 0:
+                    lista_comAlteracoes.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 1:
+                    lista_comAlteracoes.append("cpf")
+
+                if aux == 2:
+                    lista_comAlteracoes.append("salario")
+                    lista_values.append(f"{FormataFloat(atributo)}")
+
+                if aux == 3:
+                    lista_comAlteracoes.append("ferias")
+                    lista_values.append(f"{ConversorData(atributo)}")
+
+                if aux == 4:
+                    lista_comAlteracoes.append("codigo_estabelecimento")
+            aux += 1
+
+        lista_values.append(f"{CPF_FUNCIONARIO}")
+
+        if(comAlteracoes == 0):
+            popup = Popup(title='ATUALIZAR DADOS DO FUNCIONARIO',
+                    content=Label(text='NENHUMA alteração dos dados\ndo funcionário foi feita.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
+        sql_command = CriaQuery_UPDATE("funcionario", lista_comAlteracoes, "cpf")
+
+        c.execute(sql_command, tuple(lista_values))
+
         conn.commit()
         conn.close()
 
         popup = Popup(title='ATUALIZAR DADOS DE FUNCIONARIO',
-                      content=Label(text='Funcionario atualizado com sucesso'),
+                      content=Label(text='Funcionario atualizado com SUCESSO.'),
                       size_hint=(None, None),
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
@@ -704,7 +738,7 @@ class AtualizarEstoque_2(Screen):
             self.parent.current = 'estoque'
             return
 
-        sql_command = CriaQuery_UPDATE(lista_comAlteracoes, "cod_barras")
+        sql_command = CriaQuery_UPDATE("produto", lista_comAlteracoes, "cod_barras")
 
         c.execute(sql_command, tuple(lista_values))
         conn.commit()
@@ -1682,8 +1716,8 @@ class NavigationDrawer(MDBoxLayout):
     
 ############ METODOS AUXIARES ####################
 
-def CriaQuery_UPDATE(atributos, atributoReferencia):
-    sql_command = "update produto set"
+def CriaQuery_UPDATE(tabela, atributos, atributoReferencia):
+    sql_command = f"update {tabela} set"
 
     while(len(atributos)):
         if len(atributos) == 1:
