@@ -660,19 +660,19 @@ class AtualizarEstoque_2(Screen):
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
 
-            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.fabricante.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.categoria.text, self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), (self.ids.fabricante.text).lower(), FormataFloat(self.ids.preco.text), ConversorData(self.ids.fabricacao.text), (self.ids.categoria.text).lower(), self.ids.qtd_estoque.text, ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                         set data_fabricacao=%s
                         where cod_barras=%s;"""
-            values = (self.ids.fabricacao.text, COD_BARRAS)
+            values = (ConversorData(self.ids.fabricacao.text), COD_BARRAS)
         
         elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.vencimento.text, COD_BARRAS)
+            values = (ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -685,19 +685,19 @@ class AtualizarEstoque_2(Screen):
             sql_command = f"""update produto
                         set nome=%s,
                         where cod_barras=%s;"""
-            values = (self.ids.nome.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set preco=%s,
                                 where cod_barras=%s;"""
-            values = (self.ids.preco.text, COD_BARRAS)
+            values = (FormataFloat(self.ids.preco.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                         set categoria=%s
                         where cod_barras=%s;"""
-            values = (self.ids.categoria.text, COD_BARRAS)
+            values = ((self.ids.categoria.text).lower(), COD_BARRAS)
         
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
@@ -709,14 +709,14 @@ class AtualizarEstoque_2(Screen):
             sql_command = f"""update produto
                                 set nome_fabricante=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricante.text, COD_BARRAS)
+            values = ((self.ids.fabricante.text).lower(), COD_BARRAS)
 
         elif fabricacao != '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set data_fabricacao=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (ConversorData(self.ids.fabricacao.text), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -724,7 +724,7 @@ class AtualizarEstoque_2(Screen):
                                     data_fabricacao=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.fabricacao.text, self.ids.qtd_estoque.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, ConversorData(self.ids.fabricacao.text), self.ids.qtd_estoque.text, COD_BARRAS)
 
         elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -733,7 +733,7 @@ class AtualizarEstoque_2(Screen):
                                     data_fabricacao=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), ConversorData(self.ids.fabricacao.text), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -743,9 +743,9 @@ class AtualizarEstoque_2(Screen):
                                     data_fabricacao=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), FormataFloat(self.ids.preco.text), ConversorData(self.ids.fabricacao.text), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
-        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria != '' and qts_estoque == '' and fabricante == '':
+        elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set cod_barras=%s,
                                     nome=%s,
@@ -754,7 +754,7 @@ class AtualizarEstoque_2(Screen):
                                     data_fabricacao=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.fabricante.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), self.ids.fabricante.text, FormataFloat(self.ids.preco.text), ConversorData(self.ids.fabricacao.text), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento != '' and cod_barras != '' and nome != '' and preco != '' and categoria != '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
@@ -766,112 +766,112 @@ class AtualizarEstoque_2(Screen):
                                     qtd_estoque=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.preco.text, self.ids.fabricacao.text, self.ids.categoria.text, self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), FormataFloat(self.ids.preco.text), ConversorData(self.ids.fabricacao.text), (self.ids.categoria.text).lower(), self.ids.qtd_estoque.text, ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set cod_barras=%s,
                                     data_fabricacao=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.fabricacao.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, ConversorData(self.ids.fabricacao.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set nome=%s,
                                     data_fabricacao=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.nome.text, self.ids.fabricacao.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), ConversorData(self.ids.fabricacao.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set preco=%s,
                                     data_fabricacao=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.preco.text, self.ids.fabricacao.text, COD_BARRAS)
+            values = (FormataFloat(self.ids.preco.text), ConversorData(self.ids.fabricacao.text), COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set data_fabricacao=%s,
                                     categoria=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricacao.text, self.ids.categoria.text, COD_BARRAS)
+            values = (ConversorData(self.ids.fabricacao.text), (self.ids.categoria.text).lower(), COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
                                 set data_fabricacao=%s,
                                     qtd_estoque=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricacao.text, self.ids.qtd_estoque.text, COD_BARRAS)
+            values = (ConversorData(self.ids.fabricacao.text), self.ids.qtd_estoque.text, COD_BARRAS)
 
         elif fabricacao != '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
             sql_command = f"""update produto
                                 set nome_fabricante=%s,
                                     data_fabricacao=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricante.text, self.ids.fabricacao.text, COD_BARRAS)
+            values = ((self.ids.fabricante.text).lower(), ConversorData(self.ids.fabricacao.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set cod_barras=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set nome=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.nome.text, self.ids.vencimento.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set preco=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.preco.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (FormataFloat(self.ids.preco.text), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set categoria=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.categoria.text, self.ids.vencimento.text, COD_BARRAS)
+            values = ((self.ids.categoria.text).lower(), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
                                 set qtd_estoque=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.qtd_estoque.text, ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
             sql_command = f"""update produto
                                 set nome_fabricante=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricante.text, self.ids.vencimento.text, COD_BARRAS)
+            values = ((self.ids.fabricante.text).lower(), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set cod_barras=%s,
                                     nome=%s,
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.nome.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set cod_barras=%s,
                                     preco=%s,
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.preco.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, FormataFloat(self.ids.preco.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set cod_barras=%s,
                                     categoria=%s,
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.categoria.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.categoria.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
@@ -885,77 +885,77 @@ class AtualizarEstoque_2(Screen):
                                 set cod_barras=%s,
                                     nome_fabricante=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.fabricante.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.fabricante.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set nome=%s,
                                     preco=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.nome.text, self.ids.preco.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), FormataFloat(self.ids.preco.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set nome=%s,
                                     categoria=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.nome.text, self.ids.categoria.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), (self.ids.categoria.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
                                 set nome=%s,
                                     qtd_estoque=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.nome.text, self.ids.qtd_estoque.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), self.ids.qtd_estoque.text, COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante != '':
             sql_command = f"""update produto
                                 set nome=%s,
                                     nome_fabricante=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.nome.text, self.ids.fabricante.text, COD_BARRAS)
+            values = ((self.ids.nome.text).lower(), (self.ids.fabricante.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
                                 set preco=%s,
                                     categoria=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.preco.text, self.ids.categoria.text, COD_BARRAS)
+            values = (FormataFloat(self.ids.preco.text), (self.ids.categoria.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
                                 set preco=%s,
                                     qtd_estoque=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.preco.text, self.ids.qtd_estoque.text, COD_BARRAS)
+            values = (FormataFloat(self.ids.preco.text), self.ids.qtd_estoque.text, COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante != '':
             sql_command = f"""update produto
                                 set nome_fabricante=%s,
                                     preco=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricante.text, self.ids.preco.text, COD_BARRAS)
+            values = ((self.ids.fabricante.text).lower(), FormataFloat(self.ids.preco.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
                                 set categoria=%s,
                                     qtd_estoque=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.categoria.text, self.ids.qtd_estoque.text, COD_BARRAS)
+            values = ((self.ids.categoria.text).lower(), self.ids.qtd_estoque.text, COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante != '':
             sql_command = f"""update produto
                                 set nome_fabricante=%s,
                                     categoria=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricante.text, self.ids.categoria.text, COD_BARRAS)
+            values = ((self.ids.fabricante.text).lower(), (self.ids.categoria.text).lower(), COD_BARRAS)
 
         elif fabricacao == '' and vencimento == '' and cod_barras == '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante != '':
             sql_command = f"""update produto
                                 set nome_fabricante=%s,
                                     qtd_estoque=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.fabricante.text, self.ids.qtd_estoque.text, COD_BARRAS)
+            values = ((self.ids.fabricante.text).lower(), self.ids.qtd_estoque.text, COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome != '' and preco == '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -963,7 +963,7 @@ class AtualizarEstoque_2(Screen):
                                     nome=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.nome.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.nome.text).lower(), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco != '' and categoria == '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -971,7 +971,7 @@ class AtualizarEstoque_2(Screen):
                                     preco=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.preco.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, FormataFloat(self.ids.preco.text), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria != '' and qts_estoque == '' and fabricante == '':
             sql_command = f"""update produto
@@ -979,7 +979,7 @@ class AtualizarEstoque_2(Screen):
                                     categoria=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.categoria.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, (self.ids.categoria.text).lower(), ConversorData(self.ids.vencimento.text), COD_BARRAS)
 
         elif fabricacao == '' and vencimento != '' and cod_barras != '' and nome == '' and preco == '' and categoria == '' and qts_estoque != '' and fabricante == '':
             sql_command = f"""update produto
@@ -987,36 +987,8 @@ class AtualizarEstoque_2(Screen):
                                     qtd_estoque=%s,
                                     data_vencimento=%s
                                 where cod_barras=%s;"""
-            values = (self.ids.cod_barras.text, self.ids.qtd_estoque.text, self.ids.vencimento.text, COD_BARRAS)
+            values = (self.ids.cod_barras.text, self.ids.qtd_estoque.text, ConversorData(self.ids.vencimento.text), COD_BARRAS)
                                
-
-        fabricacao = ConversorData(self.ids.fabricacao.text)
-        vencimento = ConversorData(self.ids.vencimento.text)
-        nome = (self.ids.nome.text).lower()
-        preco = FormataFloat(self.ids.preco.text)
-        categoria = (self.ids.categoria.text).lower()
-        fabricante = (self.ids.fabricante.text).lower()
-
-        sql_command = f"""update produto
-                            set cod_barras=%s,
-                                nome=%s,
-                                nome_fabricante=%s,
-                                preco=%s,
-                                data_fabricacao=%s,
-                                categoria=%s,
-                                qtd_estoque=%s,
-                                data_vencimento=%s
-                            where cod_barras=%s;"""
-
-        values = (self.ids.cod_barras.text,
-                  self.ids.nome.text,
-                  self.ids.fabricante.text,
-                  self.ids.preco.text,
-                  self.ids.fabricacao.text,
-                  self.ids.categoria.text,
-                  self.ids.qtd_estoque.text,
-                  self.ids.vencimento.text,
-                  COD_BARRAS)
 
         c.execute(sql_command, values)
         conn.commit()
