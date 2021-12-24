@@ -171,17 +171,18 @@ class VendaPage(Screen):
             )
 
             #inserindo tabela na tela
-            self.add_widget(self.table)
-
-        
+            self.add_widget(self.table)      
 
     def switchHome(self):
+        self.parent.transition.direction = 'right'
         self.parent.current = 'home'
 
     def switchFuncionario(self):
+        self.parent.transition.direction = 'right'
         self.parent.current = 'funcionario'
 
     def switchEstoque(self):
+        self.parent.transition.direction = 'right'
         self.parent.current = 'estoque'
 
     def switchCadastroVenda(self):
