@@ -87,9 +87,15 @@
         title: "NOVO PRODUTO"
         md_bg_color: get_color_from_hex("#854442")
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.85}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos campo abaixo para\n realizar o cadastro.'
+
     MDBoxLayout:
         orientation: "vertical"
-        pos_hint: {'center_x': .5, 'center_y': .70}
+        pos_hint: {'center_x': .5, 'center_y': .65}
 
         MDTextField:
             id: nome
@@ -209,7 +215,7 @@
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .9}
+        pos_hint: {'center_x': .5, 'center_y': .87}
 
         MDTextField:
             id: cod_barras
@@ -223,7 +229,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .3, 'center_y': .3}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -235,7 +241,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .7, 'center_y': .3}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
