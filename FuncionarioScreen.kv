@@ -1,5 +1,3 @@
-# https://www.youtube.com/watch?v=oFDQbyc_TMU
-
 <FuncionarioPage>:
     name: 'funcionario'
     MDToolbar:
@@ -11,7 +9,7 @@
 
     MDBottomNavigation:
         size_hint_y: .09
-        panel_color: get_color_from_hex("#DF6710")
+        panel_color: get_color_from_hex("#854442")
         text_color_active: get_color_from_hex("#fff4e6")
         first_widget: 'screen 3'
         
@@ -88,15 +86,22 @@
         title: "NOVO FUNCIONARIO"
         md_bg_color: get_color_from_hex("#854442")
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos campo abaixo para\n realizar o cadastro. Apenas o campo\n"data da última ferias" é opcional.'
 
     MDBoxLayout:
         orientation: "vertical"
-        pos_hint: {'center_x': .5, 'center_y': .85}
+        pos_hint: {'center_x': .5, 'center_y': .8}
 
         MDTextField:
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'Nome:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -105,6 +110,8 @@
             id: cpf
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 11
             hint_text: 'CPF:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -113,6 +120,8 @@
             id: salario
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 10
             hint_text: 'Salario:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -121,7 +130,8 @@
             id: ferias
             multiline: False
             size_hint_x: .8
-            hint_text: 'Data da última ferias: '
+            mode: "rectangle"
+            hint_text: 'Data da última ferias: <dd-mm-aaaa>'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -129,13 +139,14 @@
             id: codigo_estabelecimento
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Codigo do estabelecimento:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
                     
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .25}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -144,7 +155,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .25}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -168,7 +179,6 @@
         pos_hint : {"center_x":.5,"center_y":.8}
         font_size: '20sp'
         color: get_color_from_hex("#000000")
-        font_name: 'Georgia'
         text: 'Preencha os dados do funcionário para\n realizar a busca. Caso não tenha um dos\n dados, apenas deixe o campo vazio.'
 
     MDTextField:
@@ -176,6 +186,7 @@
         multiline: False
         pos_hint: {'center_x': .5, 'center_y': .6}
         size_hint_x: .7
+        mode: "rectangle"
         hint_text: 'Número do estabelecimento:'
         text_color: get_color_from_hex("#000000")
 
@@ -184,6 +195,8 @@
         multiline: False
         pos_hint: {'center_x': .5, 'center_y': .5}
         size_hint_x: .7
+        mode: "rectangle"
+        max_text_length: 70
         hint_text: 'Nome do funcionário:'
         text_color: get_color_from_hex("#000000")
 
@@ -192,6 +205,8 @@
         multiline: False
         pos_hint: {'center_x': .5, 'center_y': .4}
         size_hint_x: .7
+        mode: "rectangle"
+        max_text_length: 11
         hint_text: 'CPF do funcionário: '
         text_color: get_color_from_hex("#000000")
 
@@ -231,7 +246,13 @@
         elevation: 10
         title: "REMOVER FUNCIONARIO"
         md_bg_color: get_color_from_hex("#854442")
-        
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos os campos abaixo para\n realizar a remoção do funcionário.'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -242,6 +263,7 @@
             id: codigo_estabelecimento
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Número do estabelecimento: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -250,13 +272,15 @@
             id: cpf
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 11
             hint_text: 'CPF do funcionário: '
             pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .3, 'center_y': .3}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -267,7 +291,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .7, 'center_y': .3}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -287,23 +311,25 @@
         title: "BUSCANDO FUNCIONARIO PARA ALTERAR SEUS DADOS"
         md_bg_color: get_color_from_hex("#854442")
 
-    MDBoxLayout:
-        orientation: "vertical"
-        size_hint_x: .9
-        size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .70}
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Informe o CPF do funcionário que\ndeseja atualizar. Caso não o tenha,\nvocê poderá encontra-lo na página\n FUNCIONARIO, em "Buscar um\nfuncionario".'
 
-        MDTextField:
-            id: cpf
-            multiline: False
-            size_hint_x: .8
-            hint_text: 'CPF: '
-            pos_hint: {'center_x': .5, 'center_y': .7}
-            text_color: get_color_from_hex("#000000")
+    MDTextField:
+        id: cpf
+        multiline: False
+        size_hint_x: .75
+        mode: "rectangle"
+        max_text_length: 11
+        hint_text: 'CPF: '
+        pos_hint: {'center_x': .5, 'center_y': .55}
+        text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .20}
+        pos_hint: {'center_x': .28, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -313,7 +339,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .20}
+        pos_hint: {'center_x': .73, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -343,6 +369,7 @@
             id: codigo_funcionario
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Código do funcionário: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -351,6 +378,8 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'Nome: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -359,6 +388,8 @@
             id: cpf
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 11
             hint_text: 'CPF: '
             pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
@@ -367,6 +398,8 @@
             id: salario
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 10
             hint_text: 'Salário: '
             pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
@@ -375,7 +408,8 @@
             id: ferias
             multiline: False
             size_hint_x: .8
-            hint_text: 'Data da última ferias: '
+            mode: "rectangle"
+            hint_text: 'Data da última ferias: <dd-mm-aaaa>'
             pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
 
@@ -383,6 +417,7 @@
             id: codigo_estabelecimento
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Número do estabelecimento: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
