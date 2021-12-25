@@ -352,7 +352,7 @@
         pos_hint : {"center_x":.5,"center_y":.75}
         font_size: '20sp'
         color: get_color_from_hex("#000000")
-        text: 'Informe os dados do produto que\n se deseja atualizar. Caso não tenha\num dos dados, apenas deixe o\ncampo vazio.'
+        text: 'Informe os dados do produto que\ndeseja atualizar. Caso não tenha\num dos dados, apenas deixe o\ncampo vazio.'
 
     MDBoxLayout:
         orientation: "vertical"
@@ -379,7 +379,6 @@
         text: 'BUSCAR'
         on_press:
             root.recolherDados()
-            root.switchAtualiza()
 
     ButtonFocus:
         size_hint_x: .35
