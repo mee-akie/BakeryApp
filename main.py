@@ -577,9 +577,16 @@ class ConsultarEstoque(Screen):
         CATEGORIA_PROD = self.ids.categoria.text
         global NOME_FABRIC
         NOME_FABRIC = self.ids.nome_fabricante.text
+        self.ids.cod_barras.text = ''
+        self.ids.nome.text = ''
+        self.ids.categoria.text = ''
+        self.ids.nome_fabricante.text = ''
     
 
 class TabelaBuscaEstoque(Screen):
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+        
     def tabela(self):
         conn = psycopg2.connect(
             host = "localhost",
@@ -591,48 +598,40 @@ class TabelaBuscaEstoque(Screen):
         c = conn.cursor()
 
         sql_command = ''
-        
-        if COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
 
-        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
-        
-        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+        lista_atributos = [COD_BARRAS,
+                           NOME_PROD,
+                           CATEGORIA_PROD,
+                           NOME_FABRIC]
+        sql_command = ''
+        lista_values = []
+        comValor = 0
+        lista_atributos_query = []
+        aux = 0
 
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+        for atributo in lista_atributos:
+            if atributo != '':
+                comValor += 1
+                if aux == 0:
+                    lista_atributos_query.append("cod_barras")
+                    lista_values.append(atributo)
 
-        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+                if aux == 1:
+                    lista_atributos_query.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}';"
+                if aux == 2:
+                    lista_atributos_query.append("categoria")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+                if aux == 3:
+                    lista_atributos_query.append("nome_fabricante")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome_fabricante='{NOME_FABRIC}';"
+            aux += 1
 
-        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
-
-        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
-
-        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE nome='{NOME_PROD}';"
-
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}';"
-
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE nome_fabricante='{NOME_FABRIC}';"
-
-        else:
-            popup = Popup(title='ERRO - CONSULTAR ESTOQUE',
+        if comValor == 0:
+            popup = Popup(title='ERRO - BUSCAR PRODUTO',
                     content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
                     size_hint=(None, None),
                     size=(300, 150),
@@ -641,8 +640,20 @@ class TabelaBuscaEstoque(Screen):
             self.parent.current = 'estoque'
             return
 
-        c.execute(sql_command)	
+        sql_command = CriaQuery_SELECT("produto", lista_atributos_query)
+        c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='ERRO - BUSCAR PRODUTO',
+                    content=Label(text='Não foi possível encontrar\nnenhum produto com os\ndados fornecidos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
         output.append(['', '', '', '', '', '' ,'', ''])
         conn.close()
         screen = AnchorLayout()
@@ -672,7 +683,6 @@ class TabelaBuscaEstoque(Screen):
 
     def on_enter(self):
         self.tabela()
-
 
 
 class AtualizarEstoque(Screen):
