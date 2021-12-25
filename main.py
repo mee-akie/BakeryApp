@@ -147,6 +147,16 @@ class CadastrarFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def cadastrar(self):
+        if self.ids.nome.text == '' or self.ids.cpf.text == '' or self.ids.salario.text == '' or self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ERR0 - CADASTRAR FUNCIONÁRIO',
+                            content=Label(text='Não foi possível realizar o cadastro.\nAlguns dados obrigatórios não foram\npreenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
         conn = psycopg2.connect(
             host = "localhost",
             database = "padaria", 
@@ -301,6 +311,16 @@ class RemoverFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def remover(self):
+        if self.ids.cpf.text == '' or self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ERR0 - REMOVER FUNCIONÁRIO',
+                            content=Label(text='Não foi possível remover o funcionário.\nAlguns dados não foram preenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
         conn = psycopg2.connect(
             host = "localhost",
             database = "padaria", 
@@ -325,6 +345,18 @@ class AlterarFuncionario(Screen):
     def recolherDados(self):	
         global CPF_FUNCIONARIO
         CPF_FUNCIONARIO = self.ids.cpf.text
+
+        if self.ids.cpf.text == '':
+            popup = Popup(title='ERRO - ATUALIZAR FUNCIONARIO',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
+        self.ids.cpf.text = ''
         self.parent.current = 'alterar_funcionario_2'
 
 
@@ -434,6 +466,16 @@ class CadastrarProduto(Screen):
         self.parent.current = 'estoque'
 
     def cadastrar(self):
+        if self.ids.fabricacao.text == '' or self.ids.vencimento.text == '' or self.ids.cod_barras.text == ''or self.ids.nome.text == '' or self.ids.preco.text == '' or self.ids.categoria.text == '' or self.ids.qtd_estoque.text == '' or self.ids.fabricante.text == '':
+            popup = Popup(title='ERR0 - CADASTRAR PRODUTO',
+                            content=Label(text='Não foi possível realizar o cadastro.\nAlguns dados obrigatórios não foram\npreenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
         conn = psycopg2.connect(
             host = "localhost",
             database = "padaria", 
