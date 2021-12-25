@@ -1738,6 +1738,20 @@ class NavigationDrawer(MDBoxLayout):
     
 ############ METODOS AUXIARES ####################
 
+def CriaQuery_SELECT(tabela, atributos):
+    sql_command = f"select * from {tabela} where "
+
+    while(len(atributos)):
+        if len(atributos) == 1:
+            sql_command += f" {atributos[0]}=%s;"
+            atributos.pop(0)
+        else:
+            sql_command += f" {atributos[0]}=%s and "
+            atributos.pop(0)
+
+    return sql_command
+
+
 def CriaQuery_UPDATE(tabela, atributos, atributoReferencia):
     sql_command = f"update {tabela} set"
 
