@@ -219,8 +219,9 @@ class BuscarFuncionario(Screen):
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
         global NOME_FUNC
         NOME_FUNC = self.ids.nome.text
-        print(CPF_FUNCIONARIO)
-        print(COD_ESTABELECIMENTO)
+        self.ids.cpf.text = ''
+        self.ids.codigo_estabelecimento.text = ''
+        self.ids.nome.text = ''
 
 
 class TabelaBuscaFuncionario(Screen):
@@ -234,24 +235,34 @@ class TabelaBuscaFuncionario(Screen):
         )
         c = conn.cursor()
 
+        lista_atributos = [NOME_FUNC,
+                           CPF_FUNCIONARIO,
+                           COD_ESTABELECIMENTO]
         sql_command = ''
-        
-        if CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC != '':
-            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO} and nome={NOME_FUNC};"
+        lista_values = []
+        comValor = 0
+        lista_atributos_query = []
+        aux = 0
 
-        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
-            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
-        
-        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO == '' and NOME_FUNC == '':
-            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}';"
+        for atributo in lista_atributos:
+            if atributo != '':
+                comValor += 1
+                if aux == 0:
+                    lista_atributos_query.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
-            sql_command = f"select * from funcionario WHERE codigo_estabelecimento='{COD_ESTABELECIMENTO}';"
+                if aux == 1:
+                    lista_atributos_query.append("cpf")
+                    lista_values.append(atributo)
 
-        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO == '' and NOME_FUNC != '':
-            sql_command = f"select * from funcionario WHERE nome='{NOME_FUNC}';"
-        
-        else:
+                if aux == 2:
+                    lista_atributos_query.append("codigo_estabelecimento")
+                    lista_values.append(atributo)
+
+            aux += 1
+
+
+        if comValor == 0:
             popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
                     content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
                     size_hint=(None, None),
@@ -261,10 +272,21 @@ class TabelaBuscaFuncionario(Screen):
             self.parent.current = 'funcionario'
             return
 
-        c.execute(sql_command)	
+        sql_command = CriaQuery_SELECT("funcionario", lista_atributos_query)
+        c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
-        output.append(['', '', '', '', '', '' ,'', ''])
 
+        if len(output) == 0:
+            popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi possível encontrar\nnenhum funcionário com os\ndados fornecidos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
+        output.append(['', '', '', '', '', '' ,'', ''])
         conn.close()
 
         screen = AnchorLayout()
@@ -665,6 +687,7 @@ class AtualizarEstoque(Screen):
         self.parent.current = 'estoque'
 
 
+
 class AtualizarEstoque_2(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
@@ -752,7 +775,6 @@ class AtualizarEstoque_2(Screen):
         popup.open()
 
         self.parent.current = 'estoque'
-
 
             
 class FornecedoresPage(Screen):
