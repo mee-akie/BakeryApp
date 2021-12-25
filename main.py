@@ -670,6 +670,20 @@ class AtualizarEstoque(Screen):
     def recolherDados(self):	
         global COD_BARRAS
         COD_BARRAS = self.ids.cod_barras.text
+
+        if self.ids.cod_barras.text == '':
+            popup = Popup(title='ERRO - ATUALIZAR PRODUTO',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
+        self.ids.cod_barras.text = ''
+        self.parent.current = 'atualizar_estoque_2'
+
     
     def switchAtualiza(self):
         self.parent.current = 'atualizar_estoque_2'
