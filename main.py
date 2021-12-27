@@ -34,7 +34,7 @@ KV = '''
 #:include HomeScreen.kv
 #:include EstoqueScreen.kv
 #:import get_color_from_hex kivy.utils.get_color_from_hex
-#:set toolbarColor get_color_from_hex("#854442")
+#:set toolbarColor get_color_from_hex("#DF6710")
 
 
 ScreenManager:
@@ -881,7 +881,6 @@ def FormataFloat(num):
 
 # Gerenciador de paginas
 sm = ScreenManager()
-sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
