@@ -15,7 +15,7 @@
         
         MDBottomNavigationItem:
             name: 'screen 1'
-            text: 'Home'
+            text: 'home'
             icon: 'home-circle'
             on_enter:
                 root.manager.transition.direction = 'right'
@@ -23,7 +23,7 @@
 
         MDBottomNavigationItem:
             name: 'screen 2'
-            text: 'Estoque'
+            text: 'botao 2'
             icon: 'barcode'
 
         MDBottomNavigationItem:
@@ -32,17 +32,11 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
-        MDBottomNavigationItem:
-            name: 'screen 4'
-            text: 'Vendas'
-            icon: 'cash'
-            on_enter: root.switchVendas()
-
     MDRectangleFlatIconButton:
         text : 'Cadastrar produto'
         icon : "basket-plus"
         pos_hint : {"center_x":.5,"center_y":.65}
-        text_color : get_color_from_hex("#854442")
+        text_color : get_color_from_hex("#7E6B73")
         font_size : 20
         user_font_size: "64sp"
         on_press:
