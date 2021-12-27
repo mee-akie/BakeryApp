@@ -48,8 +48,8 @@ KV = '''
 #:include Login.kv
 #:include FornecedoresScreen.kv
 #:include EstabelecimentoScreen.kv
-
 #:include VendaScreen.kv
+
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#DF6710")
 
@@ -94,56 +94,6 @@ ScreenManager:
     AlterarConta2:
     VendaPage:
     CadastroVenda:
-
-
-<NavigationDrawer>
-    orientation: "vertical"
-    padding: "8dp"
-    spacing: "8dp"
-
-    AnchorLayout:
-        anchor_x: "left"
-        size_hint_y: None
-        height: avatar.height
-
-        Image:
-            id: avatar
-            size_hint: None, None
-            size: "56dp", "56dp"
-            source: "user.png"
-
-    MDLabel:
-        text: "USERNAME"
-        font_style: "Button"
-        size_hint_y: None
-        height: self.texture_size[1]
-
-    MDLabel:
-        text: "userEmail@gmail.com"
-        font_style: "Caption"
-        size_hint_y: None
-        height: self.texture_size[1]
-
-
-    ScrollView:
-        MDList:
-            OneLineListItem:
-                text: "Pagina 1"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 1"
-
-            OneLineListItem:
-                text: "Pagina 2"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 2"
-
-            OneLineListItem:
-                text: "Pagina 3"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "item 3"
 
 '''
 
