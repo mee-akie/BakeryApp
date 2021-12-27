@@ -1,4 +1,4 @@
-CREATE SCHEMA PADARIA AUTHORIZATION POSTGRES;
+CREATE SCHEMA PADARIA AUTHORIZATION postgres2;
 SET search_path TO PADARIA;
 
 ----------------------------------------------------------------
