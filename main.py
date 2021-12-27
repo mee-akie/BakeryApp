@@ -1,4 +1,4 @@
-from re import A
+from re import A, search
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivymd.app import MDApp
@@ -41,6 +41,7 @@ ScreenManager:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
+    CadastrarADM_AtenCaixa:
     BuscarFuncionario:
     TabelaBuscaFuncionario:
     RemoverFuncionario:
@@ -168,31 +169,84 @@ class CadastrarFuncionario(Screen):
         c = conn.cursor()
 
         # Add dados na tabela de Funcionario
-        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, %s, %s)"
+        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO, SENHA) VALUES(%s, %s, %s, %s, %s, %s)"
         values = (self.ids.nome.text,
                   self.ids.cpf.text,
                   self.ids.salario.text,
                   self.ids.ferias.text,
-                  self.ids.codigo_estabelecimento.text)
+                  self.ids.codigo_estabelecimento.text,
+                  self.ids.senha.text)
 
         c.execute(sql_command, (values))	
         conn.commit()
         conn.close()
+
+        # valores auxiliares para cadastrar ADM/Atendente de caixa
+        global CPF_FUNCIONARIO
+        CPF_FUNCIONARIO = self.ids.cpf.text
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
 
         self.ids.nome.text = ''
         self.ids.cpf.text = ''
         self.ids.salario.text = ''
         self.ids.ferias.text = ''
         self.ids.codigo_estabelecimento.text = ''
+        self.ids.senha.text = ''
+
+        self.parent.current = 'cadastrarADM_AtendCaixa'
+
+
+class CadastrarADM_AtenCaixa(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        if (self.ids.adm.text).lower() == 'sim':
+            search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute(search)
+            output = c.fetchall()
+
+            sql_command = "INSERT INTO ADMINISTRADOR (FCODIGO_FUNCIONARIO, ESPECIALIDADE) VALUES(%s, %s)"
+            values = (output[0], self.ids.especialidade.text)
+            print('==============')
+            print(values)
+            c.execute(sql_command, (values))	
+            conn.commit()
+
+        if (self.ids.atendente.text).lower() == 'sim':
+            search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute(search)
+            output = c.fetchall()
+
+            sql_command = "INSERT INTO ATENDENTE_CAIXA (FCODIGO_FUNCIONARIO, NIVEL_ESCOLARIDADE) VALUES(%s, %s)"
+            values = (output[0], self.ids.escolaridade.text)
+            c.execute(sql_command, (values))	
+            conn.commit()
+
+        conn.close()
+
+        self.ids.especialidade.text = ''
+        self.ids.escolaridade.text = ''
+        self.ids.adm.text = ''
+        self.ids.atendente.text = ''
 
         popup = Popup(title='CADASTRAR FUNCIONÁRIO',
-                      content=Label(text='Funcionario cadastrado com sucesso'),
-                      size_hint=(None, None),
-                      size=(300, 150),
-                      background ='atlas://data/images/defaulttheme/button_pressed')
+                content=Label(text='Funcionario cadastrado com sucesso'),
+                size_hint=(None, None),
+                size=(300, 150),
+                background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
-
-        self.parent.current = 'funcionario'
 
 
 class BuscarFuncionario(Screen):
@@ -883,6 +937,7 @@ def FormataFloat(num):
 sm = ScreenManager()
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
+sm.add_widget(CadastrarADM_AtenCaixa(name='cadastrarADM_AtendCaixa'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
@@ -901,158 +956,6 @@ class Main(MDApp):
     def build(self):
 
         self.theme_cls.primary_palette = "DeepOrange"
-
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-
-        c = conn.cursor()
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ESTABELECIMENTO (
-                        CODIGO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        NOME VARCHAR(70) NOT NULL,
-                        BAIRRO VARCHAR(100),
-                        RUA VARCHAR(100),
-                        CEP CHAR(8),
-                        CIDADE VARCHAR(100),
-                        NUMERO VARCHAR(10),
-                        PRIMARY KEY(CODIGO));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS FORNECEDOR (
-                        CNPJ CHAR (14) NOT NULL,
-                        NOME VARCHAR (70) NOT NULL,
-                        RUA VARCHAR(100) NOT NULL,
-                        ESTADO VARCHAR(30) NOT NULL,
-                        CIDADE VARCHAR(100) NOT NULL,
-                        CEP CHAR(8),
-                        NUMERO VARCHAR(10),
-                        BAIRRO VARCHAR(100),
-                        PRIMARY KEY (CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS CLIENTE (
-                        NOME VARCHAR(70) NOT NULL,
-                        CPF CHAR(11) NOT NULL,
-                        DATANASC DATE,
-                        PRIMARY KEY(CPF));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO (
-                 	COD_BARRAS CHAR(15) NOT NULL,
-                    NOME VARCHAR(50) NOT NULL,
-                    NOME_FABRICANTE VARCHAR(100) NOT NULL,
-                    PRECO DECIMAL(18,2) NOT NULL,
-                    DATA_FABRICACAO DATE NOT NULL,
-                    CATEGORIA VARCHAR(50) NOT NULL,
-                    QTD_ESTOQUE INT NOT NULL,
-                    DATA_VENCIMENTO DATE NOT NULL,
-                    PRIMARY KEY (COD_BARRAS));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS CONTA (
-                 		COD_BARRAS CHAR(48) NOT NULL,
-                        TIPO CHAR(35) NOT NULL,
-                        VALOR DECIMAL (10,2) NOT NULL,
-                        DATA_VENCIMENTO DATE NOT NULL,
-                        DATA_PAGAMENTO DATE NULL,
-                        PAGO BOOLEAN,
-                        CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        PRIMARY KEY(COD_BARRAS),
-                        FOREIGN KEY(CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
-                """)      
-
-        c.execute("""CREATE TABLE IF NOT EXISTS FUNCIONARIO ( 
-                        CODIGO_FUNC INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        NOME VARCHAR(70) NOT NULL,        	
-                        CPF CHAR(11) NOT NULL,
-                        SALARIO DECIMAL (10,2), 
-                        FERIAS DATE,
-                        CODIGO_ESTABELECIMENTO INT NOT NULL,
-                        PRIMARY KEY(CODIGO_FUNC),
-                        FOREIGN KEY (CODIGO_ESTABELECIMENTO) REFERENCES ESTABELECIMENTO(CODIGO));
-                """)
-
-
-        c.execute("""CREATE TABLE IF NOT EXISTS HISTORICO_TRABALHO (
-                        DATA_REGISTRO  DATE NOT NULL,
-                        HORA_ENTRADA_R TIME NOT NULL,
-                        HORA_SAIDA_R TIME NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        PRIMARY KEY(DATA_REGISTRO, HORA_ENTRADA_R, HORA_SAIDA_R, FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ADMINISTRADOR (
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        ESPECIALIDADE VARCHAR(30) NOT NULL,
-                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS ATENDENTE_CAIXA (
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        NIVEL_ESCOLARIDADE VARCHAR(30) NOT NULL,
-                        PRIMARY KEY(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY(FCODIGO_FUNCIONARIO) REFERENCES FUNCIONARIO(CODIGO_FUNC));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS TELEFONE_CONTATO (
-                        TELEFONE VARCHAR (14) NOT NULL,
-                        TCODIGO CHAR(14) NOT NULL,
-                        PRIMARY KEY (TELEFONE),
-                        FOREIGN KEY(TCODIGO) REFERENCES FORNECEDOR(CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS VENDE (
-                    	COD_VENDA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        DT_VENDA TIMESTAMP NOT NULL,
-                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        CPF CHAR(11) NOT NULL,
-                        PRIMARY KEY (COD_VENDA),
-                        FOREIGN KEY (CPF) REFERENCES CLIENTE(CPF),
-                        FOREIGN KEY (FCODIGO_FUNCIONARIO) REFERENCES ATENDENTE_CAIXA(FCODIGO_FUNCIONARIO));
-                """)
-                
-        c.execute("""CREATE TABLE IF NOT EXISTS VENDIDO (
-                        COD_PRODUTO_VENDIDO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        QUANTIDADE INT NOT NULL,
-                        COD_VENDA INT NOT NULL,
-                        COD_BARRAS CHAR(15) NOT NULL,
-                        PRIMARY KEY (COD_PRODUTO_VENDIDO),
-                        FOREIGN KEY (COD_VENDA ) REFERENCES VENDE(COD_VENDA),
-                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS COMPRA (
-                        COD_COMPRA INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        DT_SOLICITACAO TIMESTAMP NOT NULL,
-                        DT_ENTREGA TIMESTAMP NOT NULL,
-                        VALOR_TOTAL DECIMAL(18,2) NOT NULL,
-                        FCODIGO_FUNCIONARIO INT NOT NULL,
-                        CNPJ CHAR (14) NOT NULL,
-                        PRIMARY KEY (COD_COMPRA),
-                        FOREIGN KEY (FCODIGO_FUNCIONARIO ) REFERENCES ADMINISTRADOR(FCODIGO_FUNCIONARIO),
-                        FOREIGN KEY (CNPJ) REFERENCES FORNECEDOR(CNPJ));
-                """)
-
-        c.execute("""CREATE TABLE IF NOT EXISTS PRODUTO_COMPRADO (
-                        COD_PRODUTO_COMPRADO INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-                        QUANTIDADE INT NOT NULL,
-                        COD_COMPRA INT NOT NULL,
-                        COD_BARRAS CHAR(15) NOT NULL,
-                        PRIMARY KEY (COD_PRODUTO_COMPRADO ),
-                        FOREIGN KEY (COD_COMPRA  ) REFERENCES COMPRA(COD_COMPRA ),
-                        FOREIGN KEY (COD_BARRAS) REFERENCES PRODUTO(COD_BARRAS));
-                """)
-	
-        conn.commit()
-        conn.close()
 
         return Builder.load_string(KV)
 

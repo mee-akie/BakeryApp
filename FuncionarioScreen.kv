@@ -94,7 +94,7 @@
 
     MDBoxLayout:
         orientation: "vertical"
-        pos_hint: {'center_x': .5, 'center_y': .8}
+        pos_hint: {'center_x': .5, 'center_y': .7}
 
         MDTextField:
             id: nome
@@ -143,18 +143,105 @@
             hint_text: 'Codigo do estabelecimento:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: senha
+            multiline: False
+            size_hint_x: .8
+            max_text_length: 50
+            mode: "rectangle"
+            hint_text: 'Senha para realizar o login no app:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFuncionario()
+
+    MDFloatingActionButton:
+        icon: "arrow-right-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.8,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.cadastrar()
                     
+
+<CadastrarADM_AtenCaixa>:
+    name: 'cadastrarADM_AtendCaixa'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "NOVO FUNCIONARIO"
+        md_bg_color: get_color_from_hex("#854442")
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Todos os campos abaixo são opcionais.\nCaso uma resposta para a pergunta\nseja afirmativa, digite "SIM" e\nresponda os campos subsequentes.'
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': .5, 'center_y': .8}
+
+        MDTextField:
+            id: adm
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            hint_text: '1. É administrador? '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: especialidade
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 30
+            hint_text: 'a) Especialidade:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: atendente
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            hint_text: '2. É atendente de caixa? '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: escolaridade
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 30
+            hint_text: 'a) Nível de escolaridade: '
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
     ButtonFocus:
-        size_hint_x: .35
+        size_hint_x: .42
         pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
-        text: 'CADASTRAR'
-        on_press: root.cadastrar()
+        text: 'FINALIZAR CADASTRO'
+        on_press:
+            root.cadastrar()
+            root.switchFuncionario()
 
     ButtonFocus:
-        size_hint_x: .35
+        size_hint_x: .42
         pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
