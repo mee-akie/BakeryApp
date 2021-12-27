@@ -401,7 +401,7 @@
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "BUSCANDO FUNCIONARIO PARA ALTERAR SEUS DADOS"
+        title: "BUSCANDO FUNCIONARIO"
         md_bg_color: toolbarColor
 
     Label:
@@ -452,20 +452,18 @@
         title: "ALTERAR DADOS DO FUNCIONARIO"
         md_bg_color: toolbarColor
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Altere os dados do funcionario escolhido.\nCaso não queira atualizar um determinado\ncampo, apenas deixe-o vazio.'
+
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .8
         pos_hint: {'center_x': .5, 'center_y': .70}
-
-        MDTextField:
-            id: codigo_funcionario
-            multiline: False
-            size_hint_x: .8
-            mode: "rectangle"
-            hint_text: 'Código do funcionário: '
-            pos_hint: {'center_x': .5, 'center_y': .8}
-            text_color: get_color_from_hex("#000000")
 
         MDTextField:
             id: nome
