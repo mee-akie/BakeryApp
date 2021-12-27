@@ -51,6 +51,7 @@ ScreenManager:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
+    CadastrarADM_AtenCaixa:
     BuscarFuncionario:
     TabelaBuscaFuncionario:
     RemoverFuncionario:
@@ -188,31 +189,84 @@ class CadastrarFuncionario(Screen):
         c = conn.cursor()
 
         # Add dados na tabela de Funcionario
-        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, %s, %s)"
+        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO, SENHA) VALUES(%s, %s, %s, %s, %s, %s)"
         values = (self.ids.nome.text,
                   self.ids.cpf.text,
                   self.ids.salario.text,
                   self.ids.ferias.text,
-                  self.ids.codigo_estabelecimento.text)
+                  self.ids.codigo_estabelecimento.text,
+                  self.ids.senha.text)
 
         c.execute(sql_command, (values))	
         conn.commit()
         conn.close()
+
+        # valores auxiliares para cadastrar ADM/Atendente de caixa
+        global CPF_FUNCIONARIO
+        CPF_FUNCIONARIO = self.ids.cpf.text
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
 
         self.ids.nome.text = ''
         self.ids.cpf.text = ''
         self.ids.salario.text = ''
         self.ids.ferias.text = ''
         self.ids.codigo_estabelecimento.text = ''
+        self.ids.senha.text = ''
+
+        self.parent.current = 'cadastrarADM_AtendCaixa'
+
+
+class CadastrarADM_AtenCaixa(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def cadastrar(self):
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "padaria", 
+            user = "postgre2",
+            password = "123",
+            port = "5432"
+        )
+        
+        c = conn.cursor()
+
+        if (self.ids.adm.text).lower() == 'sim':
+            search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute(search)
+            output = c.fetchall()
+
+            sql_command = "INSERT INTO ADMINISTRADOR (FCODIGO_FUNCIONARIO, ESPECIALIDADE) VALUES(%s, %s)"
+            values = (output[0], self.ids.especialidade.text)
+            print('==============')
+            print(values)
+            c.execute(sql_command, (values))	
+            conn.commit()
+
+        if (self.ids.atendente.text).lower() == 'sim':
+            search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute(search)
+            output = c.fetchall()
+
+            sql_command = "INSERT INTO ATENDENTE_CAIXA (FCODIGO_FUNCIONARIO, NIVEL_ESCOLARIDADE) VALUES(%s, %s)"
+            values = (output[0], self.ids.escolaridade.text)
+            c.execute(sql_command, (values))	
+            conn.commit()
+
+        conn.close()
+
+        self.ids.especialidade.text = ''
+        self.ids.escolaridade.text = ''
+        self.ids.adm.text = ''
+        self.ids.atendente.text = ''
 
         popup = Popup(title='CADASTRAR FUNCIONÁRIO',
-                      content=Label(text='Funcionario cadastrado com sucesso'),
-                      size_hint=(None, None),
-                      size=(300, 150),
-                      background ='atlas://data/images/defaulttheme/button_pressed')
+                content=Label(text='Funcionario cadastrado com sucesso'),
+                size_hint=(None, None),
+                size=(300, 150),
+                background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
-
-        self.parent.current = 'funcionario'
 
 
 class BuscarFuncionario(Screen):
@@ -1851,6 +1905,7 @@ sm = ScreenManager()
 sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
+sm.add_widget(CadastrarADM_AtenCaixa(name='cadastrarADM_AtendCaixa'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
