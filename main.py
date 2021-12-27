@@ -1806,6 +1806,8 @@ class Main(MDApp):
         ##conn = ConnectionDatabase.getConnection()
         ##c = conn.cursor()
         ##conn.close()
+
+        self.theme_cls.primary_palette = "DeepOrange"
         
         return Builder.load_string(KV)
 
