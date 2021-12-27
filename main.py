@@ -178,13 +178,7 @@ class CadastrarFuncionario(Screen):
             self.parent.current = 'funcionario'
             return
 
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         
         c = conn.cursor()
 
@@ -222,14 +216,7 @@ class CadastrarADM_AtenCaixa(Screen):
         self.parent.current = 'funcionario'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         if (self.ids.adm.text).lower() == 'sim':
@@ -290,13 +277,7 @@ class BuscarFuncionario(Screen):
 
 class TabelaBuscaFuncionario(Screen):
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         lista_atributos = [NOME_FUNC,
@@ -395,14 +376,7 @@ class RemoverFuncionario(Screen):
             self.parent.current = 'funcionario'
             return
 
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
@@ -439,13 +413,7 @@ class AlterarFuncionario2(Screen):
         self.parent.current = 'funcionario'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         lista_atributos = [self.ids.nome.text,
@@ -550,14 +518,7 @@ class CadastrarProduto(Screen):
             self.parent.current = 'estoque'
             return
 
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         fabricacao = ConversorData(self.ids.fabricacao.text)
@@ -616,14 +577,7 @@ class CadastrarProduto(Screen):
 
 class RemoverProduto(Screen):
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         if (self.ids.cod_barras.text != ''):
@@ -684,13 +638,7 @@ class TabelaBuscaEstoque(Screen):
         self.parent.current = 'estoque'
         
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = ''
@@ -813,13 +761,7 @@ class AtualizarEstoque_2(Screen):
         self.parent.current = 'estoque'
 
     def atualizar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         lista_atributos = [self.ids.fabricacao.text,
@@ -942,14 +884,7 @@ class CadastrarFornecedor(Screen):
         self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection() 
         c = conn.cursor()
 
         # Add dados na tabela de fornecedor
@@ -1029,13 +964,7 @@ class TabelaBuscaFornecedor(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
@@ -1091,14 +1020,7 @@ class RemoverFornecedor(Screen):
         self.parent.current = 'estabelecimento'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()     
         c = conn.cursor()
 
         sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
@@ -1155,13 +1077,7 @@ class AlterarFornecedor2(Screen):
         self.parent.current = 'estabelecimento'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"""update fornecedor
@@ -1258,14 +1174,7 @@ class CadastrarEstabelecimento(Screen):
         self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
 
         # Add dados na tabela de estabelecimento
@@ -1339,13 +1248,7 @@ class AlterarEstabelecimento2(Screen):
         self.parent.current = 'estabelecimento'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"""update estabelecimento
@@ -1422,13 +1325,7 @@ class TabelaBuscaEStabelecimento(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
@@ -1483,14 +1380,7 @@ class RemoverEstabelecimento(Screen):
         self.parent.current = 'estabelecimento'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()   
         c = conn.cursor()
 
         sql_command = f"delete from estabelecimento WHERE codigo='{self.ids.codigo.text}' and nome='{self.ids.nome.text}';"
@@ -1524,13 +1414,7 @@ class ConsultaContasAtivas(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) >= 0;"
@@ -1584,13 +1468,7 @@ class ConsultarContasPassadas(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) < 0;"
@@ -1644,14 +1522,7 @@ class RemoverConta(Screen):
         self.parent.current = 'estabelecimento'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()    
         c = conn.cursor()
 
         sql_command = f"delete from conta WHERE cod_barras='{self.ids.cod_barras.text}';"
@@ -1684,14 +1555,7 @@ class CadastrarConta(Screen):
         self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
 
         if(self.ids.pago.text == 's'):
@@ -1779,13 +1643,7 @@ class AlterarConta2(Screen):
         self.parent.current = 'estabelecimento'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         if(self.ids.pago.text == 's'):
