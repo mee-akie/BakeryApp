@@ -50,7 +50,7 @@
         
         MDBottomNavigationItem:
             name: 'screen 1'
-            text: 'home'
+            text: 'Home'
             icon: 'home-circle'
             on_enter: root.switchHome()
 
@@ -69,3 +69,9 @@
             on_enter:
                 root.manager.transition.direction = 'left'
                 root.switchFuncionario()
+        
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()

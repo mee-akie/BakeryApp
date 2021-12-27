@@ -1,0 +1,149 @@
+<VendaPage>:
+    name: 'venda'
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "Bakery ABC"
+        md_bg_color: toolbarColor
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'left'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+            on_enter: 
+                root.manager.transition.direction = 'left'
+                root.switchEstoque()
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionarios'
+            icon: 'account-group'
+            on_enter: 
+                root.manager.transition.direction = 'left'
+                root.switchFuncionario()
+
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+    
+    MDIconButton:
+        icon: "arrow-left-bold-circle-outline"
+        pos_hint: {"center_x": .8, "center_y": .85}
+        size_hint: 0.5, None
+        on_release: root.pagina_anterior()
+    
+    MDIconButton:
+        icon: "arrow-right-bold-circle-outline"
+        pos_hint: {"center_x": .9, "center_y": .85}
+        size_hint: 0.5, None
+        on_release: root.pagina_posterior()
+    
+    MDIconButton:
+        icon: "plus-circle"
+        pos_hint: {"center_x": .1, "center_y": .85}
+        size_hint: 0.5, None
+        on_release: root.switchCadastroVenda()
+
+<CadastroVenda>
+    name: 'cadastro_venda'
+    MDToolbar:
+        name: 'tool_bar'
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "Cadastro - Venda"
+        md_bg_color: toolbarColor
+        left_action_items:[["arrow-left", lambda x: root.switchVendas()]]
+    
+
+    MDRectangleFlatButton:
+        name: 'btn_calcula_valor_total'
+        id: btn_calcula_valor_total
+        text: "Registra Venda"
+        text_color: 1, 1, 1, 1
+        md_bg_color: 0.8, 0.8, 0.8, 1
+        size_hint: 0.4, None
+        pos_hint: {"x": .07, "y": .8}
+        on_release: root.registrar_venda()
+
+    MDLabel:
+        name: 'valor_total'
+        id:valor_total
+        text:"------------------------------------"
+        pos_hint: {"x": .55, "y": .75}
+        size_hint: 0.6, None
+
+    MDLabel:
+        id: lbl_error
+        text: ""
+        halign:"center"
+        pos_hint: { "y": 0.267}
+        theme_text_color:"Error"
+    
+    MDLabel:
+        id: lbl_success
+        text: ""
+        halign:"center"
+        pos_hint: { "y": 0.267}
+        color: 0,1,0,1
+
+    MDTextField:
+        name: 'cpf_cliente'
+        id: cpf_cliente
+        hint_text: "CPF Cliente"
+        mode: "rectangle"
+        pos_hint: {"x": .1, "y": .65}
+        size_hint: 0.8, None
+
+    MDTextField:
+        name: 'nome_cliente'
+        id: nome_cliente
+        hint_text: "Nome Cliente"
+        mode: "rectangle"
+        pos_hint: {"x": .1, "y": .55}
+        size_hint: 0.8, None
+
+    MDTextField:
+        name: 'data_nascimento_cliente'
+        id: data_nascimento_cliente
+        hint_text: "Data de Nascimento Cliente"
+        mode: "rectangle"
+        pos_hint: {"x": .1, "y": .45}
+        size_hint: 0.8, None
+
+    MDLabel:
+        name: 'Produtos'
+        id:Produtos
+        text:"Produtos"
+        pos_hint: {"x": .08, "y": .31}
+        size_hint: 0.6, None
+    
+    MDRoundFlatIconButton:
+        name: 'btn_adiciona_produto'
+        id: btn_adiciona_produto
+        icon: "plus-circle"
+        text: "Adicionar Produto"
+        size_hint: 0.8, None
+        pos_hint: {"x": .1, "y": .25}
+        on_release: root.adicionaProduto()
+
+
+
+
+    

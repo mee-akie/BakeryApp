@@ -15,7 +15,7 @@
         
         MDBottomNavigationItem:
             name: 'screen 1'
-            text: 'home'
+            text: 'Home'
             icon: 'home-circle'
             on_enter:
                 root.manager.transition.direction = 'right'
@@ -32,6 +32,12 @@
             text: 'Funcionarios'
             icon: 'account-group'
             on_enter: root.switchFuncionario()
+        
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
 
     MDRectangleFlatIconButton:
         text : 'Buscar um funcionario'
