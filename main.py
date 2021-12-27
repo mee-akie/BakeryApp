@@ -59,6 +59,7 @@ ScreenManager:
     HomePage:
     FuncionarioPage:
     CadastrarFuncionario:
+    CadastrarADM_AtenCaixa:
     BuscarFuncionario:
     TabelaBuscaFuncionario:
     RemoverFuncionario:
@@ -560,42 +561,92 @@ class CadastrarFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        if self.ids.nome.text == '' or self.ids.cpf.text == '' or self.ids.salario.text == '' or self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ERR0 - CADASTRAR FUNCIONÁRIO',
+                            content=Label(text='Não foi possível realizar o cadastro.\nAlguns dados obrigatórios não foram\npreenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
+        conn = ConnectionDatabase.getConnection()
         
         c = conn.cursor()
 
         # Add dados na tabela de Funcionario
-        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO) VALUES(%s, %s, %s, %s, %s)"
+        sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO, SENHA) VALUES(%s, %s, %s, %s, %s, %s)"
         values = (self.ids.nome.text,
                   self.ids.cpf.text,
                   self.ids.salario.text,
                   self.ids.ferias.text,
-                  self.ids.codigo_estabelecimento.text)
+                  self.ids.codigo_estabelecimento.text,
+                  self.ids.senha.text)
 
         c.execute(sql_command, (values))	
         conn.commit()
         conn.close()
+
+        # valores auxiliares para cadastrar ADM/Atendente de caixa
+        global CPF_FUNCIONARIO
+        CPF_FUNCIONARIO = self.ids.cpf.text
+        global COD_ESTABELECIMENTO
+        COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
 
         self.ids.nome.text = ''
         self.ids.cpf.text = ''
         self.ids.salario.text = ''
         self.ids.ferias.text = ''
         self.ids.codigo_estabelecimento.text = ''
+        self.ids.senha.text = ''
+
+        self.parent.current = 'cadastrarADM_AtendCaixa'
+
+
+class CadastrarADM_AtenCaixa(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def cadastrar(self):
+        conn = ConnectionDatabase.getConnection()
+        c = conn.cursor()
+
+        if (self.ids.adm.text).lower() == 'sim':
+            search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute(search)
+            output = c.fetchall()
+
+            sql_command = "INSERT INTO ADMINISTRADOR (FCODIGO_FUNCIONARIO, ESPECIALIDADE) VALUES(%s, %s)"
+            values = (output[0], self.ids.especialidade.text)
+            print('==============')
+            print(values)
+            c.execute(sql_command, (values))	
+            conn.commit()
+
+        if (self.ids.atendente.text).lower() == 'sim':
+            search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute(search)
+            output = c.fetchall()
+
+            sql_command = "INSERT INTO ATENDENTE_CAIXA (FCODIGO_FUNCIONARIO, NIVEL_ESCOLARIDADE) VALUES(%s, %s)"
+            values = (output[0], self.ids.escolaridade.text)
+            c.execute(sql_command, (values))	
+            conn.commit()
+
+        conn.close()
+
+        self.ids.especialidade.text = ''
+        self.ids.escolaridade.text = ''
+        self.ids.adm.text = ''
+        self.ids.atendente.text = ''
 
         popup = Popup(title='CADASTRAR FUNCIONÁRIO',
-                      content=Label(text='Funcionario cadastrado com sucesso'),
-                      size_hint=(None, None),
-                      size=(300, 150),
-                      background ='atlas://data/images/defaulttheme/button_pressed')
+                content=Label(text='Funcionario cadastrado com sucesso'),
+                size_hint=(None, None),
+                size=(300, 150),
+                background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
-
-        self.parent.current = 'funcionario'
 
 
 class BuscarFuncionario(Screen):
@@ -612,39 +663,44 @@ class BuscarFuncionario(Screen):
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
         global NOME_FUNC
         NOME_FUNC = self.ids.nome.text
-        print(CPF_FUNCIONARIO)
-        print(COD_ESTABELECIMENTO)
+        self.ids.cpf.text = ''
+        self.ids.codigo_estabelecimento.text = ''
+        self.ids.nome.text = ''
 
 
 class TabelaBuscaFuncionario(Screen):
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
+        lista_atributos = [NOME_FUNC,
+                           CPF_FUNCIONARIO,
+                           COD_ESTABELECIMENTO]
         sql_command = ''
-        
-        if CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC != '':
-            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO} and nome={NOME_FUNC};"
+        lista_values = []
+        comValor = 0
+        lista_atributos_query = []
+        aux = 0
 
-        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
-            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
-        
-        elif CPF_FUNCIONARIO != '' and COD_ESTABELECIMENTO == '' and NOME_FUNC == '':
-            sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}';"
+        for atributo in lista_atributos:
+            if atributo != '':
+                comValor += 1
+                if aux == 0:
+                    lista_atributos_query.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO != '' and NOME_FUNC == '':
-            sql_command = f"select * from funcionario WHERE codigo_estabelecimento='{COD_ESTABELECIMENTO}';"
+                if aux == 1:
+                    lista_atributos_query.append("cpf")
+                    lista_values.append(atributo)
 
-        elif CPF_FUNCIONARIO == '' and COD_ESTABELECIMENTO == '' and NOME_FUNC != '':
-            sql_command = f"select * from funcionario WHERE nome='{NOME_FUNC}';"
-        
-        else:
+                if aux == 2:
+                    lista_atributos_query.append("codigo_estabelecimento")
+                    lista_values.append(atributo)
+
+            aux += 1
+
+
+        if comValor == 0:
             popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
                     content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
                     size_hint=(None, None),
@@ -654,15 +710,21 @@ class TabelaBuscaFuncionario(Screen):
             self.parent.current = 'funcionario'
             return
 
-        conn = ConnectionDatabase.getConnection()
-        c = conn.cursor()
-
-        sql_command = f"select * from funcionario WHERE cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO};"
-        c.execute("SET search_path to padaria;")
-        c.execute(sql_command)	
+        sql_command = CriaQuery_SELECT("funcionario", lista_atributos_query)
+        c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
-        output.append(['', '', '', '', '', '' ,'', ''])
 
+        if len(output) == 0:
+            popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi possível encontrar\nnenhum funcionário com os\ndados fornecidos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
+        output.append(['', '', '', '', '', '' ,'', ''])
         conn.close()
 
         screen = AnchorLayout()
@@ -697,14 +759,17 @@ class RemoverFuncionario(Screen):
         self.parent.current = 'funcionario'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        if self.ids.cpf.text == '' or self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ERR0 - REMOVER FUNCIONÁRIO',
+                            content=Label(text='Não foi possível remover o funcionário.\nAlguns dados não foram preenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
@@ -721,6 +786,18 @@ class AlterarFuncionario(Screen):
     def recolherDados(self):	
         global CPF_FUNCIONARIO
         CPF_FUNCIONARIO = self.ids.cpf.text
+
+        if self.ids.cpf.text == '':
+            popup = Popup(title='ERRO - ATUALIZAR FUNCIONARIO',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
+        self.ids.cpf.text = ''
         self.parent.current = 'alterar_funcionario_2'
 
 
@@ -729,13 +806,7 @@ class AlterarFuncionario2(Screen):
         self.parent.current = 'funcionario'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         lista_atributos = [self.ids.nome.text,
@@ -833,14 +904,17 @@ class CadastrarProduto(Screen):
         self.parent.current = 'estoque'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        if self.ids.fabricacao.text == '' or self.ids.vencimento.text == '' or self.ids.cod_barras.text == ''or self.ids.nome.text == '' or self.ids.preco.text == '' or self.ids.categoria.text == '' or self.ids.qtd_estoque.text == '' or self.ids.fabricante.text == '':
+            popup = Popup(title='ERR0 - CADASTRAR PRODUTO',
+                            content=Label(text='Não foi possível realizar o cadastro.\nAlguns dados obrigatórios não foram\npreenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         fabricacao = ConversorData(self.ids.fabricacao.text)
@@ -899,14 +973,7 @@ class CadastrarProduto(Screen):
 
 class RemoverProduto(Screen):
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         if (self.ids.cod_barras.text != ''):
@@ -956,62 +1023,55 @@ class ConsultarEstoque(Screen):
         CATEGORIA_PROD = self.ids.categoria.text
         global NOME_FABRIC
         NOME_FABRIC = self.ids.nome_fabricante.text
+        self.ids.cod_barras.text = ''
+        self.ids.nome.text = ''
+        self.ids.categoria.text = ''
+        self.ids.nome_fabricante.text = ''
     
 
 class TabelaBuscaEstoque(Screen):
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+        
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = ''
-        
-        if COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
 
-        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
-        
-        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+        lista_atributos = [COD_BARRAS,
+                           NOME_PROD,
+                           CATEGORIA_PROD,
+                           NOME_FABRIC]
+        sql_command = ''
+        lista_values = []
+        comValor = 0
+        lista_atributos_query = []
+        aux = 0
 
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+        for atributo in lista_atributos:
+            if atributo != '':
+                comValor += 1
+                if aux == 0:
+                    lista_atributos_query.append("cod_barras")
+                    lista_values.append(atributo)
 
-        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+                if aux == 1:
+                    lista_atributos_query.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif COD_BARRAS != '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome='{NOME_PROD}';"
+                if aux == 2:
+                    lista_atributos_query.append("categoria")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}' and nome_fabricante='{NOME_FABRIC}';"
+                if aux == 3:
+                    lista_atributos_query.append("nome_fabricante")
+                    lista_values.append(f"{(atributo).lower()}")
 
-        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}' and nome_fabricante='{NOME_FABRIC}';"
+            aux += 1
 
-        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE nome='{NOME_PROD}' and categoria='{CATEGORIA_PROD}';"
-
-        elif COD_BARRAS != '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE cod_barras='{COD_BARRAS}';"
-
-        elif COD_BARRAS == '' and NOME_PROD != '' and CATEGORIA_PROD == '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE nome='{NOME_PROD}';"
-
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD != '' and NOME_FABRIC == '':
-            sql_command = f"select * from produto WHERE categoria='{CATEGORIA_PROD}';"
-
-        elif COD_BARRAS == '' and NOME_PROD == '' and CATEGORIA_PROD == '' and NOME_FABRIC != '':
-            sql_command = f"select * from produto WHERE nome_fabricante='{NOME_FABRIC}';"
-
-        else:
-            popup = Popup(title='ERRO - CONSULTAR ESTOQUE',
+        if comValor == 0:
+            popup = Popup(title='ERRO - BUSCAR PRODUTO',
                     content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
                     size_hint=(None, None),
                     size=(300, 150),
@@ -1020,8 +1080,20 @@ class TabelaBuscaEstoque(Screen):
             self.parent.current = 'estoque'
             return
 
-        c.execute(sql_command)	
+        sql_command = CriaQuery_SELECT("produto", lista_atributos_query)
+        c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='ERRO - BUSCAR PRODUTO',
+                    content=Label(text='Não foi possível encontrar\nnenhum produto com os\ndados fornecidos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
         output.append(['', '', '', '', '', '' ,'', ''])
         conn.close()
         screen = AnchorLayout()
@@ -1053,11 +1125,24 @@ class TabelaBuscaEstoque(Screen):
         self.tabela()
 
 
-
 class AtualizarEstoque(Screen):
     def recolherDados(self):	
         global COD_BARRAS
         COD_BARRAS = self.ids.cod_barras.text
+
+        if self.ids.cod_barras.text == '':
+            popup = Popup(title='ERRO - ATUALIZAR PRODUTO',
+                    content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
+        self.ids.cod_barras.text = ''
+        self.parent.current = 'atualizar_estoque_2'
+        
     
     def switchAtualiza(self):
         self.parent.current = 'atualizar_estoque_2'
@@ -1066,18 +1151,13 @@ class AtualizarEstoque(Screen):
         self.parent.current = 'estoque'
 
 
+
 class AtualizarEstoque_2(Screen):
     def switchEstoque(self):
         self.parent.current = 'estoque'
 
     def atualizar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         lista_atributos = [self.ids.fabricacao.text,
@@ -1154,7 +1234,6 @@ class AtualizarEstoque_2(Screen):
 
         self.parent.current = 'estoque'
 
-
             
 class FornecedoresPage(Screen):
     def switchHome(self):
@@ -1201,14 +1280,7 @@ class CadastrarFornecedor(Screen):
         self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection() 
         c = conn.cursor()
 
         # Add dados na tabela de fornecedor
@@ -1288,13 +1360,7 @@ class TabelaBuscaFornecedor(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
@@ -1350,14 +1416,7 @@ class RemoverFornecedor(Screen):
         self.parent.current = 'estabelecimento'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()     
         c = conn.cursor()
 
         sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
@@ -1414,13 +1473,7 @@ class AlterarFornecedor2(Screen):
         self.parent.current = 'estabelecimento'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"""update fornecedor
@@ -1517,14 +1570,7 @@ class CadastrarEstabelecimento(Screen):
         self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
 
         # Add dados na tabela de estabelecimento
@@ -1598,13 +1644,7 @@ class AlterarEstabelecimento2(Screen):
         self.parent.current = 'estabelecimento'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"""update estabelecimento
@@ -1681,13 +1721,7 @@ class TabelaBuscaEStabelecimento(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
@@ -1742,14 +1776,7 @@ class RemoverEstabelecimento(Screen):
         self.parent.current = 'estabelecimento'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()   
         c = conn.cursor()
 
         sql_command = f"delete from estabelecimento WHERE codigo='{self.ids.codigo.text}' and nome='{self.ids.nome.text}';"
@@ -1783,13 +1810,7 @@ class ConsultaContasAtivas(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) >= 0;"
@@ -1843,13 +1864,7 @@ class ConsultarContasPassadas(Screen):
         self.parent.current = 'estabelecimento'
 
     def tabela(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) < 0;"
@@ -1903,14 +1918,7 @@ class RemoverConta(Screen):
         self.parent.current = 'estabelecimento'
 
     def remover(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()    
         c = conn.cursor()
 
         sql_command = f"delete from conta WHERE cod_barras='{self.ids.cod_barras.text}';"
@@ -1943,14 +1951,7 @@ class CadastrarConta(Screen):
         self.parent.current = 'estabelecimento'
 
     def cadastrar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
-        
+        conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
 
         if(self.ids.pago.text == 's'):
@@ -2038,13 +2039,7 @@ class AlterarConta2(Screen):
         self.parent.current = 'estabelecimento'
 
     def alterar(self):
-        conn = psycopg2.connect(
-            host = "localhost",
-            database = "padaria", 
-            user = "postgre2",
-            password = "123",
-            port = "5432"
-        )
+        conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         if(self.ids.pago.text == 's'):
@@ -2117,6 +2112,20 @@ class NavigationDrawer(MDBoxLayout):
     
 ############ METODOS AUXIARES ####################
 
+def CriaQuery_SELECT(tabela, atributos):
+    sql_command = f"select * from {tabela} where "
+
+    while(len(atributos)):
+        if len(atributos) == 1:
+            sql_command += f" {atributos[0]}=%s;"
+            atributos.pop(0)
+        else:
+            sql_command += f" {atributos[0]}=%s and "
+            atributos.pop(0)
+
+    return sql_command
+
+
 def CriaQuery_UPDATE(tabela, atributos, atributoReferencia):
     sql_command = f"update {tabela} set"
 
@@ -2150,6 +2159,7 @@ sm = ScreenManager()
 sm.add_widget(HomePage(name='home'))
 sm.add_widget(FuncionarioPage(name='funcionario'))
 sm.add_widget(CadastrarFuncionario(name='cadastrar_funcionario'))
+sm.add_widget(CadastrarADM_AtenCaixa(name='cadastrarADM_AtendCaixa'))
 sm.add_widget(BuscarFuncionario(name='buscar_funcionario'))
 sm.add_widget(TabelaBuscaFuncionario(name='tabela_busca_funcionario'))
 sm.add_widget(RemoverFuncionario(name='remover_funcionario'))
