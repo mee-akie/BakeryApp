@@ -6,7 +6,7 @@ class ConnectionDatabase:
         conn = psycopg2.connect(
                 host = "localhost",
                 database = "padaria", 
-                user = "postgres2",
+                user = "postgres",
                 password = "1",
                 port = "5432"
             )
