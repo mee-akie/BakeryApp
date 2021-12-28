@@ -534,6 +534,7 @@ class CadastrarFuncionario(Screen):
                   self.ids.codigo_estabelecimento.text,
                   self.ids.senha.text)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, (values))	
         conn.commit()
         conn.close()
@@ -564,6 +565,7 @@ class CadastrarADM_AtenCaixa(Screen):
 
         if (self.ids.adm.text).lower() == 'sim':
             search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute("SET search_path TO padaria;")
             c.execute(search)
             output = c.fetchall()
 
@@ -576,11 +578,13 @@ class CadastrarADM_AtenCaixa(Screen):
 
         if (self.ids.atendente.text).lower() == 'sim':
             search = f"select codigo_func from funcionario where cpf='{CPF_FUNCIONARIO}' and codigo_estabelecimento={COD_ESTABELECIMENTO}"
+            c.execute("SET search_path TO padaria;")
             c.execute(search)
             output = c.fetchall()
 
             sql_command = "INSERT INTO ATENDENTE_CAIXA (FCODIGO_FUNCIONARIO, NIVEL_ESCOLARIDADE) VALUES(%s, %s)"
             values = (output[0], self.ids.escolaridade.text)
+            c.execute("SET search_path TO padaria;")
             c.execute(sql_command, (values))	
             conn.commit()
 
@@ -661,6 +665,8 @@ class TabelaBuscaFuncionario(Screen):
             return
 
         sql_command = CriaQuery_SELECT("funcionario", lista_atributos_query)
+
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
 
@@ -723,7 +729,7 @@ class RemoverFuncionario(Screen):
         c = conn.cursor()
 
         sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
-
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)	
         conn.commit()
         conn.close()
@@ -806,7 +812,7 @@ class AlterarFuncionario2(Screen):
             return
 
         sql_command = CriaQuery_UPDATE("funcionario", lista_comAlteracoes, "cpf")
-
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, tuple(lista_values))
 
         conn.commit()
@@ -899,6 +905,7 @@ class CadastrarProduto(Screen):
                   qts_estoque,
                   vencimento)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, (values))	
         conn.commit()
         conn.close()
@@ -939,6 +946,7 @@ class RemoverProduto(Screen):
             self.parent.current = 'estoque'
             return
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)	
         conn.commit()
         conn.close()
@@ -1031,6 +1039,7 @@ class TabelaBuscaEstoque(Screen):
             return
 
         sql_command = CriaQuery_SELECT("produto", lista_atributos_query)
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
 
@@ -1171,6 +1180,7 @@ class AtualizarEstoque_2(Screen):
 
         sql_command = CriaQuery_UPDATE("produto", lista_comAlteracoes, "cod_barras")
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, tuple(lista_values))
         conn.commit()
         conn.close()
