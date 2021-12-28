@@ -269,15 +269,15 @@
         md_bg_color: toolbarColor
 
     Label:
-        pos_hint : {"center_x":.5,"center_y":.8}
-        font_size: '20sp'
+        pos_hint : {"center_x":.5,"center_y":.82}
+        font_size: '18sp'
         color: get_color_from_hex("#000000")
         text: 'Preencha os dados do funcionário para\n realizar a busca. Caso não tenha um dos\n dados, apenas deixe o campo vazio.'
 
     MDTextField:
         id: codigo_estabelecimento
         multiline: False
-        pos_hint: {'center_x': .5, 'center_y': .6}
+        pos_hint: {'center_x': .5, 'center_y': .7}
         size_hint_x: .7
         mode: "rectangle"
         hint_text: 'Número do estabelecimento:'
@@ -286,7 +286,7 @@
     MDTextField:
         id: nome
         multiline: False
-        pos_hint: {'center_x': .5, 'center_y': .5}
+        pos_hint: {'center_x': .5, 'center_y': .62}
         size_hint_x: .7
         mode: "rectangle"
         max_text_length: 70
@@ -296,17 +296,42 @@
     MDTextField:
         id: cpf
         multiline: False
-        pos_hint: {'center_x': .5, 'center_y': .4}
+        pos_hint: {'center_x': .5, 'center_y': .54}
         size_hint_x: .7
         mode: "rectangle"
         max_text_length: 11
         hint_text: 'CPF do funcionário: '
         text_color: get_color_from_hex("#000000")
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.42}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Para as perguntas a seguir, responda "SIM"\ncaso afirmativo. Caso contrário, deixe o\ncampo vazio.'
+
+    MDTextField:
+        id: adm
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .3}
+        size_hint_x: .7
+        mode: "rectangle"
+        hint_text: 'Buscar apenas os administradores?'
+        text_color: get_color_from_hex("#000000")
+
+    MDTextField:
+        id: atendente
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .22}
+        size_hint_x: .7
+        mode: "rectangle"
+        hint_text: 'Buscar apenas os atend. de caixa?'
+        text_color: get_color_from_hex("#000000")
+
+
     MDFloatingActionButton:
         icon: "arrow-left-circle"
         md_bg_color: app.theme_cls.primary_color
-        pos_hint : {"center_x":.2,"center_y":.2}
+        pos_hint : {"center_x":.2,"center_y":.1}
         on_press:
             root.manager.transition.direction = 'right'
             root.switchFuncionario()
@@ -314,7 +339,7 @@
     MDFloatingActionButton:
         icon: "arrow-right-circle"
         md_bg_color: app.theme_cls.primary_color
-        pos_hint : {"center_x":.8,"center_y":.2}
+        pos_hint : {"center_x":.8,"center_y":.1}
         on_press:
             root.manager.transition.direction = 'right'
             root.buscar()
@@ -330,6 +355,13 @@
         title: "BUSCA - FUNCIONARIO"
         md_bg_color: toolbarColor
 
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchFuncionario()
 
 <RemoverFuncionario>:
     name: 'remover_funcionario'

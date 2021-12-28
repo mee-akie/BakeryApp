@@ -37,8 +37,8 @@ CNPJ_FORNECEDOR = ''
 NOME_FORNECEDOR = '' 
 NOME_ESTABELECIMENTO = ''
 CPF_FUNCIONARIO_LOGADO = ''
-
-DADOS_PRODUTO = ()
+APENAS_ATEND_CAIXA = ''
+APENAS_ADM = ''
 
 
 KV = '''
@@ -617,12 +617,23 @@ class BuscarFuncionario(Screen):
         COD_ESTABELECIMENTO = self.ids.codigo_estabelecimento.text
         global NOME_FUNC
         NOME_FUNC = self.ids.nome.text
+        global APENAS_ADM
+        APENAS_ADM = self.ids.adm.text
+        global APENAS_ATEND_CAIXA
+        APENAS_ATEND_CAIXA = self.ids.atendente.text
+
         self.ids.cpf.text = ''
         self.ids.codigo_estabelecimento.text = ''
         self.ids.nome.text = ''
+        self.ids.adm.text = ''
+        self.ids.atendente.text = ''
 
 
 class TabelaBuscaFuncionario(Screen):
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+
     def tabela(self):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
@@ -665,7 +676,6 @@ class TabelaBuscaFuncionario(Screen):
             return
 
         sql_command = CriaQuery_SELECT("funcionario", lista_atributos_query)
-
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command, tuple(lista_values))
         output = c.fetchall()
@@ -680,7 +690,84 @@ class TabelaBuscaFuncionario(Screen):
             self.parent.current = 'funcionario'
             return
 
-        output.append(['', '', '', '', '', '' ,'', ''])
+        output_2 = []
+
+        if (APENAS_ADM).lower() == 'sim' and (APENAS_ATEND_CAIXA).lower() == 'sim':
+            aux = []
+            for tupla in output: aux.append(list(tupla))
+            for funcionario in aux:
+                c.execute("SET search_path TO padaria;")
+                sql_command = f'select * from administrador where FCODIGO_FUNCIONARIO={funcionario[0]}'
+                c.execute(sql_command)
+                output = c.fetchall()
+                if len(output) == 1: output_2.append(funcionario)
+
+            aux = []
+            for tupla in output: aux.append(list(tupla))
+            for funcionario in aux:
+                c.execute("SET search_path TO padaria;")
+                sql_command = f'select * from ATENDENTE_CAIXA where FCODIGO_FUNCIONARIO={funcionario[0]}'
+                c.execute(sql_command)
+                output = c.fetchall()
+                if len(output) == 1: output_2.append(funcionario)
+
+            if len(output_2) == 0:
+                popup = Popup(title='BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi possível encontrar\nnenhum administrador e\n atendente de caixa.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()
+                self.parent.current = 'funcionario'
+                return
+
+        elif (APENAS_ADM).lower() == 'sim':
+            aux = []
+            for tupla in output: aux.append(list(tupla))
+            for funcionario in aux:
+                c.execute("SET search_path TO padaria;")
+                sql_command = f'select * from administrador where FCODIGO_FUNCIONARIO={funcionario[0]}'
+                c.execute(sql_command)
+                output = c.fetchall()
+                if len(output) == 1: output_2.append(funcionario)
+            
+            if len(output_2) == 0:
+                popup = Popup(title='BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi possível encontrar\nnenhum administrador.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()
+                self.parent.current = 'funcionario'
+                return
+
+        elif (APENAS_ATEND_CAIXA).lower() == 'sim':
+            aux = []
+            for tupla in output: aux.append(list(tupla))
+            for funcionario in aux:
+                c.execute("SET search_path TO padaria;")
+                sql_command = f'select * from ATENDENTE_CAIXA where FCODIGO_FUNCIONARIO={funcionario[0]}'
+                c.execute(sql_command)
+                output = c.fetchall()
+                if len(output) == 1: output_2.append(funcionario)
+            
+            if len(output_2) == 0:
+                popup = Popup(title='BUSCA DE FUNCIONARIO',
+                    content=Label(text='Não foi possível encontrar\nnenhum atendente de caixa.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()
+                self.parent.current = 'funcionario'
+                return
+        
+        else: output_2 = output
+
+        output_to_list = []
+        for tupla in output_2: output_to_list.append(list(tupla))
+        for lista in output_to_list: lista.pop()
+
+        output_to_list.append(['', '', '', '', '', '' ,'', ''])
         conn.close()
 
         screen = AnchorLayout()
@@ -700,7 +787,7 @@ class TabelaBuscaFuncionario(Screen):
             sorted_on="NOME",
             sorted_order="ASC",
             elevation=2,
-            row_data=output
+            row_data=output_to_list
         )
 
         self.add_widget(self.table)
