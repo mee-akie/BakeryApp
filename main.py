@@ -1121,7 +1121,6 @@ class AtualizarEstoque_2(Screen):
 
         lista_atributos = [self.ids.fabricacao.text,
                            self.ids.vencimento.text,
-                           self.ids.cod_barras.text,
                            self.ids.nome.text,
                            self.ids.preco.text,
                            self.ids.categoria.text,
@@ -1145,23 +1144,21 @@ class AtualizarEstoque_2(Screen):
                     lista_comAlteracoes.append("data_vencimento")
                     lista_values.append(f"{ConversorData(atributo)}")
 
-                if aux == 2: lista_comAlteracoes.append("cod_barras")
-
-                if aux == 3:
+                if aux == 2:
                     lista_comAlteracoes.append("nome")
                     lista_values.append(f"{(atributo).lower()}")
 
-                if aux == 4:
+                if aux == 3:
                     lista_comAlteracoes.append("preco")
                     lista_values.append(f"{FormataFloat(atributo)}")
 
-                if aux == 5:
+                if aux == 4:
                     lista_comAlteracoes.append("categoria")
                     lista_values.append(f"{(atributo).lower()}")
 
-                if aux == 6: lista_comAlteracoes.append("qtd_estoque")
+                if aux == 5: lista_comAlteracoes.append("qtd_estoque")
 
-                if aux == 7:
+                if aux == 6:
                     lista_comAlteracoes.append("nome_fabricante")
                     lista_values.append(f"{(atributo).lower()}")
             aux += 1
@@ -1191,6 +1188,14 @@ class AtualizarEstoque_2(Screen):
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
+
+        self.ids.fabricacao.text = ''
+        self.ids.vencimento.text = ''
+        self.ids.nome.text = ''
+        self.ids.preco.text = ''
+        self.ids.categoria.text = ''
+        self.ids.qtd_estoque.text = ''
+        self.ids.fabricante.text = ''
 
         self.parent.current = 'estoque'
 
