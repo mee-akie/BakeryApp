@@ -1675,29 +1675,76 @@ class AlterarFornecedor2(Screen):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
-        sql_command = f"""update fornecedor
-                            set cnpj=%s,
-                                nome=%s,
-                                rua=%s,
-                                estado=%s,
-                                cidade=%s,
-                                cep=%s,
-                                numero=%s,
-                                bairro=%s
-                            where cnpj=%s;"""
+        lista_atributos = [self.ids.cnpj.text,
+                        self.ids.nome.text,
+                        self.ids.rua.text,
+                        self.ids.estado.text,
+                        self.ids.cidade.text,
+                        self.ids.cep.text,
+                        self.ids.numero.text,
+                        self.ids.bairro.text]
 
-        values = (self.ids.cnpj.text,
-                  self.ids.nome.text,
-                  self.ids.rua.text,
-                  self.ids.estado.text,
-                  self.ids.cidade.text,
-                  self.ids.cep.text,
-                  self.ids.numero.text,
-                  self.ids.bairro.text,
-                  CNPJ_FORNECEDOR)
+        sql_command = ''
+        lista_values = []
+
+        comAlteracoes = 0
+        lista_comAlteracoes = []
+        aux = 0
+
+        for atributo in lista_atributos:
+            if atributo != '':
+                comAlteracoes += 1
+                if aux == 0:
+                    lista_comAlteracoes.append("cnpj")
+                    lista_values.append(atributo)
+
+                if aux == 1:
+                    lista_comAlteracoes.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 2:
+                    lista_comAlteracoes.append("rua")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 3:
+                    lista_comAlteracoes.append("estado")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 4:
+                    lista_comAlteracoes.append("cidade")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 5:
+                    lista_comAlteracoes.append("cep")
+                    lista_values.append(atributo)
+
+                if aux == 6:
+                    lista_comAlteracoes.append("numero")
+                    lista_values.append(atributo)
+
+                if aux == 7:
+                    lista_comAlteracoes.append("bairro")
+                    lista_values.append(f"{(atributo).lower()}")
+
+            aux += 1
+
+        lista_values.append(f"{CNPJ_FORNECEDOR}")
+
+
+        if(comAlteracoes == 0):
+            popup = Popup(title='ATUALIZAR FORNECEDOR',
+                    content=Label(text='Nenhuma alteração nos dados do\nfornecedor foi feita.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'fornecedores'
+            return
+
+        sql_command = CriaQuery_UPDATE("fornecedor", lista_comAlteracoes, "cnpj")
 
         c.execute("SET search_path TO padaria;")
-        c.execute(sql_command, values)
+        c.execute(sql_command, tuple(lista_values))
         conn.commit()
         conn.close()
 
