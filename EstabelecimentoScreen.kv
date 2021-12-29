@@ -727,6 +727,8 @@
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
 
+############################################################################################################################
+############################################################################################################################
 
 <ConsultaContasAtivas>:
     name: 'consultar_contas_ativas'
@@ -812,6 +814,7 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+
 <RemoverConta>:
     name: 'remover_conta'
     MDToolbar:
@@ -853,6 +856,12 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha o campo abaixo para realizar\na remoção da conta. Caso não tenha\no código de barras, você poderá\nencontra-lo na página HOME -> ESTA-\nBELECIMENTO E CONTAS, em "Ver contas\nativas" ou "Ver contas passadas".'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -863,24 +872,25 @@
             id: cod_barras
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 48
             hint_text: 'CODIGO de barras: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
         text: 'REMOVER'
         on_press:
             root.remover()
-            root.switchEstabelecimento()
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -888,6 +898,7 @@
         on_press:
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
+
 
 <CadastrarConta>:
     name: 'cadastrar_conta'
@@ -939,6 +950,8 @@
             id: cod_barras
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 48
             hint_text: 'Código de barras:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -947,6 +960,8 @@
             id: tipo
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 35
             hint_text: 'Tipo:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -955,6 +970,7 @@
             id: valor
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Valor:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -963,7 +979,8 @@
             id: data_vencimento
             multiline: False
             size_hint_x: .8
-            hint_text: 'Data vencimento (yyyy-mm-dd): '
+            mode: "rectangle"
+            hint_text: 'Data vencimento (dd-mm-aaaa): '
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -971,7 +988,8 @@
             id: data_pagamento
             multiline: False
             size_hint_x: .8
-            hint_text: 'Data pagamento (yyyy-mm-dd):'
+            mode: "rectangle"
+            hint_text: 'Data pagamento (dd-mm-aaaa):'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -979,6 +997,7 @@
             id: pago
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Pago? (s ou n):'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -987,13 +1006,14 @@
             id: codigo_estabelecimento
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Código do estabelecimento:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
                     
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .20}
+        pos_hint: {'center_x': .25, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -1002,7 +1022,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .20}
+        pos_hint: {'center_x': .75, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -1010,6 +1030,7 @@
         on_press:
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
+
 
 <AlterarConta>:
     name: 'alterar_conta'
@@ -1053,6 +1074,12 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Informe o código de barras da conta que\ndeseja atualizar.  Caso não tenha\no código de barras, você poderá\nencontra-lo na página HOME -> ESTA-\nBELECIMENTO E CONTAS, em "Ver contas\nativas" ou "Ver contas passadas".'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -1063,24 +1090,25 @@
             id: cod_barras
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 48
             hint_text: 'CODIGO de barras: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
         text: 'BUSCAR'
         on_press:
             root.recolherDados()
-            root.switchAtualiza()
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -1088,6 +1116,7 @@
         on_press:
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
+
 
 <AlterarConta2>:
     name: 'alterar_conta2'
@@ -1131,16 +1160,24 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.82}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Altere os dados da conta escolhida.\nCaso não deseje alterar um dos campos,\napenas deixe-o vazio.'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .6
-        pos_hint: {'center_x': .5, 'center_y': .55}
+        pos_hint: {'center_x': .5, 'center_y': .5}
 
         MDTextField:
             id: cod_barras
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 48
             hint_text: 'Código de barras:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -1149,6 +1186,8 @@
             id: tipo
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 35
             hint_text: 'Tipo:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -1158,6 +1197,7 @@
             multiline: False
             size_hint_x: .8
             hint_text: 'Valor:'
+            mode: "rectangle"
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -1165,7 +1205,8 @@
             id: data_vencimento
             multiline: False
             size_hint_x: .8
-            hint_text: 'Data de vencimento(yyyy-mm-dd):'
+            mode: "rectangle"
+            hint_text: 'Data de vencimento(dd-mm-aaaa):'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -1173,7 +1214,8 @@
             id: data_pagamento
             multiline: False
             size_hint_x: .8
-            hint_text: 'Data de pagamento(yyyy-mm-dd): '
+            mode: "rectangle"
+            hint_text: 'Data de pagamento(dd-mm-aaaa): '
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
@@ -1181,6 +1223,7 @@
             id: pago
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Pago? (s ou n):'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -1189,13 +1232,14 @@
             id: codigo_estabelecimento
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'Codigo estabelecimento:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .20}
+        pos_hint: {'center_x': .25, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -1206,7 +1250,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .20}
+        pos_hint: {'center_x': .75, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light

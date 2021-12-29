@@ -878,6 +878,17 @@ class AlterarFuncionario2(Screen):
         self.parent.current = 'funcionario'
 
     def alterar(self):
+
+        if self.ids.cpf.text == '' and self.ids.nome.text == '' and self.ids.salario.text == '' and self.ids.ferias.text == '' and self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ATUALIZAR FUNCIONARIO',
+                    content=Label(text='Não foi alterado nenhum dado\ndo funcionário.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
@@ -1268,6 +1279,16 @@ class AtualizarEstoque_2(Screen):
         self.parent.current = 'estoque'
 
     def atualizar(self):
+        if self.ids.fabricacao.text == '' and self.ids.vencimento.text == '' and self.ids.nome.text == '' and self.ids.preco.text == '' and self.ids.categoria.text == '' and self.ids.qtd_estoque.text == '' and self.ids.fabricante.text == '':
+            popup = Popup(title='ATUALIZAR PRODUTO',
+                    content=Label(text='Não foi alterado nenhum dado\ndo produto.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return
+
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
@@ -1680,6 +1701,17 @@ class AlterarFornecedor2(Screen):
         self.parent.current = 'fornecedores'
 
     def alterar(self):
+
+        if self.ids.cnpj.text == '' and self.ids.nome.text == '' and self.ids.rua.text == '' and self.ids.estado.text == '' and self.ids.cidade.text == '' and self.ids.cep.text == '' and self.ids.numero.text == '' and self.ids.bairro.text == '' :
+            popup = Popup(title='ATUALIZAR FORNECEDOR',
+                    content=Label(text='Não foi realizada nenhuma alteração\nnos dados do fornecedor.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()         
+            self.parent.current = 'fornecedores'
+            return 
+
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
@@ -1942,6 +1974,17 @@ class AlterarEstabelecimento2(Screen):
         self.parent.current = 'venda'
 
     def alterar(self):
+
+        if self.ids.nome.text == '' and self.ids.bairro.text == '' and self.ids.rua.text == '' and self.ids.cep.text == '' and self.ids.cidade.text == '' and self.ids.numero.text == '':
+            popup = Popup(title='ALTERAR ESTABELECIMENTO',
+                    content=Label(text='Não foi realizada nenhuma alteração\nnos dados do estabelecimento.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return   
+
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
@@ -2229,8 +2272,18 @@ class ConsultaContasAtivas(Screen):
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='CONTAS ATIVAS',
+                    content=Label(text='Não foi possível encontrar nenhuma\nconta ativa.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return   
+
         output.append(['', '', '', '', '', '' ,''])
-        print(output)
         conn.close()
         screen = AnchorLayout()
 
@@ -2288,8 +2341,18 @@ class ConsultarContasPassadas(Screen):
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='CONTAS PASSADAS',
+                    content=Label(text='Não foi possível encontrar nenhuma\nconta passada.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return   
+
         output.append(['', '', '', '', '', '' ,''])
-        print(output)
         conn.close()
         screen = AnchorLayout()
 
@@ -2338,6 +2401,18 @@ class RemoverConta(Screen):
         self.parent.current = 'venda'
 
     def remover(self):
+
+        if self.ids.cod_barras.text == '':
+            popup = Popup(title='ERRO - REMOVER CONTA',
+                    content=Label(text='Não foi possível remover a conta.\nNão foi informado o códido\nde barras da conta.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cod_barras.text = ''
+            self.parent.current = 'estabelecimento'
+            return    
+
         conn = ConnectionDatabase.getConnection()    
         c = conn.cursor()
 
@@ -2354,6 +2429,7 @@ class RemoverConta(Screen):
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
+        self.parent.current = 'estabelecimento'
 
 
 class CadastrarConta(Screen):
@@ -2379,11 +2455,29 @@ class CadastrarConta(Screen):
         conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
 
-        if(self.ids.pago.text == 's'):
-            self.ids.pago.text = 'true'
-        else:
-            self.ids.pago.text = 'false'
+        if((self.ids.pago.text).lower() == 's'): self.ids.pago.text = 'true'
+        else: self.ids.pago.text = 'false'
   
+
+        if self.ids.cod_barras.text == '' or self.ids.tipo.text == '' or self.ids.valor.text == '' or self.ids.data_vencimento.text == '' or self.ids.pago.text == '' or self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ERRO - CADASTRAR CONTA',
+                    content=Label(text='Alguns campos obrigatórios não foram\npreenchidos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cod_barras.text = ''
+            self.ids.tipo.text = ''
+            self.ids.valor.text = ''
+            self.ids.data_vencimento.text = ''
+            self.ids.data_pagamento.text = ''
+            self.ids.pago.text = ''
+            self.ids.codigo_estabelecimento.text = ''
+            self.parent.current = 'estabelecimento'
+            return 
+
+        sql_command = ''
+
         if(self.ids.data_pagamento.text != ''):
             sql_command = "INSERT INTO conta (cod_barras, tipo, valor, data_vencimento, data_pagamento, pago, codigo_estabelecimento) VALUES(%s, %s, %s, %s, %s,%s,%s)"
             values = (self.ids.cod_barras.text,
@@ -2422,16 +2516,27 @@ class CadastrarConta(Screen):
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
-        self.parent.current = 'fornecedores'
+        self.parent.current = 'estabelecimento'
 
 
 class AlterarConta(Screen):
     def recolherDados(self):    
         global COD_BARRAS
         COD_BARRAS = self.ids.cod_barras.text
-    
-    def switchAtualiza(self):
+        self.ids.cod_barras.text = ''
+
+        if COD_BARRAS == '':
+            popup = Popup(title='ERRO - ALTERAR CONTA',
+                    content=Label(text='Não foi possível realizar a alteração.\nNão foi informado o código de\nbarras da conta.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return 
+
         self.parent.current = 'alterar_conta2'
+
     
     def switchHome(self):
         self.parent.current = 'home'
@@ -2473,53 +2578,90 @@ class AlterarConta2(Screen):
         self.parent.current = 'venda'
 
     def alterar(self):
+
+        if self.ids.cod_barras.text == '' and self.ids.tipo.text == '' and self.ids.valor.text == '' and self.ids.data_vencimento.text == '' and self.ids.pago.text == '' and self.ids.codigo_estabelecimento.text == '':
+            popup = Popup(title='ALTERAR CONTA',
+                    content=Label(text='Não foi realizada nenhuma\nalteração nos dados da conta.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return 
+
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
-        if(self.ids.pago.text == 's'):
-            self.ids.pago.text = 'true'
-        else:
-            self.ids.pago.text = 'false'
+        if((self.ids.pago.text).lower() == 's'): self.ids.pago.text = 'true'
+        else: self.ids.pago.text = 'false'
   
-        if(self.ids.data_pagamento.text != ''):
-            sql_command = f"""update conta
-                            set cod_barras=%s,
-                                tipo=%s,
-                                valor=%s,
-                                data_vencimento=%s,
-                                data_pagamento=%s,
-                                pago=%s,
-                                codigo_estabelecimento=%s
-                            where cod_barras=%s;"""
+        lista_atributos = [self.ids.cod_barras.text,
+                            self.ids.tipo.text,
+                            self.ids.valor.text,
+                            self.ids.data_vencimento.text,
+                            self.ids.data_pagamento.text,
+                            self.ids.pago.text,
+                            self.ids.codigo_estabelecimento.text]
 
-            values = (self.ids.cod_barras.text,
-                      self.ids.tipo.text,
-                      self.ids.valor.text,
-                      self.ids.data_vencimento.text,
-                      self.ids.data_pagamento.text,
-                      self.ids.pago.text,
-                      self.ids.codigo_estabelecimento.text,
-                      COD_BARRAS)
-        else:
-            sql_command = f"""update conta 
-                            set cod_barras=%s,
-                                tipo=%s,
-                                valor=%s,
-                                data_vencimento=%s,
-                                data_pagamento=null,
-                                pago=%s,
-                                codigo_estabelecimento=%s
-                            where cod_barras=%s;;"""
-            values = (self.ids.cod_barras.text,
-                      self.ids.tipo.text,
-                      self.ids.valor.text,
-                      self.ids.data_vencimento.text,
-                      self.ids.pago.text,
-                      self.ids.codigo_estabelecimento.text,
-                      COD_BARRAS)
+        sql_command = ''
+        lista_values = []
+
+        comAlteracoes = 0
+        lista_comAlteracoes = []
+        aux = 0
+
+        for atributo in lista_atributos:
+            if atributo != '':
+                comAlteracoes += 1
+
+                if aux == 0:
+                    lista_comAlteracoes.append("cod_barras")
+                    lista_values.append(atributo)
+
+                if aux == 1:
+                    lista_comAlteracoes.append("tipo")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 2:
+                    lista_comAlteracoes.append("valor")
+                    lista_values.append(atributo)
+
+                if aux == 3:
+                    lista_comAlteracoes.append("data_vencimento")
+                    lista_values.append(f"{ConversorData(atributo)}")
+
+                if aux == 4:
+                    if self.ids.data_pagamento.text != '':
+                        lista_comAlteracoes.append("data_pagamento")
+                        lista_values.append(f"{ConversorData(atributo)}")
+
+                if aux == 5:
+                    lista_comAlteracoes.append("pago")
+                    lista_values.append(atributo)
+
+                if aux == 6:
+                    lista_comAlteracoes.append("codigo_estabelecimento")
+                    lista_values.append(atributo)
+
+            aux += 1
+
+        lista_values.append(f"{COD_BARRAS}")
+
+        if(comAlteracoes == 0):
+            popup = Popup(title='ATUALIZAR DADOS DA CONTA',
+                    content=Label(text='Nenhuma alteração nos dados da\nconta foi feita.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return
+
+        sql_command = CriaQuery_UPDATE("conta", lista_comAlteracoes, "COD_BARRAS")
 
         c.execute("SET search_path TO padaria;")
-        c.execute(sql_command, values)
+        c.execute(sql_command, tuple(lista_values))
+
         conn.commit()
         conn.close()
 
@@ -2530,7 +2672,7 @@ class AlterarConta2(Screen):
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
-        self.parent.current = 'fornecedores'
+        self.parent.current = 'estabelecimento'
 
 
 # botao do cadastro do funcionario
