@@ -33,6 +33,12 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
     MDFillRoundFlatIconButton:
         text : 'Cadastrar fornecedores'
         icon : "account-plus"
@@ -118,6 +124,12 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
     MDBoxLayout:
         orientation: "vertical"
         pos_hint: {'center_x': .5, 'center_y': .70}
@@ -126,6 +138,8 @@
             id: cnpj
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
             hint_text: 'CNPJ:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -134,6 +148,8 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'Nome do fornecedor:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -142,6 +158,8 @@
             id: rua
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Rua:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -150,6 +168,8 @@
             id: estado
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 30
             hint_text: 'Estado:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -158,6 +178,8 @@
             id: cidade
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Cidade: '
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -166,6 +188,8 @@
             id: cep
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 8
             hint_text: 'CEP:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -174,6 +198,8 @@
             id: numero
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 10
             hint_text: 'Número:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -182,6 +208,8 @@
             id: bairro
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Bairro:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -189,7 +217,7 @@
                     
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .15}
+        pos_hint: {'center_x': .25, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -198,7 +226,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .15}
+        pos_hint: {'center_x': .75, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -243,7 +271,19 @@
             text: 'Funcionários'
             icon: 'account-group'
             on_enter: root.switchFuncionario()
-        
+
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos os campos abaixo para\n realizar a busca. Caso não tenha um dos\n dados, apenas deixe o campo vazio.'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -254,6 +294,8 @@
             id: cnpj
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
             hint_text: 'CNPJ: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -262,13 +304,15 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'NOME: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -279,7 +323,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -325,6 +369,12 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
 <RemoverFornecedor>:
     name: 'remover_fornecedor'
     MDToolbar:
@@ -360,6 +410,18 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos os campos abaixo para\n realizar a remoção do fornecedor.'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -370,6 +432,8 @@
             id: cnpj
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
             hint_text: 'CNPJ do fornecedor: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -378,13 +442,15 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'NOME do fornecedor: '
             pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -395,7 +461,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -440,35 +506,48 @@
             text: 'Funcionários'
             icon: 'account-group'
             on_enter: root.switchFuncionario()
+
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
         
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Informe o CNPJ do fornecedor que\ndeseja atualizar. Caso não o tenha,\nvocê poderá encontra-lo na página\n HOME -> FORNECEDORES, em "Con-\nsultar fornecedores cadastrados".'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .9}
+        pos_hint: {'center_x': .5, 'center_y': .87}
 
         MDTextField:
             id: cnpj
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
             hint_text: 'CNPJ do fornecedor: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
         text: 'BUSCAR'
         on_press:
             root.recolherDados()
-            root.switchAtualiza()
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -487,42 +566,24 @@
         title: "ALTERAR DADOS DO FORNECEDOR"
         md_bg_color: get_color_from_hex("#DF6710")
 
-    MDBottomNavigation:
-        size_hint_y: .09
-        panel_color: get_color_from_hex("#DF6710")
-        text_color_active: get_color_from_hex("#fff4e6")
-        first_widget: 'screen 3'
-        
-        MDBottomNavigationItem:
-            name: 'screen 1'
-            text: 'home'
-            icon: 'home-circle'
-            on_enter:
-                root.manager.transition.direction = 'right'
-                root.switchHome()
-
-        MDBottomNavigationItem:
-            name: 'screen 2'
-            text: 'Estoque'
-            icon: 'barcode'
-            on_enter: root.switchEstoque()
-
-        MDBottomNavigationItem:
-            name: 'screen 3'
-            text: 'Funcionários'
-            icon: 'account-group'
-            on_enter: root.switchFuncionario()
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.83}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Altere os dados do fornecedor escolhido.\nCaso não queira atualizar um determinado\ncampo, apenas deixe-o vazio.'
 
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .6
-        pos_hint: {'center_x': .5, 'center_y': .55}
+        pos_hint: {'center_x': .5, 'center_y': .41}
 
         MDTextField:
             id: cnpj
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
             hint_text: 'CNPJ:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -531,6 +592,8 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'Nome do fornecedor:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -539,6 +602,8 @@
             id: rua
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Rua:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -547,6 +612,8 @@
             id: estado
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 30
             hint_text: 'Estado:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -555,6 +622,8 @@
             id: cidade
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Cidade: '
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -563,6 +632,8 @@
             id: cep
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 8
             hint_text: 'CEP:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -571,6 +642,8 @@
             id: numero
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 10
             hint_text: 'Número:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -579,13 +652,15 @@
             id: bairro
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Bairro:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .20}
+        pos_hint: {'center_x': .27, 'center_y': .05}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -596,7 +671,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .20}
+        pos_hint: {'center_x': .73, 'center_y': .05}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
