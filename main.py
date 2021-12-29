@@ -504,8 +504,6 @@ class FuncionarioPage(Screen):
         self.parent.current = 'venda'
 
 
-
-
 class CadastrarFuncionario(Screen):
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
@@ -798,8 +796,24 @@ class TabelaBuscaFuncionario(Screen):
 
 
 class RemoverFuncionario(Screen):
+
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
 
     def remover(self):
         if self.ids.cpf.text == '' or self.ids.codigo_estabelecimento.text == '':
@@ -823,8 +837,23 @@ class RemoverFuncionario(Screen):
 
 
 class AlterarFuncionario(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
     def switchFuncionario(self):
         self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
 
     def recolherDados(self):	
         global CPF_FUNCIONARIO
@@ -1016,6 +1045,24 @@ class CadastrarProduto(Screen):
 
 
 class RemoverProduto(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def remover(self):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
@@ -1172,6 +1219,24 @@ class TabelaBuscaEstoque(Screen):
 
 
 class AtualizarEstoque(Screen):
+    def switchFornecedores(self):
+        self.parent.current = 'fornecedores'
+
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchEstabelecimento(self):
+        self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def recolherDados(self):	
         global COD_BARRAS
         COD_BARRAS = self.ids.cod_barras.text
@@ -1315,6 +1380,10 @@ class FornecedoresPage(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
+
 class CadastrarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
@@ -1331,9 +1400,22 @@ class CadastrarFornecedor(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def cadastrar(self):
         conn = ConnectionDatabase.getConnection() 
         c = conn.cursor()
+
+        if self.ids.cnpj.text == '' or self.ids.nome.text == '' or self.ids.rua.text == '' or self.ids.estado.text == '' or self.ids.cidade.text == '' or self.ids.cep.text == '' or self.ids.numero.text or self.ids.bairro.text == '':
+            popup = Popup(title='ERRO - CADASTRAR FORNECEDOR',
+                    content=Label(text='Alguns campos não foram preenchidos.\nPor favor, preencha todos os campos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'fornecedores'
+            return 
 
         # Add dados na tabela de fornecedor
         sql_command = "INSERT INTO fornecedor (CNPJ, NOME, RUA, ESTADO, CIDADE, CEP, NUMERO, BAIRRO) VALUES(%s, %s, %s, %s, %s,%s,%s,%s)"
@@ -1346,6 +1428,7 @@ class CadastrarFornecedor(Screen):
                   self.ids.numero.text,
                   self.ids.bairro.text)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, (values))    
         conn.commit()
         conn.close()
@@ -1368,6 +1451,7 @@ class CadastrarFornecedor(Screen):
 
         self.parent.current = 'fornecedores'
 
+
 class ConsultarFornecedor(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
@@ -1384,6 +1468,9 @@ class ConsultarFornecedor(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def switchTabela(self):
         self.parent.current = 'tabela_busca_fornecedor'
 
@@ -1391,7 +1478,9 @@ class ConsultarFornecedor(Screen):
         global CNPJ_FORNECEDOR
         CNPJ_FORNECEDOR = self.ids.cnpj.text
         global NOME_FORNECEDOR
-        NOME_FORNECEDOR = self.ids.nome.text
+        NOME_FORNECEDOR = (self.ids.nome.text).lower()
+        self.ids.cnpj.text = ''
+        self.ids.nome.text = ''
 
 
 class TabelaBuscaFornecedor(Screen):
@@ -1411,16 +1500,49 @@ class TabelaBuscaFornecedor(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def tabela(self):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
-        sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
+        if CNPJ_FORNECEDOR == '' and NOME_FORNECEDOR == '':
+            popup = Popup(title='ERRO - BUSCAR FORNECEDOR',
+                    content=Label(text='Não foi possível realizar a busca.\nNenhum dado do fornecedor foi\ninformado.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'fornecedores'
+            return             
 
+        sql_command = ''
+
+        if CNPJ_FORNECEDOR != '' and NOME_FORNECEDOR == '':
+            sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}';"
+
+        elif CNPJ_FORNECEDOR == '' and NOME_FORNECEDOR != '':
+            sql_command = f"select * from fornecedor WHERE nome='{NOME_FORNECEDOR}';"
+
+        else:
+            sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
+        
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='BUSCAR FORNECEDOR',
+                    content=Label(text='Não foi possível encontrar nenhum\nfornecedor com os dados informados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'fornecedores'
+            return              
+
         output.append(['', '', '', '', '', '' ,'', ''])
-        print(output)
         conn.close()
         screen = AnchorLayout()
 
@@ -1467,15 +1589,34 @@ class RemoverFornecedor(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def remover(self):
+
+        if self.ids.cnpj.text == '' or self.ids.nome.text == '':
+            popup = Popup(title='ERRO - REMOVER FORNECEDOR',
+                    content=Label(text='Não foi possível remover o fornecedor.\nAlguns dados obrigatórios não foram\ninformados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cnpj.text = ''
+            self.ids.nome.text = ''            
+            self.parent.current = 'fornecedores'
+            return               
+
         conn = ConnectionDatabase.getConnection()     
         c = conn.cursor()
 
         sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
-
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         conn.commit()
         conn.close()
+
+        self.ids.cnpj.text = ''
+        self.ids.nome.text = ''
 
         popup = Popup(title='DELETAR FORNECEDOR',
                       content=Label(text='Fornecedor deletado com sucesso'),
@@ -1484,11 +1625,25 @@ class RemoverFornecedor(Screen):
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
 
+
 class AlterarFornecedor(Screen):
     def recolherDados(self):    
         global CNPJ_FORNECEDOR
         CNPJ_FORNECEDOR = self.ids.cnpj.text
-    
+        self.ids.cnpj.text = ''
+
+        if CNPJ_FORNECEDOR == '':
+            popup = Popup(title='ERRO - ATUALIZAR FORNECEDOR',
+                    content=Label(text='Não foi informado o CNPJ do fornecedor.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()         
+            self.parent.current = 'fornecedores'
+            return 
+        
+        self.parent.current = 'alterar_fornecedor2'
+
     def switchAtualiza(self):
         self.parent.current = 'alterar_fornecedor2'
     
@@ -1507,22 +1662,14 @@ class AlterarFornecedor(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
+
 class AlterarFornecedor2(Screen):
 
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
-
-    def switchHome(self):
-        self.parent.current = 'home'
-
-    def switchFuncionario(self):
-        self.parent.current = 'funcionario'
-
-    def switchEstoque(self):
-        self.parent.current = 'estoque'
-
-    def switchEstabelecimento(self):
-        self.parent.current = 'estabelecimento'
 
     def alterar(self):
         conn = ConnectionDatabase.getConnection()
@@ -1549,6 +1696,7 @@ class AlterarFornecedor2(Screen):
                   self.ids.bairro.text,
                   CNPJ_FORNECEDOR)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, values)
         conn.commit()
         conn.close()
@@ -1577,6 +1725,9 @@ class EstabelecimentoPage(Screen):
 
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
     
     def switchCadastrar(self):
         self.parent.current = 'cadastrar_estabelecimento'
@@ -1605,6 +1756,7 @@ class EstabelecimentoPage(Screen):
     def switchPassadas(self):
         self.parent.current = 'consultar_contas_passadas'
 
+
 class CadastrarEstabelecimento(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -1621,6 +1773,9 @@ class CadastrarEstabelecimento(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def cadastrar(self):
         conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
@@ -1634,6 +1789,7 @@ class CadastrarEstabelecimento(Screen):
                   self.ids.cidade.text,
                   self.ids.numero.text)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, (values))    
         conn.commit()
         conn.close()
@@ -1678,6 +1834,10 @@ class AlterarEstabelecimento(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
+
 class AlterarEstabelecimento2(Screen):
 
     def switchFornecedores(self):
@@ -1694,6 +1854,9 @@ class AlterarEstabelecimento2(Screen):
 
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
 
     def alterar(self):
         conn = ConnectionDatabase.getConnection()
@@ -1716,6 +1879,7 @@ class AlterarEstabelecimento2(Screen):
                   self.ids.numero.text,
                   COD_ESTABELECIMENTO)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, values)
         conn.commit()
         conn.close()
@@ -1728,6 +1892,7 @@ class AlterarEstabelecimento2(Screen):
         popup.open()
 
         self.parent.current = 'estabelecimento'
+
 
 class ConsultarEstabelecimento(Screen):
     def switchFornecedores(self):
@@ -1744,6 +1909,9 @@ class ConsultarEstabelecimento(Screen):
 
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
 
     def switchTabela(self):
         self.parent.current = 'tabela_busca_estabelecimento'
@@ -1772,12 +1940,16 @@ class TabelaBuscaEStabelecimento(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def tabela(self):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
         output.append(['', '', '', '', '', '' ,''])
@@ -1827,12 +1999,16 @@ class RemoverEstabelecimento(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def remover(self):
         conn = ConnectionDatabase.getConnection()   
         c = conn.cursor()
 
         sql_command = f"delete from estabelecimento WHERE codigo='{self.ids.codigo.text}' and nome='{self.ids.nome.text}';"
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         conn.commit()
         conn.close()
@@ -1861,12 +2037,16 @@ class ConsultaContasAtivas(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def tabela(self):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) >= 0;"
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
         output.append(['', '', '', '', '', '' ,''])
@@ -1899,6 +2079,7 @@ class ConsultaContasAtivas(Screen):
     def on_enter(self):
         self.tabela()
 
+
 class ConsultarContasPassadas(Screen):
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
@@ -1915,12 +2096,16 @@ class ConsultarContasPassadas(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def tabela(self):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
         sql_command = f"SELECT * FROM CONTA WHERE (conta.DATA_VENCIMENTO - current_date) < 0;"
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
         output.append(['', '', '', '', '', '' ,''])
@@ -1969,12 +2154,16 @@ class RemoverConta(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
     def remover(self):
         conn = ConnectionDatabase.getConnection()    
         c = conn.cursor()
 
         sql_command = f"delete from conta WHERE cod_barras='{self.ids.cod_barras.text}';"
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         conn.commit()
         conn.close()
@@ -1985,6 +2174,7 @@ class RemoverConta(Screen):
                       size=(300, 150),
                       background ='atlas://data/images/defaulttheme/button_pressed')
         popup.open()
+
 
 class CadastrarConta(Screen):
     def switchFornecedores(self):
@@ -2001,6 +2191,9 @@ class CadastrarConta(Screen):
 
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
 
     def cadastrar(self):
         conn = ConnectionDatabase.getConnection()  
@@ -2029,6 +2222,7 @@ class CadastrarConta(Screen):
                       self.ids.pago.text,
                       self.ids.codigo_estabelecimento.text)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, (values))    
         conn.commit()
         conn.close()
@@ -2049,6 +2243,7 @@ class CadastrarConta(Screen):
         popup.open()
 
         self.parent.current = 'fornecedores'
+
 
 class AlterarConta(Screen):
     def recolherDados(self):    
@@ -2073,6 +2268,10 @@ class AlterarConta(Screen):
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
 
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
+
 class AlterarConta2(Screen):
 
     def switchFornecedores(self):
@@ -2089,6 +2288,9 @@ class AlterarConta2(Screen):
 
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
 
     def alterar(self):
         conn = ConnectionDatabase.getConnection()
@@ -2136,6 +2338,7 @@ class AlterarConta2(Screen):
                       self.ids.codigo_estabelecimento.text,
                       COD_BARRAS)
 
+        c.execute("SET search_path TO padaria;")
         c.execute(sql_command, values)
         conn.commit()
         conn.close()
@@ -2203,7 +2406,6 @@ def FormataFloat(num):
     if ',' in num:
         numFormatado = numFormatado.replace(',', '.') 
     return numFormatado
-
 
 
 # Gerenciador de paginas
