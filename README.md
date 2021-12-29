@@ -8,7 +8,7 @@ TELAS:
 
 Login: *SILAS* [PRONTO] <br>
 Início: *THATA* [PRONTO] <br>
-Estoque+Compra: *MELISSA* [PRONTO] <br>
+Estoque+Compras do fornecedor: *MELISSA* [PRONTO] <br>
 Compra do cliente+cadastro do cliente: *SILAS* [PRONTO] <br>
 Empregados: *MELISSA* [PRONTO] <br>
 Fornecedores: *THATA*  [PRONTO] <br>
