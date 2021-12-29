@@ -1414,6 +1414,14 @@ class CadastrarFornecedor(Screen):
                     size=(300, 150),
                     background ='atlas://data/images/defaulttheme/button_pressed')
             popup.open()
+            self.ids.cnpj.text = ''
+            self.ids.nome.text = ''
+            self.ids.rua.text = ''
+            self.ids.estado.text = ''
+            self.ids.cidade.text = ''
+            self.ids.cep.text = ''
+            self.ids.numero.text = ''
+            self.ids.bairro.text = ''  
             self.parent.current = 'fornecedores'
             return 
 
@@ -1757,6 +1765,7 @@ class AlterarFornecedor2(Screen):
 
         self.parent.current = 'fornecedores'
 
+
 class EstabelecimentoPage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -1824,6 +1833,23 @@ class CadastrarEstabelecimento(Screen):
         self.parent.current = 'venda'
 
     def cadastrar(self):
+
+        if self.ids.nome.text == '' or self.ids.bairro.text == '' or self.ids.rua.text == '' or self.ids.cep.tex == '' or self.ids.cidade.text == '' or self.ids.numero.text == '':
+            popup = Popup(title='ERRO - CADASTRAR ESTABELECIMENTO',
+                    content=Label(text='Alguns campos não foram preenchidos.\nPor favor, preencha todos os campos.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.nome.text = ''
+            self.ids.bairro.text = ''
+            self.ids.rua.text = ''
+            self.ids.cep.text = ''
+            self.ids.cidade.text = ''
+            self.ids.numero.text = '' 
+            self.parent.current = 'estabelecimento'
+            return 
+
         conn = ConnectionDatabase.getConnection()  
         c = conn.cursor()
 
@@ -1862,8 +1888,18 @@ class AlterarEstabelecimento(Screen):
     def recolherDados(self):    
         global COD_ESTABELECIMENTO
         COD_ESTABELECIMENTO = self.ids.codigo.text
-    
-    def switchAtualiza(self):
+
+        if COD_ESTABELECIMENTO == '':
+            popup = Popup(title='ERRO - ALTERAR ESTABELECIMENTO',
+                    content=Label(text='Não foi possível realizar a alteração.\nNão foi informado o código do es-\ntabelecimento.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return   
+
+        self.ids.codigo.text = ''
         self.parent.current = 'alterar_estabelecimento2'
     
     def switchHome(self):
@@ -1909,29 +1945,78 @@ class AlterarEstabelecimento2(Screen):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
-        sql_command = f"""update estabelecimento
-                            set nome=%s,
-                                bairro=%s,
-                                rua=%s,
-                                cep=%s,
-                                cidade=%s,
-                                numero=%s
-                            where codigo=%s;"""
+        lista_atributos = [self.ids.nome.text,
+                            self.ids.bairro.text,
+                            self.ids.rua.text,
+                            self.ids.cep.text,
+                            self.ids.cidade.text,
+                            self.ids.numero.text]
 
-        values = (self.ids.nome.text,
-                  self.ids.bairro.text,
-                  self.ids.rua.text,
-                  self.ids.cep.text,
-                  self.ids.cidade.text,
-                  self.ids.numero.text,
-                  COD_ESTABELECIMENTO)
+        sql_command = ''
+        lista_values = []
+
+        comAlteracoes = 0
+        lista_comAlteracoes = []
+        aux = 0
+
+        for atributo in lista_atributos:
+            if atributo != '':
+                comAlteracoes += 1
+
+                if aux == 0:
+                    lista_comAlteracoes.append("nome")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 1:
+                    lista_comAlteracoes.append("bairro")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 2:
+                    lista_comAlteracoes.append("rua")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 3:
+                    lista_comAlteracoes.append("cep")
+                    lista_values.append(atributo)
+
+                if aux == 4:
+                    lista_comAlteracoes.append("cidade")
+                    lista_values.append(f"{(atributo).lower()}")
+
+                if aux == 5:
+                    lista_comAlteracoes.append("numero")
+                    lista_values.append(atributo)
+
+            aux += 1
+
+        lista_values.append(f"{COD_ESTABELECIMENTO}")
+
+        if(comAlteracoes == 0):
+            popup = Popup(title='ATUALIZAR DADOS DO ESTABELE-\nCIMENTO',
+                    content=Label(text='Nenhuma alteração nos dados do\nestabelecimento foi feita.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return
+
+        sql_command = CriaQuery_UPDATE("estabelecimento", lista_comAlteracoes, "CODIGO")
 
         c.execute("SET search_path TO padaria;")
-        c.execute(sql_command, values)
+        c.execute(sql_command, tuple(lista_values))
+
         conn.commit()
         conn.close()
 
-        popup = Popup(title='ATUALIZAR DADOS DO ESTABELECIMENTO',
+        self.ids.nome.text = ''
+        self.ids.bairro.text = ''
+        self.ids.rua.text = ''
+        self.ids.cep.text = ''
+        self.ids.cidade.text = ''
+        self.ids.numero.text = ''
+
+        popup = Popup(title='ATUALIZAR DADOS DO ESTABELE-\nCIMENTO',
                       content=Label(text='Estabelecimento atualizado com sucesso'),
                       size_hint=(None, None),
                       size=(300, 150),
@@ -1969,6 +2054,9 @@ class ConsultarEstabelecimento(Screen):
         global NOME_ESTABELECIMENTO
         NOME_ESTABELECIMENTO = self.ids.nome.text
 
+        self.ids.codigo.text = ''
+        self.ids.nome.text = ''
+
 
 class TabelaBuscaEStabelecimento(Screen):
 
@@ -1991,14 +2079,46 @@ class TabelaBuscaEStabelecimento(Screen):
         self.parent.current = 'venda'
 
     def tabela(self):
-        conn = ConnectionDatabase.getConnection()
-        c = conn.cursor()
 
-        sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
+        if COD_ESTABELECIMENTO == '' and NOME_ESTABELECIMENTO == '':
+
+            popup = Popup(title='ERRO - BUSCAR FORNECEDOR',
+                    content=Label(text='Não foi possível realizar a busca.\nNenhum dado do fornecedor foi\ninformado.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estabelecimento'
+            return   
+
+        conn = ConnectionDatabase.getConnection()
+        c = conn.cursor()  
+
+        sql_command = ''
+
+        if COD_ESTABELECIMENTO != '' and NOME_ESTABELECIMENTO == '':
+            sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}';"
+
+        elif COD_ESTABELECIMENTO == '' and NOME_ESTABELECIMENTO != '':
+            sql_command = f"select * from estabelecimento WHERE nome='{NOME_ESTABELECIMENTO}';"
+
+        else:
+            sql_command = f"select * from estabelecimento WHERE codigo='{COD_ESTABELECIMENTO}' AND nome='{NOME_ESTABELECIMENTO}';"
 
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
         output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='BUSCAR ESTABELECIMENTO',
+                    content=Label(text='Não foi possível encontrar nenhum\nestabelecimento com os dados infor-\nmados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'fornecedores'
+            return   
+
         output.append(['', '', '', '', '', '' ,''])
         print(output)
         conn.close()
@@ -2050,6 +2170,19 @@ class RemoverEstabelecimento(Screen):
         self.parent.current = 'venda'
 
     def remover(self):
+
+        if self.ids.codigo.text == '' or self.ids.nome.text == '':
+            popup = Popup(title='ERRO - REMOVER ESTABELE-\nCIMENTO',
+                    content=Label(text='Não foi possível remover o estabele-\ncimento. Alguns dados obrigatórios\nnão foram informados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.codigo.text = ''
+            self.ids.nome.text = ''            
+            self.ids.nome.text = 'estabelecimento'
+            return        
+
         conn = ConnectionDatabase.getConnection()   
         c = conn.cursor()
 
