@@ -189,14 +189,22 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.81}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos campo abaixo para\n realizar o cadastro.'
+
     MDBoxLayout:
         orientation: "vertical"
-        pos_hint: {'center_x': .5, 'center_y': .80}
+        pos_hint: {'center_x': .5, 'center_y': .73}
 
         MDTextField:
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'Nome do estabelecimento:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -205,6 +213,8 @@
             id: bairro
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Bairro:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -213,6 +223,8 @@
             id: rua
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Rua:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -221,6 +233,8 @@
             id: cep
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 8
             hint_text: 'CEP: '
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -229,6 +243,8 @@
             id: cidade
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Cidade:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -237,13 +253,15 @@
             id: numero
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 10
             hint_text: 'Número:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
                     
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .20}
+        pos_hint: {'center_x': .25, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -252,7 +270,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .20}
+        pos_hint: {'center_x': .75, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -303,15 +321,22 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Informe o código do estabelecimento que\ndeseja atualizar. Caso não o tenha po-\nderá encontra-lo na página\nHOME -> ESTABELECIMENTO E CONTAS,\nem "Consultar estabelecimentos".'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .9}
+        pos_hint: {'center_x': .5, 'center_y': .85}
 
         MDTextField:
             id: codigo
             multiline: False
+            mode: "rectangle"
             size_hint_x: .8
             hint_text: 'CODIGO do estabelecimento: '
             pos_hint: {'center_x': .5, 'center_y': .8}
@@ -319,18 +344,17 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
         text: 'BUSCAR'
         on_press:
             root.recolherDados()
-            root.switchAtualiza()
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -338,6 +362,7 @@
         on_press:
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
+
 
 <AlterarEstabelecimento2>:
     name: 'alterar_estabelecimento2'
@@ -381,6 +406,12 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.82}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Altere os dados do estabelecimento escolhido.\nCaso não deseje alterar um dos campos,\napenas deixe-o vazio.'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -391,6 +422,8 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'Nome:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -399,6 +432,8 @@
             id: bairro
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Bairro:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -407,6 +442,8 @@
             id: rua
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Rua:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -415,6 +452,8 @@
             id: cep
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 8
             hint_text: 'CEP:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
@@ -423,22 +462,25 @@
             id: cidade
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 100
             hint_text: 'Cidade: '
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
-
 
         MDTextField:
             id: numero
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 10
             hint_text: 'Número:'
             pos_hint: {'center_x': .5}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .20}
+        pos_hint: {'center_x': .25, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -449,7 +491,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .20}
+        pos_hint: {'center_x': .75, 'center_y': .15}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -457,6 +499,7 @@
         on_press:
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
+
 
 <ConsultarEstabelecimento>:
     name: 'consultar_estabelecimento'
@@ -500,6 +543,12 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha os campos abaixo para rea-\nlizar a busca do estabelecimento.\nCaso não tenha um dos dados,\ndeixe o campo vazio.'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
@@ -510,6 +559,7 @@
             id: codigo
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'CÓDIGO ESTABELECIMENTO: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -518,13 +568,15 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'NOME ESTABELECIMENTO: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -535,7 +587,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .20}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -622,16 +674,23 @@
             icon: 'account-group'
             on_enter: root.switchFuncionario()
 
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.75}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos os campo abaixo para\nrealizar a remoção do estabelecimento.\nCaso não tenha um dos dados, você\npoderá encontra-lo  encontra-lo na página\nHOME -> ESTABELECIMENTO E CONTAS,\nem "Consultar estabelecimentos".'
+
     MDBoxLayout:
         orientation: "vertical"
         size_hint_x: .9
         size_hint_y: .8
-        pos_hint: {'center_x': .5, 'center_y': .9}
+        pos_hint: {'center_x': .5, 'center_y': .8}
 
         MDTextField:
             id: codigo
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
             hint_text: 'CODIGO do estabelecimento: '
             pos_hint: {'center_x': .5, 'center_y': .8}
             text_color: get_color_from_hex("#000000")
@@ -640,13 +699,15 @@
             id: nome
             multiline: False
             size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 70
             hint_text: 'NOME do estabelecimento: '
             pos_hint: {'center_x': .5, 'center_y': .7}
             text_color: get_color_from_hex("#000000")
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .3, 'center_y': .40}
+        pos_hint: {'center_x': .25, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -657,7 +718,7 @@
 
     ButtonFocus:
         size_hint_x: .35
-        pos_hint: {'center_x': .7, 'center_y': .40}
+        pos_hint: {'center_x': .75, 'center_y': .2}
         md_bg_color: app.theme_cls.primary_light
         focus_color: get_color_from_hex("#e54c37")
         unfocus_color: app.theme_cls.primary_light
@@ -665,6 +726,7 @@
         on_press:
             root.manager.transition.direction = 'right'
             root.switchEstabelecimento()
+
 
 <ConsultaContasAtivas>:
     name: 'consultar_contas_ativas'
