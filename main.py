@@ -1,4 +1,4 @@
-from re import A
+import time
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivymd.app import MDApp
@@ -39,6 +39,9 @@ NOME_ESTABELECIMENTO = ''
 CPF_FUNCIONARIO_LOGADO = ''
 APENAS_ATEND_CAIXA = ''
 APENAS_ADM = ''
+DT_ENTREGA = ''
+COD_FUNC = ''
+AUX = 0
 
 
 KV = '''
@@ -49,6 +52,7 @@ KV = '''
 #:include FornecedoresScreen.kv
 #:include EstabelecimentoScreen.kv
 #:include VendaScreen.kv
+#:include CompraFornecedorScreen.kv
 
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#DF6710")
@@ -94,6 +98,10 @@ ScreenManager:
     AlterarConta2:
     VendaPage:
     CadastroVenda:
+    CompraFornecedorPage:
+    CadastrarCompraForn:
+    SelecionarProdutos:
+    ConsultarCompras:
 
 '''
 
@@ -471,6 +479,9 @@ class HomePage(Screen):
 
     def switchFornecedores(self):
         self.parent.current = 'fornecedores'
+
+    def switchCompraFornecedor(self):
+        self.parent.current = 'compraFornecedor'
 
     def switchEstabelecimento(self):
         self.parent.current = 'estabelecimento'
@@ -2675,6 +2686,252 @@ class AlterarConta2(Screen):
         self.parent.current = 'estabelecimento'
 
 
+class CompraFornecedorPage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
+    def switchCadastrar(self):
+        self.parent.current = 'cadastrar_compraForn'
+
+    def switchConsultar(self):
+        self.parent.current = 'consultar_compras'
+
+
+class CadastrarCompraForn(Screen):
+    def switchCompraForn(self):
+        self.parent.current = 'compraFornecedor'
+
+    def cadastrar(self):
+        if self.ids.dt_entrega.text == '' or self.ids.fcodigo_funcionario.text == '' or self.ids.cnpj.text == '':
+            popup = Popup(title='ERR0 - CADASTRAR COMPRA',
+                            content=Label(text='Não foi possível realizar a\ncompra. Alguns dados obrigatórios\nnão foram preenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.fcodigo_funcionario.text == ''
+            self.ids.cnpj.text == ''
+            self.ids.dt_entrega.text == ''
+            self.parent.current = 'compraFornecedor'
+            return
+
+        global DT_ENTREGA
+        DT_ENTREGA = ConversorData(self.ids.dt_entrega.text)
+        global COD_FUNC
+        COD_FUNC = self.ids.fcodigo_funcionario.text
+        global CNPJ_FORNECEDOR
+        CNPJ_FORNECEDOR = self.ids.cnpj.text
+
+        self.ids.fcodigo_funcionario.text == ''
+        self.ids.cnpj.text == ''
+        self.ids.dt_entrega.text == ''
+
+        self.parent.current = 'selecionar_produtos'
+
+
+class SelecionarProdutos(Screen):
+    posicaoProduto = 0
+
+    def __init__(self, **kwargs):
+        super(Screen,self).__init__(**kwargs)
+
+    def switchCompraForn(self):
+        self.parent.current = 'compraFornecedor'
+
+    def adicionaProduto(self):
+
+        #posicao variavel do textBox
+        posicaoTextBox = 0.8 - (self.posicaoProduto/10)
+        #atualizando o numero de produtos na tela
+        self.posicaoProduto+=1
+
+        #criando um textField de codigo de produto
+        exec("self.produto"+ str(self.posicaoProduto) + " = MDTextField(mode='rectangle')")
+        exec("self.produto"+ str(self.posicaoProduto) + ".hint_text = 'Cod. Barras do produto "+ str(self.posicaoProduto) + "'")
+        exec("self.produto"+ str(self.posicaoProduto) + ".size_hint = (0.6, None)")
+        exec("self.produto"+ str(self.posicaoProduto) + ".pos_hint = {'x': .1, 'y': posicaoTextBox}")
+
+        #criando um textField de quantidade de produto
+        exec("self.quantidadeProduto"+ str(self.posicaoProduto) + " = MDTextField(mode='rectangle')")
+        exec("self.quantidadeProduto"+ str(self.posicaoProduto) + ".hint_text = 'Qtd'")
+        exec("self.quantidadeProduto"+ str(self.posicaoProduto) + ".size_hint = (0.1, None)")
+        exec("self.quantidadeProduto"+ str(self.posicaoProduto) + ".pos_hint = {'x': .8, 'y': posicaoTextBox}")
+
+        #reposicionando o botado de adicioanr produto
+        self.ids.btn_adiciona_produto.pos_hint = {'x': .1, 'y': posicaoTextBox - 0.1}
+
+        #adicionando os texts de codigo e quantidade na tela
+        exec("self.add_widget(self.produto"+ str(self.posicaoProduto) + ")")
+        exec("self.add_widget(self.quantidadeProduto"+ str(self.posicaoProduto) + ")")
+
+
+    def valida_produtos(self):
+                    
+        somatorio = 0
+
+        #resetando o exibidor do somatorio
+        self.ids.valor_total.text = "------------------------------------"
+
+        if self.posicaoProduto == 0:
+             self.ids.lbl_error.text = "Insira ao menos um produto na compra"
+             return False
+
+        #para cada produto criado e buscado seu respectivo preco e o estoque 
+        for numProduto in range(1, (self.posicaoProduto+1)):
+            
+            #armazenando o codigo do produto 
+            codigoProduto = eval("self.produto" + str(numProduto) + ".text")
+            
+            #armazenando a quantidade solicitada do produto
+            try:
+                qtdProduto = int(eval("self.quantidadeProduto" + str(numProduto) + ".text"))
+            except:
+                self.ids.lbl_error.text = "Quantidade informada do Produto " + str(numProduto) + " é inválida"
+                return False
+
+            #validando se a quantidade inserida e pelo menos 1
+            if qtdProduto < 1:
+                self.ids.lbl_error.text = "Quantidade informada do Produto " + str(numProduto) + " é menor que 1"
+                return False
+
+            #buscando o preco e o estoque do produto
+            conn = ConnectionDatabase.getConnection()
+            c = conn.cursor()
+            c.execute("SET search_path TO PADARIA;")
+            c.execute(f"select preco, qtd_estoque from produto where cod_barras = '{codigoProduto}'")
+            output = c.fetchall()
+            
+            if c.rowcount == 0:
+                #produto nao encontrado, necessario informar o usuario
+                self.ids.lbl_error.text = "Produto " + str(numProduto) + " não encontrado"
+                return False
+
+            #fechando conexao
+            c.close()
+            conn.close()
+
+            for row in output:
+                precoProduto = row[0]
+                quantidadeProdutoNoEstoque = row[1]
+                
+            #verifica se ha quantidade de produtos suficientes no estoque
+            if qtdProduto > quantidadeProdutoNoEstoque:
+                #quantidade no estoque insuficiente, necessario informar o usuario
+                self.ids.lbl_error.text = "Quantidade insuficiente do Produto " + str(numProduto) + " no estoque"
+                return False
+                
+            #calcula preco de venda do respectivo produto e soma ao valor total
+            somatorio += (precoProduto * qtdProduto)
+
+        #mostrando o resultado ao usuario
+        self.ids.valor_total.text = "R$ " + str(somatorio).replace(".", ",")
+    
+        return True
+
+
+    def registrar_compra(self):
+
+        if self.valida_produtos():
+            #armazenando valores em variaves locais
+            valor_total = str(self.ids.valor_total.text).replace(",", ".").replace("R$ ", "")
+
+            #inserindo compra
+            conn2 = ConnectionDatabase.getConnection()
+            c2 = conn2.cursor()
+            c2.execute("SET search_path TO padaria;")
+            c2.execute(f"insert into compra (DT_SOLICITACAO, DT_ENTREGA, VALOR_TOTAL, FCODIGO_FUNCIONARIO, CNPJ) VALUES(current_date, '{DT_ENTREGA}', {valor_total}, '{COD_FUNC}', '{CNPJ_FORNECEDOR}')")
+            c2.execute(f"(select cod_compra from compra where valor_total={valor_total}) order by dt_solicitacao desc limit 1")
+            conn2.commit()
+            output = c2.fetchall()
+            conn2.close()
+            
+            #armazenando cod_compra gerado
+            for row in output:
+                cod_compra = row[0]
+                        
+            #buscando produtos comprados
+            for numProduto in range(1, self.posicaoProduto+1):
+                #armazenando o codigo do produto 
+                codigoProduto = eval("self.produto" + str(numProduto) + ".text")
+                #armazenando a quantidade solicitada do produto            
+                qtdProduto = int(eval("self.quantidadeProduto" + str(numProduto) + ".text"))
+                
+                #inserindo produto e sua quantidade na tabela produto_comprado
+                conn3 = ConnectionDatabase.getConnection()
+                c3 = conn3.cursor()
+                c3.execute("SET search_path TO padaria;")
+                c3.execute(f"insert into produto_comprado (QUANTIDADE, COD_COMPRA, COD_BARRAS) " +
+                            f"values ({qtdProduto}, {cod_compra}, {codigoProduto})")
+
+                # aumenta a quantidade do produto no estoque
+                c3.execute(f"update produto set qtd_estoque = " +
+                            f"((select qtd_estoque from produto where cod_barras = '{codigoProduto}') + {qtdProduto}) " +
+                            f"where cod_barras = '{codigoProduto}'")
+                conn3.commit()
+                conn3.close()
+
+            popup = Popup(title='COMPRA COM FORNECEDOR',
+            content=Label(text='Compra realizada com sucesso'),
+            size_hint=(None, None),
+            size=(300, 150),
+            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+
+            self.parent.current = 'compraFornecedor'
+
+
+class ConsultarCompras(Screen):
+
+    def switchCompras(self):
+        self.parent.current = 'compraFornecedor'
+
+    def __init__(self, **kwargs):
+        super(Screen,self).__init__(**kwargs)
+        global AUX
+        if AUX == 0: AUX += 1
+        else: self.criaTabela()
+
+    def criaTabela(self):
+        #iniciando conexao, criando o cursor
+        conn = ConnectionDatabase.getConnection()
+        c = conn.cursor()
+    
+        c.execute("SET search_path TO padaria;")
+        string_busca = "select * from compra"
+        c.execute(string_busca)
+        output = c.fetchall()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("Cod. compra", dp(25)),
+                ("Data da compra", dp(40)),
+                ("Data da entrega", dp(40)),
+                ("Valor total", dp(30)),
+                ("Cod. adm", dp(25)),
+                ("CNPJ do fornecedor", dp(30))
+            ],
+            sorted_on="Data da compra",
+            sorted_order="DSC",
+            elevation=2,
+            row_data=output
+        )
+
+        #inserindo tabela na tela
+        self.add_widget(self.table) 
+
+
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
@@ -2767,6 +3024,11 @@ sm.add_widget(RemoverConta(name='remover_conta'))
 sm.add_widget(CadastrarConta(name='cadastrar_conta'))
 sm.add_widget(AlterarConta(name='alterar_conta'))
 sm.add_widget(AlterarConta2(name='alterar_conta2'))
+sm.add_widget(CompraFornecedorPage(name='compraFornecedor'))
+sm.add_widget(CadastrarCompraForn(name='cadastrar_compraForn'))
+sm.add_widget(SelecionarProdutos(name='selecionar_produtos'))
+sm.add_widget(ConsultarCompras(name='consultar_compras'))
+
 
 class Main(MDApp):
     def build(self):

@@ -1,0 +1,183 @@
+<CompraFornecedorPage>:
+    name: 'compraFornecedor'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "Bakery ABC"
+        md_bg_color: toolbarColor
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'Home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionarios'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
+    MDRectangleFlatIconButton:
+        text : 'Fazer uma compra'
+        icon : "basket-plus"
+        pos_hint : {"center_x":.5,"center_y":.65}
+        text_color : get_color_from_hex("#7E6B73")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchCadastrar()
+
+    MDRectangleFlatIconButton:
+        text: 'Consultar compras realizadas'
+        icon: "magnify"
+        pos_hint: {"center_x":.5,"center_y":.55}
+        text_color: get_color_from_hex("#7E6B73")
+        font_size: 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchConsultar()
+
+
+<CadastrarCompraForn>:
+    name: 'cadastrar_compraForn'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "COMPRAR PRODUTOS DO FORNECEDOR"
+        md_bg_color: toolbarColor
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos campos abaixo para\niniciar o processo da compra de\nprodutos com um fornecedor.'
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': .5, 'center_y': .8}
+
+        MDTextField:
+            id: fcodigo_funcionario
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            hint_text: 'Codigo do administrador:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: cnpj
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
+            hint_text: 'CNPJ do fornecedor:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: dt_entrega
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            hint_text: 'Data de entrega: <dd-mm-aaaa>'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+                    
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchCompraForn()
+
+    MDFloatingActionButton:
+        icon: "arrow-right-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.8,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.cadastrar()
+
+
+<SelecionarProdutos>:
+    name: 'selecionar_produtos'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "COMPRAR PRODUTOS DO FORNECEDOR"
+        md_bg_color: toolbarColor
+    
+    MDRoundFlatIconButton:
+        name: 'btn_adiciona_produto'
+        id: btn_adiciona_produto
+        icon: "plus-circle"
+        text: "Adicionar Produto"
+        size_hint: 0.8, None
+        pos_hint: {"x": .1, "y": .8}
+        on_release: root.adicionaProduto()
+
+    MDLabel:
+        name: 'valor_total'
+        id:valor_total
+        text:"------------------------------------"
+        pos_hint: {"x": .1, "y": .05}
+        size_hint: 0.6, None
+
+    MDRectangleFlatButton:
+        name: 'btn_calcula_valor_total'
+        id: btn_calcula_valor_total
+        text: "Finalizar compra"
+        text_color: get_color_from_hex("#000000")
+        md_bg_color: app.theme_cls.primary_color
+        size_hint: 0.4, None
+        pos_hint: {"x": .55, "y": .1}
+        on_release: root.registrar_compra()
+
+
+<ConsultarCompras>:
+    name: 'consultar_compras'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "RESULTADO DA BUSCA"
+        md_bg_color: toolbarColor
+
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchCompras()  
