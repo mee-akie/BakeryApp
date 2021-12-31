@@ -7,6 +7,11 @@
         title: "Bakery ABC - Fornecedores"
         md_bg_color: toolbarColor
 
+    BoxLayout:
+        Image:
+            source: 'assets/fornecedor.png'
+            pos_hint: {"center_x":.5,"center_y":.2}
+
     MDBottomNavigation:
         size_hint_y: .09
         panel_color: get_color_from_hex("#DF6710")
@@ -42,7 +47,7 @@
     MDFillRoundFlatIconButton:
         text : 'Cadastrar fornecedores'
         icon : "account-plus"
-        pos_hint : {"center_x":.5,"center_y":.65}
+        pos_hint : {"center_x":.5,"center_y":.75}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -54,7 +59,7 @@
     MDFillRoundFlatIconButton:
         text : 'Consultar fornecedores cadastrados'
         icon : "account-search"
-        pos_hint : {"center_x":.5,"center_y":.55}
+        pos_hint : {"center_x":.5,"center_y":.65}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -66,7 +71,7 @@
     MDFillRoundFlatIconButton:
         text : 'Alterar dados de um fornecedor'
         icon : "account"
-        pos_hint : {"center_x":.5,"center_y":.45}
+        pos_hint : {"center_x":.5,"center_y":.55}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -78,7 +83,7 @@
     MDFillRoundFlatIconButton:
         text : 'Remover fornecedor'
         icon : "account-minus"
-        pos_hint : {"center_x":.5,"center_y":.35}
+        pos_hint : {"center_x":.5,"center_y":.45}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20

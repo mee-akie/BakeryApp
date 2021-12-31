@@ -7,10 +7,15 @@
         title: "Bakery ABC - Home"
         md_bg_color: toolbarColor
 
+    BoxLayout:
+        Image:
+            source: 'assets/home.jpg'
+            pos_hint: {"center_x":.5,"center_y":.75}
+
     MDFillRoundFlatIconButton:
         text : 'Estabelecimento e contas'
         icon : "store"
-        pos_hint : {"center_x":.5,"center_y":.70}
+        pos_hint : {"center_x":.5,"center_y":.50}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -22,7 +27,7 @@
     MDFillRoundFlatIconButton:
         text : 'Fornecedores'
         icon : "package-variant"
-        pos_hint : {"center_x":.5,"center_y":.60}
+        pos_hint : {"center_x":.5,"center_y":.40}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -34,7 +39,7 @@
     MDFillRoundFlatIconButton:
         text : 'Comprar produtos com fornecedores'
         icon : "package-variant"
-        pos_hint : {"center_x":.5,"center_y":.50}
+        pos_hint : {"center_x":.5,"center_y":.30}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
@@ -46,7 +51,7 @@
     MDFillRoundFlatIconButton:
         text : 'Histórico de vendas'
         icon : "cart"
-        pos_hint : {"center_x":.5,"center_y":.40}
+        pos_hint : {"center_x":.5,"center_y":.20}
         text_color : get_color_from_hex("#7E6B73")
         md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20

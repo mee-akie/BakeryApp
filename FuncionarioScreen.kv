@@ -7,6 +7,11 @@
         title: "Bakery ABC"
         md_bg_color: toolbarColor
 
+    BoxLayout:
+        Image:
+            source: 'assets/funcionario.png'
+            pos_hint: {"center_x":.5,"center_y":.3}
+
     MDBottomNavigation:
         size_hint_y: .09
         panel_color: get_color_from_hex("#DF6710")
@@ -39,43 +44,47 @@
             icon: 'cash'
             on_enter: root.switchVendas()
 
-    MDRectangleFlatIconButton:
+    MDFillRoundFlatIconButton:
         text : 'Buscar um funcionario'
         icon : "account-search"
-        pos_hint : {"center_x":.5,"center_y":.65}
+        pos_hint : {"center_x":.5,"center_y":.8}
         text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
             root.switchBuscar()
 
-    MDRectangleFlatIconButton:
+    MDFillRoundFlatIconButton:
         text : 'Cadastrar um novo funcionario'
         icon : "account-plus"
-        pos_hint : {"center_x":.5,"center_y":.55}
+        pos_hint : {"center_x":.5,"center_y":.7}
         text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
         font_size : 20
         user_font_size: "64sp"
         on_press:
             root.manager.transition.direction = 'left'
             root.switchCadastro()
 
-    MDRectangleFlatIconButton:
+    MDFillRoundFlatIconButton:
         text: 'Remover um funcionario'
         icon: "account-minus"
-        pos_hint:  {"center_x":.5,"center_y":.45}
-        text_color: get_color_from_hex("#7E6B73")
+        pos_hint:  {"center_x":.5,"center_y":.6}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
         font_size: 20
         on_press:
             root.manager.transition.direction = 'left'
             root.switchRemover()
 
-    MDRectangleFlatIconButton :
+    MDFillRoundFlatIconButton :
         text: 'Alterar dados de um funcionario'
         icon: "account-edit"
-        pos_hint: {"center_x":.5,"center_y":.35}
-        text_color: get_color_from_hex("#7E6B73")
+        pos_hint: {"center_x":.5,"center_y":.5}
+        text_color : get_color_from_hex("#7E6B73")
+        md_bg_color : get_color_from_hex("#FCE18E")
         font_size: 20
         on_press :
             root.manager.transition.direction = 'left'
