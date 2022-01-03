@@ -53,6 +53,7 @@ KV = '''
 #:include EstabelecimentoScreen.kv
 #:include VendaScreen.kv
 #:include CompraFornecedorScreen.kv
+#:include HistoricoTrabalho.kv
 
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:set toolbarColor get_color_from_hex("#DF6710")
@@ -102,6 +103,10 @@ ScreenManager:
     CadastrarCompraForn:
     SelecionarProdutos:
     ConsultarCompras:
+    HistoricoTrabalhoPage:
+    RegistrarHorario:
+    ConsultarHistorico:
+    TabelaHistoricoTrabalho:
 
 '''
 
@@ -489,6 +494,7 @@ class HomePage(Screen):
     def switchVendas(self):
         self.parent.current = 'venda'
 
+
 class FuncionarioPage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -513,6 +519,9 @@ class FuncionarioPage(Screen):
 
     def switchVendas(self):
         self.parent.current = 'venda'
+    
+    def switchHistoricoTrabalho(self):
+        self.parent.current = 'historicoTrabalho'
 
 
 class CadastrarFuncionario(Screen):
@@ -971,6 +980,144 @@ class AlterarFuncionario2(Screen):
 
         self.parent.current = 'funcionario'
 
+
+class HistoricoTrabalhoPage(Screen):
+    def switchHome(self):
+        self.parent.current = 'home'
+
+    def switchFuncionario(self):
+        self.parent.current = 'funcionario'
+
+    def switchEstoque(self):
+        self.parent.current = 'estoque'
+
+    def switchVendas(self):
+        self.parent.current = 'venda'
+
+    def switchRegistrar(self):
+        self.parent.current = 'registrarHorario'
+
+    def switchConsultar(self):
+        self.parent.current = 'consultarHistorico'
+
+
+class RegistrarHorario(Screen):
+    def switchHistoricoTrabalho(self):
+        self.parent.current = 'historicoTrabalho'
+
+    def registrar(self):
+        if self.ids.hora_entrada_r.text == '' or self.ids.hora_saida_r.text == '' or self.ids.fcodigo_funcionario.text == '':
+            popup = Popup(title='ERR0 - REGISTRAR HORÁRIO DE\nTRABALHO',
+                            content=Label(text='Não foi possível realizar o registro.\nAlguns dados obrigatórios não foram\npreenchidos.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+
+            self.ids.hora_entrada_r.text = ''
+            self.ids.hora_saida_r.text = ''
+            self.ids.fcodigo_funcionario.text = ''
+
+            return
+
+        conn = ConnectionDatabase.getConnection()
+        c = conn.cursor()
+
+        sql_command = "INSERT INTO HISTORICO_TRABALHO (DATA_REGISTRO, HORA_ENTRADA_R, HORA_SAIDA_R, FCODIGO_FUNCIONARIO) VALUES(current_date, %s, %s, %s)"
+        values = (FormataHora(self.ids.hora_entrada_r.text),
+                  FormataHora(self.ids.hora_saida_r.text),
+                  self.ids.fcodigo_funcionario.text)
+
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command, (values))	
+        conn.commit()
+        conn.close()
+
+        self.ids.hora_entrada_r.text = ''
+        self.ids.hora_saida_r.text = ''
+        self.ids.fcodigo_funcionario.text = ''
+
+        popup = Popup(title='REGISTRO DE HORÁRIO DE\nTRABALHO',
+                      content=Label(text='Registro realizado com sucesso.'),
+                      size_hint=(None, None),
+                      size=(300, 150),
+                      background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+
+
+class ConsultarHistorico(Screen):
+    def switchHistoricoTrabalho(self):
+        self.parent.current = 'historicoTrabalho'
+
+    def switchTabela(self):
+        self.parent.current = 'tabela_historicoTrabalho'
+
+    def consultar(self):
+        global COD_FUNC
+        COD_FUNC = self.ids.cod_func.text
+        self.ids.cod_func.text = ''
+
+
+class TabelaHistoricoTrabalho(Screen):
+    def switchHistoricoTrabalho(self):
+        self.parent.current = 'historicoTrabalho'
+
+    def tabela(self):
+        conn = ConnectionDatabase.getConnection()
+        c = conn.cursor()
+
+        if COD_FUNC == '':
+            popup = Popup(title='ERRO - CONSULTAR HISTÓRICO DE\nTRABALHO',
+                    content=Label(text='Não foi informado o código\ndo funcionário.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'historicoTrabalho'
+            return
+
+        sql_command = f"select * from historico_trabalho where FCODIGO_FUNCIONARIO={COD_FUNC}"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='HISTÓRICO DE TRABALHO',
+                    content=Label(text='Não foi possível encontrar\nnenhum histórico de tra-\nbalho desse funcionario.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'historicoTrabalho'
+            return
+
+        output.append(['', '', '', '', '', '' ,'', ''])
+        conn.close()
+
+        screen = AnchorLayout()
+
+        self.table = MDDataTable(
+            pos_hint={'center_x': .5, 'center_y': .5},
+            use_pagination=True,
+            size_hint=(0.9, 0.6),
+            column_data=[
+                ("DT REGISTRO", dp(30)),
+                ("HORA ENTRADA", dp(30)),
+                ("HORA SAIDA", dp(30)),
+                ("COD-FUNCIONARIO", dp(40))
+            ],
+            sorted_on="DT REGISTRO",
+            sorted_order="ASC",
+            elevation=2,
+            row_data=output
+        )
+
+        self.add_widget(self.table)
+        return screen
+
+    def on_enter(self):
+        self.tabela()
+        
 
 class EstoquePage(Screen):
     def switchHome(self):
@@ -2938,6 +3085,7 @@ class ConsultarCompras(Screen):
         self.add_widget(self.table) 
 
 
+
 # botao do cadastro do funcionario
 class ButtonFocus(MDRaisedButton, FocusBehavior):
     ...
@@ -2992,6 +3140,9 @@ def FormataFloat(num):
         numFormatado = numFormatado.replace(',', '.') 
     return numFormatado
 
+def FormataHora(horario):
+    return horario + ':00.00'
+
 
 # Gerenciador de paginas
 sm = ScreenManager()
@@ -3034,6 +3185,10 @@ sm.add_widget(CompraFornecedorPage(name='compraFornecedor'))
 sm.add_widget(CadastrarCompraForn(name='cadastrar_compraForn'))
 sm.add_widget(SelecionarProdutos(name='selecionar_produtos'))
 sm.add_widget(ConsultarCompras(name='consultar_compras'))
+sm.add_widget(HistoricoTrabalhoPage(name='historicoTrabalho'))
+sm.add_widget(RegistrarHorario(name='registrarHorario'))
+sm.add_widget(ConsultarHistorico(name='consultarHistorico'))
+sm.add_widget(TabelaHistoricoTrabalho(name='tabela_historicoTrabalho'))
 
 
 class Main(MDApp):

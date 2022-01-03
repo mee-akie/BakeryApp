@@ -1,0 +1,195 @@
+<HistoricoTrabalhoPage>:
+    name: 'historicoTrabalho'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "Bakery ABC"
+        md_bg_color: toolbarColor
+
+    MDBottomNavigation:
+        size_hint_y: .09
+        panel_color: get_color_from_hex("#DF6710")
+        text_color_active: get_color_from_hex("#fff4e6")
+        first_widget: 'screen 3'
+        
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'Home'
+            icon: 'home-circle'
+            on_enter:
+                root.manager.transition.direction = 'right'
+                root.switchHome()
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Estoque'
+            icon: 'barcode'
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Funcionarios'
+            icon: 'account-group'
+            on_enter: root.switchFuncionario()
+
+        MDBottomNavigationItem:
+            name: 'screen 4'
+            text: 'Vendas'
+            icon: 'cash'
+            on_enter: root.switchVendas()
+
+    MDRectangleFlatIconButton:
+        text : 'Registrar horário de trabalho'
+        icon : "calendar-clock"
+        pos_hint : {"center_x":.5,"center_y":.65}
+        text_color : get_color_from_hex("#7E6B73")
+        font_size : 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchRegistrar()
+
+    MDRectangleFlatIconButton:
+        text: 'Consultar histórico de trabalho'
+        icon: "magnify"
+        pos_hint: {"center_x":.5,"center_y":.55}
+        text_color: get_color_from_hex("#7E6B73")
+        font_size: 20
+        user_font_size: "64sp"
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.switchConsultar()
+
+
+<RegistrarHorario>:
+    name: 'registrarHorario'
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "REGISTRAR HORARIO DE TRABALHO"
+        md_bg_color: toolbarColor
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.8}
+        font_size: '20sp'
+        color: get_color_from_hex("#000000")
+        text: 'Preencha todos campos abaixo para\ncadastrar seu horário de trabalho.'
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': .5, 'center_y': .9}
+
+        MDTextField:
+            id: hora_entrada_r
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            hint_text: 'Horário de entrada: <hh:mm>'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+        
+        MDTextField:
+            id: hora_saida_r
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            max_text_length: 14
+            hint_text: 'Horário de saída: <hh:mm>'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+
+        MDTextField:
+            id: fcodigo_funcionario
+            multiline: False
+            size_hint_x: .8
+            mode: "rectangle"
+            hint_text: 'Código do funcionário:'
+            pos_hint: {'center_x': .5}
+            text_color: get_color_from_hex("#000000")
+                    
+    ButtonFocus:
+        size_hint_x: .42
+        pos_hint: {'center_x': .25, 'center_y': .2}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'REGISTRAR'
+        on_press:
+            root.registrar()
+            root.switchHistoricoTrabalho()
+
+    ButtonFocus:
+        size_hint_x: .42
+        pos_hint: {'center_x': .75, 'center_y': .2}
+        md_bg_color: app.theme_cls.primary_light
+        focus_color: get_color_from_hex("#e54c37")
+        unfocus_color: app.theme_cls.primary_light
+        text: 'CANCELAR'
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchHistoricoTrabalho()
+
+
+<ConsultarHistorico>:
+    name: 'consultarHistorico'
+
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "HISTORICO DE TRABALHO"
+        md_bg_color: toolbarColor
+
+    Label:
+        pos_hint : {"center_x":.5,"center_y":.82}
+        font_size: '18sp'
+        color: get_color_from_hex("#000000")
+        text: 'Informe o código do funcionário que\ndeseja consultar o histórico de trabalho.'
+
+    MDTextField:
+        id: cod_func
+        multiline: False
+        pos_hint: {'center_x': .5, 'center_y': .6}
+        size_hint_x: .7
+        mode: "rectangle"
+        hint_text: 'Código do funcionário:'
+        text_color: get_color_from_hex("#000000")
+
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchHistoricoTrabalho()
+
+    MDFloatingActionButton:
+        icon: "arrow-right-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.8,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.consultar()
+            root.switchTabela()
+
+
+<TabelaHistoricoTrabalho>:
+    name: 'tabela_historicoTrabalho'
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "BUSCA - FUNCIONARIO"
+        md_bg_color: toolbarColor
+
+    MDFloatingActionButton:
+        icon: "arrow-left-circle"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint : {"center_x":.2,"center_y":.1}
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.switchHistoricoTrabalho()
