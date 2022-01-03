@@ -907,7 +907,8 @@ class AlterarFuncionario2(Screen):
                             self.ids.cpf.text,
                             self.ids.salario.text,
                             self.ids.ferias.text,
-                            self.ids.codigo_estabelecimento.text]
+                            self.ids.codigo_estabelecimento.text,
+                            self.ids.senha.text]
         sql_command = ''
         lista_values = []
 
@@ -924,7 +925,7 @@ class AlterarFuncionario2(Screen):
 
                 if aux == 1:
                     lista_comAlteracoes.append("cpf")
-
+                    lista_values.append(atributo)
                 if aux == 2:
                     lista_comAlteracoes.append("salario")
                     lista_values.append(f"{FormataFloat(atributo)}")
@@ -935,6 +936,11 @@ class AlterarFuncionario2(Screen):
 
                 if aux == 4:
                     lista_comAlteracoes.append("codigo_estabelecimento")
+                    lista_values.append(atributo)
+
+                if aux == 5:
+                    lista_comAlteracoes.append("senha")
+                    lista_values.append(atributo)     
             aux += 1
 
         lista_values.append(f"{CPF_FUNCIONARIO}")
