@@ -543,6 +543,20 @@ class CadastrarFuncionario(Screen):
         
         c = conn.cursor()
 
+        sql_command = f"select * from funcionario where cpf='{self.ids.cpf.text}'"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+        if len(output) != 0:
+            popup = Popup(title='ERR0 - CADASTRAR FUNCIONÁRIO',
+                            content=Label(text='Não foi possível realizar o cadastro.\nJa existe um funcionario com este\nCPF cadastrado.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return           
+
         # Add dados na tabela de Funcionario
         sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO, SENHA) VALUES(%s, %s, %s, %s, %s, %s)"
         values = (self.ids.nome.text,
@@ -589,8 +603,6 @@ class CadastrarADM_AtenCaixa(Screen):
 
             sql_command = "INSERT INTO ADMINISTRADOR (FCODIGO_FUNCIONARIO, ESPECIALIDADE) VALUES(%s, %s)"
             values = (output[0], self.ids.especialidade.text)
-            print('==============')
-            print(values)
             c.execute(sql_command, (values))	
             conn.commit()
 
@@ -849,11 +861,32 @@ class RemoverFuncionario(Screen):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
+        sql_command = f"select * from funcionario where cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+        if len(output) == 0:
+            popup = Popup(title='ERR0 - REMOVER FUNCIONÁRIO',
+                            content=Label(text='Não foi possível remover o funcionário.\nNão existe um funcionario com o CPF\ne cod. do estabalecimento informado.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return
+
         sql_command = f"delete from funcionario WHERE cpf='{self.ids.cpf.text}' and codigo_estabelecimento={self.ids.codigo_estabelecimento.text};"
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)	
         conn.commit()
         conn.close()
+        popup = Popup(title='REMOVER FUNCIONÁRIO',
+                        content=Label(text='Funcionário removido com\nsucesso.'),
+                        size_hint=(None, None),
+                        size=(300, 150),
+                        background ='atlas://data/images/defaulttheme/button_pressed')
+        popup.open()
+        self.parent.current = 'funcionario'
 
 
 class AlterarFuncionario(Screen):
@@ -2342,7 +2375,6 @@ class TabelaBuscaEStabelecimento(Screen):
             return   
 
         output.append(['', '', '', '', '', '' ,''])
-        print(output)
         conn.close()
         screen = AnchorLayout()
 
