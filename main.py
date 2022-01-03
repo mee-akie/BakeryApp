@@ -1212,6 +1212,21 @@ class CadastrarProduto(Screen):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
+        sql_command = f"select * from produto where COD_BARRAS='{self.ids.cod_barras.text}'"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+
+        if len(output) != 0:
+            popup = Popup(title='ERRO - CADASTRAR PRODUTO',
+                    content=Label(text='Já existe um produto cadastrado\ncom o código de barras informado.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'estoque'
+            return   
+
         fabricacao = ConversorData(self.ids.fabricacao.text)
         vencimento = ConversorData(self.ids.vencimento.text)
         cod_barras = self.ids.cod_barras.text
@@ -1291,8 +1306,36 @@ class RemoverProduto(Screen):
         c = conn.cursor()
 
         if (self.ids.cod_barras.text != ''):
+            sql_command = f"select * from produto where COD_BARRAS='{self.ids.cod_barras.text}'"
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)
+            output = c.fetchall()
+
+            if len(output) == 0:
+                popup = Popup(title='ERRO - EXCLUSÃO DO PRODUTO',
+                        content=Label(text='Não existe um produto no estoque\ncom o código de barras informado.'),
+                        size_hint=(None, None),
+                        size=(300, 150),
+                        background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()
+                self.parent.current = 'estoque'
+                return
+            
             sql_command = f"delete from produto WHERE cod_barras='{self.ids.cod_barras.text}';"
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)	
+            conn.commit()
+            conn.close()
+
+            popup = Popup(title='REMOVER PRODUTO',
+                        content=Label(text='Produto removido com sucesso'),
+                        size_hint=(None, None),
+                        size=(300, 150),
+                        background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
         
+            self.parent.current = 'estoque'
+
         else:
             popup = Popup(title='ERRO - EXCLUSÃO DO PRODUTO',
                     content=Label(text='Não foi informado nenhum código\n de barras para realizar a remoção\ndo produto.'),
@@ -1302,20 +1345,6 @@ class RemoverProduto(Screen):
             popup.open()
             self.parent.current = 'estoque'
             return
-
-        c.execute("SET search_path TO padaria;")
-        c.execute(sql_command)	
-        conn.commit()
-        conn.close()
-
-        popup = Popup(title='REMOVER PRODUTO',
-                      content=Label(text='Produto removido com sucesso'),
-                      size_hint=(None, None),
-                      size=(300, 150),
-                      background ='atlas://data/images/defaulttheme/button_pressed')
-        popup.open()
-        
-        self.parent.current = 'estoque'
 
     
     def switchEstoque(self):
