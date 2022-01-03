@@ -1076,6 +1076,21 @@ class TabelaHistoricoTrabalho(Screen):
             self.parent.current = 'historicoTrabalho'
             return
 
+        sql_command = f"select * from funcionario where CODIGO_FUNC={COD_FUNC}"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='ERRO - CONSULTAR HISTÓRICO DE\nTRABALHO',
+                    content=Label(text='Não existe um funcionário com\no código de funcionário informado.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'historicoTrabalho'
+            return            
+
         sql_command = f"select * from historico_trabalho where FCODIGO_FUNCIONARIO={COD_FUNC}"
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)
@@ -1117,7 +1132,7 @@ class TabelaHistoricoTrabalho(Screen):
 
     def on_enter(self):
         self.tabela()
-        
+
 
 class EstoquePage(Screen):
     def switchHome(self):
