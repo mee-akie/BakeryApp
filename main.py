@@ -371,6 +371,7 @@ class CadastroVenda(Screen):
 
         return True
 
+
     def valida_produtos(self):
         
         somatorio = 0
@@ -1191,7 +1192,6 @@ class EstoquePage(Screen):
 
     def switchVendas(self):
         self.parent.current = 'venda'
-
 
 
 class CadastrarProduto(Screen):
@@ -2107,7 +2107,7 @@ class CadastrarEstabelecimento(Screen):
 
     def cadastrar(self):
 
-        if self.ids.nome.text == '' or self.ids.bairro.text == '' or self.ids.rua.text == '' or self.ids.cep.tex == '' or self.ids.cidade.text == '' or self.ids.numero.text == '':
+        if self.ids.nome.text == '' or self.ids.bairro.text == '' or self.ids.rua.text == '' or self.ids.cep.text == '' or self.ids.cidade.text == '' or self.ids.numero.text == '':
             popup = Popup(title='ERRO - CADASTRAR ESTABELECIMENTO',
                     content=Label(text='Alguns campos não foram preenchidos.\nPor favor, preencha todos os campos.'),
                     size_hint=(None, None),
