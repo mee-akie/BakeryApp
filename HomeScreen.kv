@@ -48,17 +48,6 @@
             root.manager.transition.direction = 'left'
             root.switchCompraFornecedor()
 
-    MDFillRoundFlatIconButton:
-        text : 'Histórico de vendas'
-        icon : "cart"
-        pos_hint : {"center_x":.5,"center_y":.20}
-        text_color : get_color_from_hex("#7E6B73")
-        md_bg_color : get_color_from_hex("#FCE18E")
-        font_size : 20
-        user_font_size: "64sp"
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.switchHome()
 
     MDBottomNavigation:
         size_hint_y: .09
