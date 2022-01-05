@@ -1703,7 +1703,7 @@ class AtualizarEstoque_2(Screen):
 
         self.parent.current = 'estoque'
 
-            
+
 class FornecedoresPage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -1774,6 +1774,22 @@ class CadastrarFornecedor(Screen):
             self.ids.cep.text = ''
             self.ids.numero.text = ''
             self.ids.bairro.text = ''  
+            self.parent.current = 'fornecedores'
+            return 
+
+        sql_command = f"select * from fornecedor where cnpj='{self.ids.cnpj.text}'"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+
+        if len(output) != 0:
+            popup = Popup(title='ERRO - CADASTRAR FORNECEDOR',
+                    content=Label(text='Já existe um fornecedor cadastrado\ncom o CNPJ informado.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cnpj.text = ''
             self.parent.current = 'fornecedores'
             return 
 
@@ -1880,17 +1896,42 @@ class TabelaBuscaFornecedor(Screen):
         sql_command = ''
 
         if CNPJ_FORNECEDOR != '' and NOME_FORNECEDOR == '':
-            sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}';"
+            sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}'"
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)
+            output = c.fetchall()
+
+            if len(output) == 0:
+                popup = Popup(title='ERRO - BUSCAR FORNECEDOR',
+                        content=Label(text='Não foi possível realizar a busca.\nNenhum fornecedor com o CNPJ\ninformado foi encontrado.'),
+                        size_hint=(None, None),
+                        size=(300, 150),
+                        background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()
+                self.parent.current = 'fornecedores'
+                return      
 
         elif CNPJ_FORNECEDOR == '' and NOME_FORNECEDOR != '':
             sql_command = f"select * from fornecedor WHERE nome='{NOME_FORNECEDOR}';"
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)
+            output = c.fetchall()
+
+            if len(output) == 0:
+                popup = Popup(title='ERRO - BUSCAR FORNECEDOR',
+                        content=Label(text='Não foi possível realizar a busca.\nNenhum fornecedor com o nome\ninformado foi encontrado.'),
+                        size_hint=(None, None),
+                        size=(300, 150),
+                        background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()
+                self.parent.current = 'fornecedores'
+                return 
 
         else:
             sql_command = f"select * from fornecedor WHERE cnpj='{CNPJ_FORNECEDOR}' and nome='{NOME_FORNECEDOR}';"
-        
-        c.execute("SET search_path TO padaria;")
-        c.execute(sql_command)  
-        output = c.fetchall()
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)
+            output = c.fetchall()
 
         if len(output) == 0:
             popup = Popup(title='BUSCAR FORNECEDOR',
@@ -1969,6 +2010,23 @@ class RemoverFornecedor(Screen):
         conn = ConnectionDatabase.getConnection()     
         c = conn.cursor()
 
+        sql_command = f"select * from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='ERRO - REMOVER FORNECEDOR',
+                    content=Label(text='Não foi possível remover o fornecedor.\nNão foi encontrado um fornecedor\ncom os dados informados.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cnpj.text = ''
+            self.ids.nome.text = ''            
+            self.parent.current = 'fornecedores'
+            return                  
+
         sql_command = f"delete from fornecedor WHERE cnpj='{self.ids.cnpj.text}' and nome='{self.ids.nome.text}';"
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)  
@@ -2045,6 +2103,22 @@ class AlterarFornecedor2(Screen):
 
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
+
+        if self.ids.cnpj.text != '':
+            sql_command = f"select * from fornecedor WHERE cnpj='{self.ids.cnpj.text}';"
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)
+            output = c.fetchall()
+
+            if len(output) != 0:
+                popup = Popup(title='ERRO - ATUALIZAR FORNECEDOR',
+                        content=Label(text='Já existe um fornecedor com\no CNPJ informado.'),
+                        size_hint=(None, None),
+                        size=(300, 150),
+                        background ='atlas://data/images/defaulttheme/button_pressed')
+                popup.open()         
+                self.parent.current = 'fornecedores'
+                return 
 
         lista_atributos = [self.ids.cnpj.text,
                         self.ids.nome.text,
