@@ -436,6 +436,7 @@ class CadastroVenda(Screen):
 
         return True
 
+
 class LoginPage(Screen):
     
     def validaLogin(self, *args):
@@ -472,7 +473,7 @@ class LoginPage(Screen):
                 )
             )
 
-#thata
+
 class HomePage(Screen):
     def switchHome(self):
         self.parent.current = 'home'
@@ -796,7 +797,9 @@ class TabelaBuscaFuncionario(Screen):
 
         output_to_list = []
         for tupla in output_2: output_to_list.append(list(tupla))
-        for lista in output_to_list: lista.pop()
+        for lista in output_to_list:
+            lista.pop() #remove a senha do usuario
+            lista[4] = ConversorData(lista[4], False)
 
         output_to_list.append(['', '', '', '', '', '' ,'', ''])
         conn.close()
@@ -975,7 +978,7 @@ class AlterarFuncionario2(Screen):
 
                 if aux == 3:
                     lista_comAlteracoes.append("ferias")
-                    lista_values.append(f"{ConversorData(atributo)}")
+                    lista_values.append(f"{ConversorData(atributo, True)}")
 
                 if aux == 4:
                     lista_comAlteracoes.append("codigo_estabelecimento")
@@ -1227,8 +1230,8 @@ class CadastrarProduto(Screen):
             self.parent.current = 'estoque'
             return   
 
-        fabricacao = ConversorData(self.ids.fabricacao.text)
-        vencimento = ConversorData(self.ids.vencimento.text)
+        fabricacao = ConversorData(self.ids.fabricacao.text, True)
+        vencimento = ConversorData(self.ids.vencimento.text, True)
         cod_barras = self.ids.cod_barras.text
         nome = (self.ids.nome.text).lower()
         preco = FormataFloat(self.ids.preco.text)
@@ -1552,11 +1555,11 @@ class AtualizarEstoque_2(Screen):
                 comAlteracoes += 1
                 if aux == 0:
                     lista_comAlteracoes.append("data_fabricacao")
-                    lista_values.append(f"{ConversorData(atributo)}")
+                    lista_values.append(f"{ConversorData(atributo, True)}")
 
                 if aux == 1:
                     lista_comAlteracoes.append("data_vencimento")
-                    lista_values.append(f"{ConversorData(atributo)}")
+                    lista_values.append(f"{ConversorData(atributo, True)}")
 
                 if aux == 2:
                     lista_comAlteracoes.append("nome")
@@ -2868,12 +2871,12 @@ class AlterarConta2(Screen):
 
                 if aux == 3:
                     lista_comAlteracoes.append("data_vencimento")
-                    lista_values.append(f"{ConversorData(atributo)}")
+                    lista_values.append(f"{ConversorData(atributo, True)}")
 
                 if aux == 4:
                     if self.ids.data_pagamento.text != '':
                         lista_comAlteracoes.append("data_pagamento")
-                        lista_values.append(f"{ConversorData(atributo)}")
+                        lista_values.append(f"{ConversorData(atributo, True)}")
 
                 if aux == 5:
                     lista_comAlteracoes.append("pago")
@@ -2954,7 +2957,7 @@ class CadastrarCompraForn(Screen):
             return
 
         global DT_ENTREGA
-        DT_ENTREGA = ConversorData(self.ids.dt_entrega.text)
+        DT_ENTREGA = ConversorData(self.ids.dt_entrega.text, True)
         global COD_FUNC
         COD_FUNC = self.ids.fcodigo_funcionario.text
         global CNPJ_FORNECEDOR
@@ -3204,10 +3207,15 @@ def CriaQuery_UPDATE(tabela, atributos, atributoReferencia):
     sql_command += f"where {atributoReferencia}=%s;"
     return sql_command
 
-# Converte 'dd-mm-aaaa' para 'aaaa-mm-dd' (padrao do Postgresql)
-def ConversorData(dataDesformatada):
-    if dataDesformatada == '': return dataDesformatada 
-    return str(dataDesformatada[len(dataDesformatada)-4:len(dataDesformatada)] + '-' + dataDesformatada[3:5] + '-' + dataDesformatada[0:2])
+
+# postgres == True: Converte 'dd-mm-aaaa' para 'aaaa-mm-dd' (padrao do Postgresql)
+# postgres == False: Converte 'aaaa-mm-dd' para 'dd-mm-aaaa' (mostrar para o usuario)
+def ConversorData(dataDesformatada, postgres):
+    data = str(dataDesformatada)
+    if data == '' or data == 'None': return data
+    if bool(postgres): return str(data[len(data)-4:len(data)] + '-' + data[3:5] + '-' + data[0:2])
+    return str(data[len(data)-2:len(data)] + '-' + data[5:7] + '-' + data[0:4])
+
 
 # Troca o caracter ',' por '.' (padrao do Postgresql)
 def FormataFloat(num):
@@ -3215,6 +3223,7 @@ def FormataFloat(num):
     if ',' in num:
         numFormatado = numFormatado.replace(',', '.') 
     return numFormatado
+
 
 def FormataHora(horario):
     return horario + ':00.00'
