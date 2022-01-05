@@ -549,9 +549,10 @@ class CadastrarFuncionario(Screen):
         c.execute("SET search_path TO padaria;")
         c.execute(sql_command)
         output = c.fetchall()
+
         if len(output) != 0:
             popup = Popup(title='ERR0 - CADASTRAR FUNCIONÁRIO',
-                            content=Label(text='Não foi possível realizar o cadastro.\nJa existe um funcionario com este\nCPF cadastrado.'),
+                            content=Label(text='Não foi possível realizar o cadastro.\nJá existe um funcionario com este\nCPF cadastrado.'),
                             size_hint=(None, None),
                             size=(300, 150),
                             background ='atlas://data/images/defaulttheme/button_pressed')
@@ -559,7 +560,21 @@ class CadastrarFuncionario(Screen):
             self.parent.current = 'funcionario'
             return           
 
-        # Add dados na tabela de Funcionario
+        sql_command = f"select * from estabelecimento where CODIGO={self.ids.codigo_estabelecimento.text}"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+
+        if len(output) == 0:
+            popup = Popup(title='ERR0 - CADASTRAR FUNCIONÁRIO',
+                            content=Label(text='Não foi possível realizar o cadastro.\nO cód. do estabelecimento informado\nnão existe.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.parent.current = 'funcionario'
+            return    
+
         sql_command = "INSERT INTO FUNCIONARIO (NOME, CPF, SALARIO, FERIAS, CODIGO_ESTABELECIMENTO, SENHA) VALUES(%s, %s, %s, %s, %s, %s)"
         values = (self.ids.nome.text,
                   self.ids.cpf.text,
@@ -573,7 +588,7 @@ class CadastrarFuncionario(Screen):
         conn.commit()
         conn.close()
 
-        # valores auxiliares para cadastrar ADM/Atendente de caixa
+        # valores auxiliares para cadastrar ADM/Atendente de caixa se o funcionario em questao tiver um desses cargos
         global CPF_FUNCIONARIO
         CPF_FUNCIONARIO = self.ids.cpf.text
         global COD_ESTABELECIMENTO
@@ -697,7 +712,7 @@ class TabelaBuscaFuncionario(Screen):
             aux += 1
 
 
-        if comValor == 0:
+        if comValor == 0 and (APENAS_ADM).lower() != "sim" and (APENAS_ATEND_CAIXA).lower() != "sim":
             popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
                     content=Label(text='Não foi informado nenhum dado\npara realizar a busca'),
                     size_hint=(None, None),
@@ -707,12 +722,19 @@ class TabelaBuscaFuncionario(Screen):
             self.parent.current = 'funcionario'
             return
 
-        sql_command = CriaQuery_SELECT("funcionario", lista_atributos_query)
-        c.execute("SET search_path TO padaria;")
-        c.execute(sql_command, tuple(lista_values))
-        output = c.fetchall()
+        if (APENAS_ADM).lower() != "sim" and (APENAS_ATEND_CAIXA).lower() != "sim":
+            sql_command = CriaQuery_SELECT("funcionario", lista_atributos_query)
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command, tuple(lista_values))
+            output = c.fetchall()
 
-        if len(output) == 0:
+        else:
+            sql_command = f"select * from funcionario"
+            c.execute("SET search_path TO padaria;")
+            c.execute(sql_command)
+            output = c.fetchall()
+
+        if len(output) == 0 and (APENAS_ADM).lower() != "sim" and (APENAS_ATEND_CAIXA).lower() != "sim":
             popup = Popup(title='ERRO - BUSCA DE FUNCIONARIO',
                     content=Label(text='Não foi possível encontrar\nnenhum funcionário com os\ndados fornecidos.'),
                     size_hint=(None, None),
@@ -725,6 +747,7 @@ class TabelaBuscaFuncionario(Screen):
         output_2 = []
 
         if (APENAS_ADM).lower() == 'sim' and (APENAS_ATEND_CAIXA).lower() == 'sim':
+
             aux = []
             for tupla in output: aux.append(list(tupla))
             for funcionario in aux:
@@ -754,6 +777,7 @@ class TabelaBuscaFuncionario(Screen):
                 return
 
         elif (APENAS_ADM).lower() == 'sim':
+
             aux = []
             for tupla in output: aux.append(list(tupla))
             for funcionario in aux:
@@ -949,6 +973,39 @@ class AlterarFuncionario2(Screen):
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
 
+        sql_command = f"select * from funcionario where cpf='{self.ids.cpf.text}';"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+        if len(output) != 0:
+            popup = Popup(title='ERRO - ATUALIZAR FUNCIONARIO',
+                    content=Label(text='Já existe um funcionário\ncom o CPF informado.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cpf.text = ''
+            self.ids.codigo_estabelecimento.text = ''
+            self.parent.current = 'funcionario'
+            return
+
+        sql_command = f"select * from funcionario where CODIGO_ESTABELECIMENTO='{self.ids.codigo_estabelecimento.text}';"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+        if len(output) == 0:
+            popup = Popup(title='ERRO - ATUALIZAR FUNCIONARIO',
+                    content=Label(text='O cód. do estabelecimento\ninformado não existe.'),
+                    size_hint=(None, None),
+                    size=(300, 150),
+                    background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+            self.ids.cpf.text = ''
+            self.ids.codigo_estabelecimento.text = ''
+
+            self.parent.current = 'funcionario'
+            return
+
         lista_atributos = [self.ids.nome.text,
                             self.ids.cpf.text,
                             self.ids.salario.text,
@@ -1054,11 +1111,27 @@ class RegistrarHorario(Screen):
             self.ids.hora_entrada_r.text = ''
             self.ids.hora_saida_r.text = ''
             self.ids.fcodigo_funcionario.text = ''
-
             return
 
         conn = ConnectionDatabase.getConnection()
         c = conn.cursor()
+
+        sql_command = f"select * from funcionario where CODIGO_FUNC='{self.ids.fcodigo_funcionario.text}';"
+        c.execute("SET search_path TO padaria;")
+        c.execute(sql_command)
+        output = c.fetchall()
+        if len(output) == 0:        
+            popup = Popup(title='ERR0 - REGISTRAR HORÁRIO DE\nTRABALHO',
+                            content=Label(text='Não foi possível realizar o registro.\nO cód. do funcionário informado\nnão existe.'),
+                            size_hint=(None, None),
+                            size=(300, 150),
+                            background ='atlas://data/images/defaulttheme/button_pressed')
+            popup.open()
+
+            self.ids.hora_entrada_r.text = ''
+            self.ids.hora_saida_r.text = ''
+            self.ids.fcodigo_funcionario.text = ''
+            return
 
         sql_command = "INSERT INTO HISTORICO_TRABALHO (DATA_REGISTRO, HORA_ENTRADA_R, HORA_SAIDA_R, FCODIGO_FUNCIONARIO) VALUES(current_date, %s, %s, %s)"
         values = (FormataHora(self.ids.hora_entrada_r.text),
