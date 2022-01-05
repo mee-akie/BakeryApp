@@ -1216,7 +1216,13 @@ class TabelaHistoricoTrabalho(Screen):
             self.parent.current = 'historicoTrabalho'
             return
 
+        output_to_list = []
         output.append(['', '', '', '', '', '' ,'', ''])
+
+        for tupla in output: output_to_list.append(list(tupla))
+        for lista in output_to_list:
+            lista[0] = ConversorData(lista[0], False)
+
         conn.close()
 
         screen = AnchorLayout()
@@ -1234,7 +1240,7 @@ class TabelaHistoricoTrabalho(Screen):
             sorted_on="DT REGISTRO",
             sorted_order="ASC",
             elevation=2,
-            row_data=output
+            row_data=output_to_list
         )
 
         self.add_widget(self.table)
@@ -1515,7 +1521,15 @@ class TabelaBuscaEstoque(Screen):
             self.parent.current = 'estoque'
             return
 
+
+        output_to_list = []
         output.append(['', '', '', '', '', '' ,'', ''])
+
+        for tupla in output: output_to_list.append(list(tupla))
+        for lista in output_to_list:
+            lista[4] = ConversorData(lista[4], False)
+            lista[7] = ConversorData(lista[7], False)
+
         conn.close()
         screen = AnchorLayout()
 
@@ -1533,7 +1547,7 @@ class TabelaBuscaEstoque(Screen):
                 ("QTD ESTOQUE", dp(40)),
                 ("DT VENCIMENTO", dp(40))
             ],
-            row_data=output,
+            row_data=output_to_list,
             sorted_on="NOME",
             sorted_order="ASC",
             elevation=2
