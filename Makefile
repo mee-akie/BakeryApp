@@ -1,11 +1,5 @@
-run-unix: virtualenv-unix
+run: virtualenv
 	python main.py
 
-run-windows: virtualenv-windows
-	python main.py
-
-virtualenv-windows:
+virtualenv:
 	tutorial-env\Scripts\activate.bat
-
-virtualenv-unix:
-	source tutorial-env/Scripts/activate
